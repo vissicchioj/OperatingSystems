@@ -191,9 +191,30 @@ var TSOS;
                 var topic = args[0];
                 switch (topic) {
                     case "help":
-                        _StdOut.putText("Help displays a list of (hopefully) valid commands.");
+                        _StdOut.putText("Help displays a list of (hopefully) valid commands. This is best when you forget the name of each command.");
                         break;
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "ver":
+                        _StdOut.putText("Ver displays the current version data.");
+                        break;
+                    case "shutdown":
+                        _StdOut.putText("Shutdown will shutdown (go figure) the virtual OS. Note that it leaves the underlying host / hardware simulation running.");
+                        break;
+                    case "cls":
+                        _StdOut.putText("Cls will clear the screen for you and reset the cursor position. Best used when you want a clean slate.");
+                        break;
+                    case "man":
+                        _StdOut.putText("Uhh... did you just use the manual to find out what the manual is.");
+                        break;
+                    case "trace":
+                        _StdOut.putText("Trace allows you to turn the OS trace on or off. Trace will provide an ongoing record information of the program's execution.");
+                        break;
+                    case "rot13":
+                        _StdOut.putText("Rot13 does rot13 obfuscation on a given string. Rot13 is short for rotate 13 spaces which can be explained as a cipher that replaces a letter with the letter that appears 13 letters later in the alphabet. For example, the string abc will become nop.");
+                        break;
+                    case "prompt":
+                        _StdOut.putText("Prompt will set the prompt. A prompt is where you type commands.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
