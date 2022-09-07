@@ -203,6 +203,7 @@ module TSOS {
         // Although args is unused in some of these functions, it is always provided in the 
         // actual parameter list when this function is called, so I feel like we need it.
 
+        //APP_NAME and APP_VERSION can be found in globals.ts
         public shellVer(args: string[]) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
         }
