@@ -45,6 +45,15 @@ var TSOS;
             // prompt <string>
             sc = new TSOS.ShellCommand(this.shellPrompt, "prompt", "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
+            // date
+            sc = new TSOS.ShellCommand(this.shellDate, "date", "- Displays the current date and time.");
+            this.commandList[this.commandList.length] = sc;
+            // whereami
+            sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", "- Displays your current location.");
+            this.commandList[this.commandList.length] = sc;
+            // stairs
+            sc = new TSOS.ShellCommand(this.shellStairs, "stairs", "<character> - Creates stairs of <character>.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -216,6 +225,15 @@ var TSOS;
                     case "prompt":
                         _StdOut.putText("Prompt will set the prompt. A prompt is where you type commands.");
                         break;
+                    case "date":
+                        _StdOut.putText("NOT THE FRUIT! Date displays the current date and time.");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("I know where you are. Try asking me.");
+                        break;
+                    case "stairs":
+                        _StdOut.putText("Stairs will output 4 stairs of the character you input.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -264,6 +282,29 @@ var TSOS;
             }
             else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
+            }
+        }
+        shellDate(args) {
+            const currDateTime = new Date();
+            _StdOut.putText("" + currDateTime);
+        }
+        shellWhereami(args) {
+            _StdOut.putText("Since you're a comp sci major... definitely not outside.");
+        }
+        shellStairs(args) {
+            if (args.length > 0) {
+                var character = args[0].charAt(0).toUpperCase();
+                for (let i = 0; i < 5; i++) {
+                    //this will print the steps on the current level
+                    for (let j = 0; j < i; j++) {
+                        _StdOut.putText("" + character);
+                    }
+                    //this will skip a line for the next level of steps
+                    _StdOut.advanceLine();
+                }
+            }
+            else {
+                _StdOut.putText("Usage: stairs <character>  Please supply a character.");
             }
         }
     }
