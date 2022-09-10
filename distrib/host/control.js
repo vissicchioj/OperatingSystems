@@ -26,6 +26,18 @@ var TSOS;
             _Canvas = document.getElementById('display');
             // Get a global reference to the drawing context.
             _DrawingContext = _Canvas.getContext("2d");
+            // Today's Date
+            // I found on stackoverflow, a cool way to display dates that involves more than using the date class.
+            // NOTE: It needed to be modified slightly due to the difference between JS and TS.
+            // https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            var dateStr = (mm + '/' + dd + '/' + yyyy);
+            document.getElementById('date').innerHTML = dateStr;
+            // Initial Status Message that can be updated via shell
+            document.getElementById('status').innerHTML = "OFFLINE";
             // Enable the added-in canvas text functions (see canvastext.ts for provenance and details).
             TSOS.CanvasTextFunctions.enable(_DrawingContext); // Text functionality is now built in to the HTML5 canvas. But this is old-school, and fun, so we'll keep it.
             // Clear the log text box.
@@ -61,6 +73,8 @@ var TSOS;
         static hostBtnStartOS_click(btn) {
             // Disable the (passed-in) start button...
             btn.disabled = true;
+            // New Status
+            document.getElementById('status').innerHTML = "ONLINE";
             // .. enable the Halt and Reset buttons ...
             document.getElementById("btnHaltOS").disabled = false;
             document.getElementById("btnReset").disabled = false;
@@ -76,6 +90,8 @@ var TSOS;
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
         }
         static hostBtnHaltOS_click(btn) {
+            // New Status
+            document.getElementById('status').innerHTML = "HALTED";
             Control.hostLog("Emergency halt", "host");
             Control.hostLog("Attempting Kernel shutdown.", "host");
             // Call the OS shutdown routine.
@@ -85,6 +101,8 @@ var TSOS;
             // TODO: Is there anything else we need to do here?
         }
         static hostBtnReset_click(btn) {
+            // New Status
+            document.getElementById('status').innerHTML = "RESETTING";
             // The easiest and most thorough way to do this is to reload (not refresh) the document.
             location.reload();
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always

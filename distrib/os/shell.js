@@ -54,6 +54,9 @@ var TSOS;
             // stairs
             sc = new TSOS.ShellCommand(this.shellStairs, "stairs", "<character> - Creates stairs of <character>.");
             this.commandList[this.commandList.length] = sc;
+            // status
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Displays status as <string>.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -234,6 +237,9 @@ var TSOS;
                     case "stairs":
                         _StdOut.putText("Stairs will output 4 stairs of the character you input.");
                         break;
+                    case "status":
+                        _StdOut.putText("Status allows you to update the status displayed by the Host Log.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -306,6 +312,9 @@ var TSOS;
             else {
                 _StdOut.putText("Usage: stairs <character>  Please supply a character.");
             }
+        }
+        shellStatus(args) {
+            document.getElementById('status').innerHTML = args[0];
         }
     }
     TSOS.Shell = Shell;

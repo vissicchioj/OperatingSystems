@@ -91,6 +91,12 @@ module TSOS {
                                     "<character> - Creates stairs of <character>.");
             this.commandList[this.commandList.length] = sc;
 
+            // status
+            sc = new ShellCommand(this.shellStatus,
+                                    "status",
+                                    "<string> - Displays status as <string>.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -284,6 +290,9 @@ module TSOS {
                     case "stairs":
                         _StdOut.putText("Stairs will output 4 stairs of the character you input.");
                         break;
+                    case "status":
+                        _StdOut.putText("Status allows you to update the status displayed by the Host Log.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -357,6 +366,10 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: stairs <character>  Please supply a character.");
             }
+        }
+
+        public shellStatus(args: string[]) {
+            document.getElementById('status').innerHTML = args[0];
         }
 
     }

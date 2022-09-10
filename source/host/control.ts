@@ -31,6 +31,21 @@ module TSOS {
             // Get a global reference to the drawing context.
             _DrawingContext = _Canvas.getContext("2d");
 
+            // Today's Date
+            // I found on stackoverflow, a cool way to display dates that involves more than using the date class.
+            // NOTE: It needed to be modified slightly due to differences between JS and TS.
+            // https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            var dateStr = (mm + '/' + dd + '/' + yyyy);
+            document.getElementById('date').innerHTML = dateStr;
+
+            // Initial Status Message that can be updated via shell
+            document.getElementById('status').innerHTML = "OFFLINE";
+
             // Enable the added-in canvas text functions (see canvastext.ts for provenance and details).
             CanvasTextFunctions.enable(_DrawingContext);   // Text functionality is now built in to the HTML5 canvas. But this is old-school, and fun, so we'll keep it.
 
@@ -77,6 +92,9 @@ module TSOS {
             // Disable the (passed-in) start button...
             btn.disabled = true;
 
+            // New Status
+            document.getElementById('status').innerHTML = "ONLINE";
+
             // .. enable the Halt and Reset buttons ...
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnReset")).disabled = false;
@@ -96,6 +114,9 @@ module TSOS {
         }
 
         public static hostBtnHaltOS_click(btn): void {
+            // New Status
+            document.getElementById('status').innerHTML = "HALTED";
+
             Control.hostLog("Emergency halt", "host");
             Control.hostLog("Attempting Kernel shutdown.", "host");
             // Call the OS shutdown routine.
@@ -106,6 +127,9 @@ module TSOS {
         }
 
         public static hostBtnReset_click(btn): void {
+            // New Status
+            document.getElementById('status').innerHTML = "RESETTING";
+
             // The easiest and most thorough way to do this is to reload (not refresh) the document.
             location.reload();
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
