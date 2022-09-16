@@ -314,7 +314,14 @@ var TSOS;
             }
         }
         shellStatus(args) {
-            document.getElementById('status').innerHTML = args[0];
+            if (args.length > 0) {
+                document.getElementById('status').innerHTML = args[0];
+            }
+            else {
+                // if someone types nothing for their status it just means they love OS so much that they're at 
+                // a loss for words. Don't worry brOS can put that in for you.
+                document.getElementById('status').innerHTML = "I love OS";
+            }
         }
     }
     TSOS.Shell = Shell;
