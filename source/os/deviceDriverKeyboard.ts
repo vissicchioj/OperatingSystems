@@ -44,7 +44,55 @@ module TSOS {
                 _KernelInputQueue.enqueue(chr);
             } else if (((keyCode >= 48) && (keyCode <= 57)) ||   // digits
                         (keyCode == 32)                     ||   // space
-                        (keyCode == 13)) {                       // enter
+                        (keyCode == 13)                          // enter
+                        ){                       
+                // conditional statements for special chars
+                if (isShifted === true){
+                    //switch case for special chars
+                    switch (keyCode){
+                        case 48:
+                            chr = String.fromCharCode(41);
+                            break;
+                        case 49:
+                            chr = String.fromCharCode(keyCode - 16);
+                            break;
+                        case 50:
+                            chr = String.fromCharCode(64);
+                            break;
+                        case 51:
+                            chr = String.fromCharCode(keyCode - 16);
+                            break;
+                        case 52: 
+                            chr = String.fromCharCode(keyCode - 16);
+                            break;
+                        case 53:
+                            chr = String.fromCharCode(keyCode - 16);
+                            break;
+                        case 54:
+                            chr = String.fromCharCode(94);
+                            break;
+                        case 55:
+                            chr = String.fromCharCode(38);
+                            break;
+                        case 56:
+                            chr = String.fromCharCode(42);
+                            break;
+                        case 57:
+                            chr = String.fromCharCode(40);
+                            break;
+                        
+                        default: 
+                    }
+
+                }
+                else{
+                    chr = String.fromCharCode(keyCode);
+                }
+                _KernelInputQueue.enqueue(chr);
+            }
+            //backspace
+            else if (keyCode == 8)
+            {
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             }

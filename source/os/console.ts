@@ -41,7 +41,16 @@ module TSOS {
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
-                } else {
+                } else if (chr === String.fromCharCode(8))
+                {
+                    // when we backspace we are taking the last character from the buffer
+                    // we also need to update the canvas by clearing that last character and moving our cursor back
+                    let tempStr = this.buffer.slice(-1);
+                    this.buffer = this.buffer.substring(0, this.buffer.length - 1);
+                    let charWidth = CanvasTextFunctions.measure(this.currentFont, this.currentFontSize, tempStr);
+                    this.currentXPosition = this.currentXPosition - charWidth;
+                    _DrawingContext.clearRect(this.currentXPosition, this.currentYPosition - _DefaultFontSize, charWidth, _DefaultFontSize * 2);
+                }else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
                     this.putText(chr);

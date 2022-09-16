@@ -37,6 +37,13 @@ var TSOS;
                     // ... and reset our buffer.
                     this.buffer = "";
                 }
+                else if (chr === String.fromCharCode(8)) {
+                    let tempStr = this.buffer.slice(-1);
+                    this.buffer = this.buffer.substring(0, this.buffer.length - 1);
+                    let charWidth = TSOS.CanvasTextFunctions.measure(this.currentFont, this.currentFontSize, tempStr);
+                    this.currentXPosition = this.currentXPosition - charWidth;
+                    _DrawingContext.clearRect(this.currentXPosition, this.currentYPosition - _DefaultFontSize, charWidth, _DefaultFontSize * 2);
+                }
                 else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...

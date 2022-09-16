@@ -28,7 +28,7 @@ var TSOS;
             _DrawingContext = _Canvas.getContext("2d");
             // Today's Date
             // I found on stackoverflow, a cool way to display dates that involves more than using the date class.
-            // NOTE: It needed to be modified slightly due to the difference between JS and TS.
+            // NOTE: It needed to be modified slightly due to differences between JS and TS.
             // https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
