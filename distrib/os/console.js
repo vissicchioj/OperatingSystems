@@ -257,14 +257,16 @@ var TSOS;
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin;
             // TODO: Handle scrolling. (iProject 1)
+            // Once we reach the bottom of the canvas
             if (this.currentYPosition >= _Canvas.height) {
-                // //var dataURL = _Canvas.toDataURL();
-                // var scrollHeight = _Canvas.scrollHeight;
-                // _StdOut.putText("scroll height is " + scrollHeight);
-                // _Canvas.scroll(0, scrollHeight - (this.currentFontSize*2));
+                // get the image data of the canvas (basically a screenshot)
                 const myImageData = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+                // clear it so nothing overwrites itself
                 this.clearScreen();
+                // put the image back but slightly above the canvas
+                // NOTE: -1.5 keeps the line spacing correct, -1 would make the spacing really tight
                 _DrawingContext.putImageData(myImageData, 0, -1.5 * this.currentFontSize);
+                //put the y position at the bottom so it looks like its continuing at the bottom 
                 this.currentYPosition = _Canvas.height - this.currentFontSize;
             }
         }

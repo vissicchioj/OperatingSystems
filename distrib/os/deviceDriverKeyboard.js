@@ -100,6 +100,86 @@ var TSOS;
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             }
+            //remaining special chars
+            else {
+                if (isShifted === true) {
+                    switch (keyCode) {
+                        case 192:
+                            chr = '~';
+                            break;
+                        case 189:
+                            chr = '_';
+                            break;
+                        case 187:
+                            chr = '+';
+                            break;
+                        case 219:
+                            chr = '{';
+                            break;
+                        case 221:
+                            chr = '}';
+                            break;
+                        case 220:
+                            chr = '|';
+                            break;
+                        case 186:
+                            chr = ':';
+                            break;
+                        case 222:
+                            chr = '"';
+                            break;
+                        case 188:
+                            chr = '<';
+                            break;
+                        case 190:
+                            chr = '>';
+                            break;
+                        case 191:
+                            chr = '?';
+                            break;
+                        default:
+                    }
+                }
+                else {
+                    switch (keyCode) {
+                        case 192:
+                            chr = '`';
+                            break;
+                        case 189:
+                            chr = '-';
+                            break;
+                        case 187:
+                            chr = '=';
+                            break;
+                        case 219:
+                            chr = '[';
+                            break;
+                        case 221:
+                            chr = ']';
+                            break;
+                        case 220:
+                            chr = '\\';
+                            break;
+                        case 186:
+                            chr = ';';
+                            break;
+                        case 222:
+                            chr = '\'';
+                            break;
+                        case 188:
+                            chr = ',';
+                            break;
+                        case 190:
+                            chr = '.';
+                            break;
+                        case 191:
+                            chr = '/';
+                            break;
+                        default:
+                    }
+                }
+                _KernelInputQueue.enqueue(chr);
+            }
         }
     }
     TSOS.DeviceDriverKeyboard = DeviceDriverKeyboard;
