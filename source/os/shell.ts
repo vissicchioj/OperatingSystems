@@ -382,7 +382,7 @@ module TSOS {
 
         public shellStatus(args: string[]) {
             if (args.length > 0) {
-                document.getElementById('status').innerHTML = args[0];
+                document.getElementById('status').innerHTML = args.join(' ');
             }
             else {
                 // if someone types nothing for their status it just means they love OS so much that they're at 

@@ -30,11 +30,16 @@ var TSOS;
             // I found on stackoverflow, a cool way to display dates that involves more than using the date class.
             // NOTE: It needed to be modified slightly due to differences between JS and TS.
             // https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
+            // create a new date object
             var today = new Date();
+            // days and months that are not 10 and over, we can add a 0 before to make it more pleasing to look at
             var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            //since January is 0 and December is 11 for months, we need to add 1 
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
             var yyyy = today.getFullYear();
+            // create a string using the variables for each part of the date and separating by '/'
             var dateStr = (mm + '/' + dd + '/' + yyyy);
+            // place the date string
             document.getElementById('date').innerHTML = dateStr;
             // Initial Status Message that can be updated via shell
             document.getElementById('status').innerHTML = "OFFLINE";

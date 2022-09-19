@@ -321,7 +321,7 @@ var TSOS;
         }
         shellStatus(args) {
             if (args.length > 0) {
-                document.getElementById('status').innerHTML = args[0];
+                document.getElementById('status').innerHTML = args.join(' ');
             }
             else {
                 // if someone types nothing for their status it just means they love OS so much that they're at 
@@ -350,7 +350,7 @@ var TSOS;
             let regExprWhite = /\s/g;
             // we then replace all of that white space with nothing to essentially remove that white space
             var inputText = userInput.value.replace(regExprWhite, '');
-            // then test
+            // then test the text using our regular expression. Returns true if it is valid hex digits
             if (regExpr.test(inputText) === true) {
                 _StdOut.putText("Valid user input.");
             }
