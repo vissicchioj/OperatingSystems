@@ -58,6 +58,9 @@ module TSOS {
                     this.buffer = this.buffer.substring(0, this.buffer.length - 1);
                     let charWidth = CanvasTextFunctions.measure(this.currentFont, this.currentFontSize, tempStr);
                     this.currentXPosition = this.currentXPosition - charWidth;
+                    
+                    // basically creates a transparent rectangle over the last character
+                    // this looks, graphically, just like backspacing
                     _DrawingContext.clearRect(this.currentXPosition, this.currentYPosition - _DefaultFontSize, charWidth, _DefaultFontSize * 2);
                 }
                 else if (chr === String.fromCharCode(9)) // the Tab key
@@ -214,28 +217,37 @@ module TSOS {
                 //up and down keys
                 else if (chr === String.fromCharCode(38) || chr === String.fromCharCode(40))
                 {
+                    // NOTE: since we are using push we have to kind of work in a reverse matter
+                    // ex) when we press up we actually are looking at the top (last element) of the array
                     var chrArray = [];
                     if (chr === String.fromCharCode(40) && this.line <= this.bufferList.length - 1)
                     {
+                        //clear the line
                         this.clearLine();
+                        //iterate
                         this.line++;
+
+                        // [...string] will turn a string into an array of chars
                         chrArray = [...this.bufferList[this.line]];
-                        //_KernelInputQueue.enqueue(bufferList[line]);
+                        
                         for (let k = 0; k < chrArray.length; k++)
                         {
+                            // enqueue each character from a previous line
                             _KernelInputQueue.enqueue(chrArray[k]);
                         }
                     }
                     if (chr === String.fromCharCode(38) && this.line > 0)
                     {
+
                         this.clearLine();
+                        //iterate
                         this.line--;
+                        // [...string] will turn a string into an array of chars
                         chrArray = [...this.bufferList[this.line]];
-                        //chrArray = bufferList[line].toChrArray();
-                        //bufferList[line]
-                        //_KernelInputQueue.enqueue(bufferList[line]);
+                        
                         for (let k = 0; k < chrArray.length; k++)
                         {
+                            // enqueue each character from a previous line
                             _KernelInputQueue.enqueue(chrArray[k]);
                         }
                     }

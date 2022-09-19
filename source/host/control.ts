@@ -41,6 +41,7 @@ module TSOS {
             var yyyy = today.getFullYear();
 
             var dateStr = (mm + '/' + dd + '/' + yyyy);
+            // place the date string
             document.getElementById('date').innerHTML = dateStr;
 
             // Initial Status Message that can be updated via shell

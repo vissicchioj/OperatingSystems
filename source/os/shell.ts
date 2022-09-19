@@ -395,26 +395,29 @@ module TSOS {
             _StdOut.clearScreen();     
             _StdOut.resetXY();
 
-            //color wont change idk why
+            //color wont change idk why // FIXED, my hexidecimal color just wasn't working, maybe I mistyped
             _Canvas.style.backgroundColor = "lightblue";
 
             _StdOut.putText("A fatal error has occured!");
             // Call the OS shutdown routine.
             _Kernel.krnShutdown();
             // Stop the interval that's simulating our clock pulse.
-            clearInterval(_hardwareClockID);
+            //clearInterval(_hardwareClockID);
         }
 
         public shellLoad(args: string[]){
             // allows us to check if a string has hex digits
-            let regexp = /^[0-9a-fA-F]+$/;
-
+            //valid hex is from 0-F, this regular expression gets all of 0-9 and a-f (ignoring case)
+            let regExpr = /^[0-9a-fA-F]+$/;
             // store the user input into a string, then remove all white space
             var userInput = <HTMLTextAreaElement>document.getElementById('taProgramInput');
-            var inputText = userInput.value.replace(/\s/g, '');
+            // /\s/g = gets all whitespace within a string
+            let regExprWhite = /\s/g;
+            // we then replace all of that white space with nothing to essentially remove that white space
+            var inputText = userInput.value.replace(regExprWhite, '');
 
-            // then test
-            if (regexp.test(inputText))
+            // then test the text using our regular expression. Returns true if it is valid hex digits
+            if (regExpr.test(inputText) === true)
             {
                 _StdOut.putText("Valid user input.");
             }
