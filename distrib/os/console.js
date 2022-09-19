@@ -13,6 +13,10 @@ var TSOS;
             this.currentXPosition = currentXPosition;
             this.currentYPosition = currentYPosition;
             this.buffer = buffer;
+            // past lines saved into an array
+            this.bufferList = [];
+            // this will keep track of what element of the array we are in
+            this.line = -1;
         }
         init() {
             this.clearScreen();
@@ -35,6 +39,8 @@ var TSOS;
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
+                    this.bufferList.push(this.buffer);
+                    this.line = this.bufferList.length;
                     this.buffer = "";
                 }
                 else if (chr === String.fromCharCode(8)) // the Backspace key
@@ -167,6 +173,46 @@ var TSOS;
                         _KernelInputQueue.enqueue('u');
                         _KernelInputQueue.enqueue('s');
                     }
+                    // bsod auto completion
+                    else if (this.buffer === "b" || this.buffer === "bs" || this.buffer === "bso") {
+                        this.clearLine();
+                        _KernelInputQueue.enqueue('b');
+                        _KernelInputQueue.enqueue('s');
+                        _KernelInputQueue.enqueue('o');
+                        _KernelInputQueue.enqueue('d');
+                    }
+                    // load auto completion
+                    else if (this.buffer === "l" || this.buffer === "lo" || this.buffer === "loa") {
+                        this.clearLine();
+                        _KernelInputQueue.enqueue('l');
+                        _KernelInputQueue.enqueue('o');
+                        _KernelInputQueue.enqueue('a');
+                        _KernelInputQueue.enqueue('d');
+                    }
+                }
+                //up and down keys
+                else if (chr === String.fromCharCode(38) || chr === String.fromCharCode(40)) {
+                    var chrArray = [];
+                    if (chr === String.fromCharCode(40) && this.line <= this.bufferList.length - 1) {
+                        this.clearLine();
+                        this.line++;
+                        chrArray = [...this.bufferList[this.line]];
+                        //_KernelInputQueue.enqueue(bufferList[line]);
+                        for (let k = 0; k < chrArray.length; k++) {
+                            _KernelInputQueue.enqueue(chrArray[k]);
+                        }
+                    }
+                    if (chr === String.fromCharCode(38) && this.line > 0) {
+                        this.clearLine();
+                        this.line--;
+                        chrArray = [...this.bufferList[this.line]];
+                        //chrArray = bufferList[line].toChrArray();
+                        //bufferList[line]
+                        //_KernelInputQueue.enqueue(bufferList[line]);
+                        for (let k = 0; k < chrArray.length; k++) {
+                            _KernelInputQueue.enqueue(chrArray[k]);
+                        }
+                    }
                 }
                 else {
                     // This is a "normal" character, so ...
@@ -211,6 +257,16 @@ var TSOS;
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin;
             // TODO: Handle scrolling. (iProject 1)
+            if (this.currentYPosition >= _Canvas.height) {
+                // //var dataURL = _Canvas.toDataURL();
+                // var scrollHeight = _Canvas.scrollHeight;
+                // _StdOut.putText("scroll height is " + scrollHeight);
+                // _Canvas.scroll(0, scrollHeight - (this.currentFontSize*2));
+                const myImageData = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+                this.clearScreen();
+                _DrawingContext.putImageData(myImageData, 0, -1.5 * this.currentFontSize);
+                this.currentYPosition = _Canvas.height - this.currentFontSize;
+            }
         }
         //clears current line
         clearLine() {

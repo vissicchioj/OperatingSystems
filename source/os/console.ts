@@ -30,7 +30,13 @@ module TSOS {
             this.currentYPosition = this.currentFontSize;
         }
 
+        // past lines saved into an array
+        public bufferList = [];
+        // this will keep track of what element of the array we are in
+        public line = -1;
+
         public handleInput(): void {
+
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
@@ -40,6 +46,8 @@ module TSOS {
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
+                    this.bufferList.push(this.buffer);
+                    this.line = this.bufferList.length;
                     this.buffer = "";
                 } 
                 else if (chr === String.fromCharCode(8)) // the Backspace key
@@ -184,7 +192,55 @@ module TSOS {
                         _KernelInputQueue.enqueue('u');
                         _KernelInputQueue.enqueue('s');
                     }
-                }else {
+                    // bsod auto completion
+                    else if (this.buffer === "b" ||  this.buffer === "bs" || this.buffer === "bso")
+                    {
+                        this.clearLine();
+                        _KernelInputQueue.enqueue('b');
+                        _KernelInputQueue.enqueue('s');
+                        _KernelInputQueue.enqueue('o');
+                        _KernelInputQueue.enqueue('d');
+                    }
+                    // load auto completion
+                    else if (this.buffer === "l" ||  this.buffer === "lo" || this.buffer === "loa")
+                    {
+                        this.clearLine();
+                        _KernelInputQueue.enqueue('l');
+                        _KernelInputQueue.enqueue('o');
+                        _KernelInputQueue.enqueue('a');
+                        _KernelInputQueue.enqueue('d');
+                    }
+                }
+                //up and down keys
+                else if (chr === String.fromCharCode(38) || chr === String.fromCharCode(40))
+                {
+                    var chrArray = [];
+                    if (chr === String.fromCharCode(40) && this.line <= this.bufferList.length - 1)
+                    {
+                        this.clearLine();
+                        this.line++;
+                        chrArray = [...this.bufferList[this.line]];
+                        //_KernelInputQueue.enqueue(bufferList[line]);
+                        for (let k = 0; k < chrArray.length; k++)
+                        {
+                            _KernelInputQueue.enqueue(chrArray[k]);
+                        }
+                    }
+                    if (chr === String.fromCharCode(38) && this.line > 0)
+                    {
+                        this.clearLine();
+                        this.line--;
+                        chrArray = [...this.bufferList[this.line]];
+                        //chrArray = bufferList[line].toChrArray();
+                        //bufferList[line]
+                        //_KernelInputQueue.enqueue(bufferList[line]);
+                        for (let k = 0; k < chrArray.length; k++)
+                        {
+                            _KernelInputQueue.enqueue(chrArray[k]);
+                        }
+                    }
+                }
+                else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
                     this.putText(chr);
@@ -231,6 +287,22 @@ module TSOS {
                                      _FontHeightMargin;
 
             // TODO: Handle scrolling. (iProject 1)
+            // Once we reach the bottom of the canvas
+            if (this.currentYPosition >= _Canvas.height)
+            {
+                // get the image data of the canvas (basically a screenshot)
+                const myImageData = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+
+                // clear it so nothing overwrites itself
+                this.clearScreen();
+
+                // put the image back but slightly above the canvas
+                // NOTE: -1.5 keeps the line spacing correct, -1 would make the spacing really tight
+                _DrawingContext.putImageData(myImageData, 0, -1.5*this.currentFontSize);
+
+                //put the y position at the bottom so it looks like its continuing at the bottom 
+                this.currentYPosition = _Canvas.height - this.currentFontSize;
+            }
         }
 
         //clears current line

@@ -90,13 +90,20 @@ module TSOS {
                 }
                 _KernelInputQueue.enqueue(chr);
             }
-            //backspace
+            // backspace
             else if (keyCode == 8)
             {
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             }
+            // tab
             else if (keyCode == 9)
+            {
+                chr = String.fromCharCode(keyCode);
+                _KernelInputQueue.enqueue(chr);
+            }
+            // up key
+            else if (keyCode == 38 || keyCode == 40)
             {
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);

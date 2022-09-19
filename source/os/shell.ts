@@ -97,6 +97,18 @@ module TSOS {
                                     "<string> - Displays status as <string>.");
             this.commandList[this.commandList.length] = sc;
 
+            // BSOD
+            sc = new ShellCommand(this.shellBSOD,
+                "bsod",
+                " - Blue screen of death test.");
+            this.commandList[this.commandList.length] = sc;
+
+            // load
+            sc = new ShellCommand(this.shellLoad,
+                "load",
+                " - Validates user code.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -376,6 +388,39 @@ module TSOS {
                 // if someone types nothing for their status it just means they love OS so much that they're at 
                 // a loss for words. Don't worry brOS can put that in for you.
                 document.getElementById('status').innerHTML = "I love OS";
+            }
+        }
+
+        public shellBSOD(args: string[]){
+            _StdOut.clearScreen();     
+            _StdOut.resetXY();
+
+            //color wont change idk why
+            _Canvas.style.backgroundColor = "lightblue";
+
+            _StdOut.putText("A fatal error has occured!");
+            // Call the OS shutdown routine.
+            _Kernel.krnShutdown();
+            // Stop the interval that's simulating our clock pulse.
+            clearInterval(_hardwareClockID);
+        }
+
+        public shellLoad(args: string[]){
+            // allows us to check if a string has hex digits
+            let regexp = /^[0-9a-fA-F]+$/;
+
+            // store the user input into a string, then remove all white space
+            var userInput = <HTMLTextAreaElement>document.getElementById('taProgramInput');
+            var inputText = userInput.value.replace(/\s/g, '');
+
+            // then test
+            if (regexp.test(inputText))
+            {
+                _StdOut.putText("Valid user input.");
+            }
+            else
+            {
+                _StdOut.putText("Only hex digits and spaces are valid.");
             }
         }
 
