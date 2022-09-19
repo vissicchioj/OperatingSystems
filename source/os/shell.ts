@@ -181,10 +181,14 @@ module TSOS {
             buffer = Utils.trim(buffer);
 
             // 2. Lower-case it.
-            buffer = buffer.toLowerCase();
+            // buffer = buffer.toLowerCase();
 
-            // 3. Separate on spaces so we can determine the command and command-line args, if any.
+            // 2. Separate on spaces so we can determine the command and command-line args, if any.
             var tempList = buffer.split(" ");
+
+            // 3. Lower case the shell command
+            // moved it to 3 so that the args can stay case sensitive
+            tempList[0] = tempList[0].toLowerCase();
 
             // 4. Take the first (zeroth) element and use that as the command.
             var cmd = tempList.shift();  // Yes, you can do that to an array in JavaScript. See the Queue class.
@@ -365,10 +369,10 @@ module TSOS {
 
         public shellStairs(args: string[]) {
             if (args.length > 0) {
-                var character = args[0].charAt(0).toUpperCase();
+                var character = args[0].charAt(0);
                 for (let i = 0; i < 5; i++) {
                     //this will print the steps on the current level
-                    for (let j = 0; j < i; j++)
+                    for (let j = 0; j <= i; j++)
                     {
                         _StdOut.putText("" + character);
                     }
