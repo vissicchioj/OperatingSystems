@@ -346,14 +346,15 @@ var TSOS;
         shellLoad(args) {
             // allows us to check if a string has hex digits
             //valid hex is from 0-F, this regular expression gets all of 0-9 and a-f (ignoring case)
-            let regExpr = /^[0-9a-fA-F]+$/;
+            let regExpr = new RegExp(/^[0-9A-F]+$/);
             // store the user input into a string, then remove all white space
             var userInput = document.getElementById('taProgramInput');
             // /\s/g = gets all whitespace within a string
-            let regExprWhite = /\s/g;
+            let regExprWhite = new RegExp(/\s/g);
             // we then replace all of that white space with nothing to essentially remove that white space
             var inputText = userInput.value.replace(regExprWhite, '');
             // then test the text using our regular expression. Returns true if it is valid hex digits
+            // RegularExpression.test returns a boolean value if the pattern exists in a searched string.
             if (regExpr.test(inputText) === true) {
                 _StdOut.putText("Valid user input.");
             }

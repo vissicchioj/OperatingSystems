@@ -270,7 +270,7 @@ module TSOS {
 
         public shellMan(args: string[]) {
             if (args.length > 0) {
-                var topic = args[0];
+                var topic = args[0].toLowerCase();
                 switch (topic) {
                     case "help":
                         _StdOut.putText("Help displays a list of (hopefully) valid commands. This is best when you forget the name of each command.");
@@ -309,6 +309,11 @@ module TSOS {
                     case "status":
                         _StdOut.putText("Status allows you to update the status displayed by the Host Log.");
                         break;
+                    case "bsod":
+                        _StdOut.putText("BSOD tests Blue Screen of Death.");
+                        break;
+                    case "load":
+                        _StdOut.putText("Currently checks if user input is valid hex.")
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -319,7 +324,7 @@ module TSOS {
 
         public shellTrace(args: string[]) {
             if (args.length > 0) {
-                var setting = args[0];
+                var setting = args[0].toLowerCase();
                 switch (setting) {
                     case "on":
                         if (_Trace && _SarcasticMode) {
@@ -410,17 +415,20 @@ module TSOS {
         }
 
         public shellLoad(args: string[]){
-            // allows us to check if a string has hex digits
-            //valid hex is from 0-F, this regular expression gets all of 0-9 and a-f (ignoring case)
-            let regExpr = /^[0-9a-fA-F]+$/;
+            // allows us to check if a string has hex digits using ranges
+            // valid hex is from 0-F, this regular expression gets all of 0-9 and a-f (ignoring case)
+            let regExpr = new RegExp(/^[0-9a-fA-F]+$/);
+
             // store the user input into a string, then remove all white space
             var userInput = <HTMLTextAreaElement>document.getElementById('taProgramInput');
+
             // /\s/g = gets all whitespace within a string
-            let regExprWhite = /\s/g;
+            let regExprWhite = new RegExp(/\s/g);
             // we then replace all of that white space with nothing to essentially remove that white space
             var inputText = userInput.value.replace(regExprWhite, '');
 
             // then test the text using our regular expression. Returns true if it is valid hex digits
+            // RegularExpression.test returns a boolean value if the pattern exists in a searched string.
             if (regExpr.test(inputText) === true)
             {
                 _StdOut.putText("Valid user input.");
