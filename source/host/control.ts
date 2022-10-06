@@ -61,35 +61,35 @@ module TSOS {
 
             // Cpu table initiallize 
             _CpuTable = <HTMLTableElement>document.getElementById('cpu');
-            for (var k = 0; k < 2; k++)
+            for (var i = 0; i < 2; i++)
             {
-                var addRow =  _CpuTable.insertRow(k);
-                for (var l = 0; l < 6; l++)
+                var addRow =  _CpuTable.insertRow(i);
+                for (var j = 0; j < 6; j++)
                 {
-                    var addCell = addRow.insertCell(l)
-                    if (k == 0)
+                    var addCell = addRow.insertCell(j)
+                    if (i == 0)
                     {
-                        if (l == 0)
+                        if (j == 0)
                         {
                             addCell.innerHTML = "PC";
                         }
-                        else if (l == 1)
+                        else if (j == 1)
                         {
                             addCell.innerHTML = "IR";
                         }
-                        else if (l == 2)
+                        else if (j == 2)
                         {
                             addCell.innerHTML = "ACC";
                         }
-                        else if (l == 3)
+                        else if (j == 3)
                         {
                             addCell.innerHTML = "X-Reg";
                         }
-                        else if (l == 4)
+                        else if (j == 4)
                         {
                             addCell.innerHTML = "Y-Reg";
                         }
-                        else if (l == 5)
+                        else if (j == 5)
                         {
                             addCell.innerHTML = "Z-Flag";
                         }
@@ -101,6 +101,59 @@ module TSOS {
                 }
             }
 
+            // PCB table initialize
+            _PcbTable = <HTMLTableElement>document.getElementById('pcb');
+            for (var i = 0; i < 2; i++)
+            {
+                var addRow =  _PcbTable.insertRow(i);
+                for (var j = 0; j < 8; j++)
+                {
+                    var addCell = addRow.insertCell(j)
+                    if (i == 0)
+                    {
+                        if (j == 0)
+                        {
+                            addCell.innerHTML = "PID";
+                        }
+                        else if (j == 1)
+                        {
+                            addCell.innerHTML = "State";
+                        }
+                        else if (j == 2)
+                        {
+                            addCell.innerHTML = "Location";
+                        }
+                        else if (j == 3)
+                        {
+                            addCell.innerHTML = "Priority";
+                        }
+                        else if (j == 4)
+                        {
+                            addCell.innerHTML = "PC";
+                        }
+                        else if (j == 5)
+                        {
+                            addCell.innerHTML = "ACC";
+                        }
+                        else if (j == 6)
+                        {
+                            addCell.innerHTML = "X-Reg";
+                        }
+                        else if (j == 7)
+                        {
+                            addCell.innerHTML = "Y-Reg";
+                        }
+                        else if (j == 8)
+                        {
+                            addCell.innerHTML = "Z-Flag";
+                        }
+                    }
+                    else 
+                    {
+                        addCell.innerHTML = "-";
+                    }
+                }
+            }
 
             // Get a global reference to the drawing context.
             _DrawingContext = _Canvas.getContext("2d");
