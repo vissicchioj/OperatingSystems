@@ -361,7 +361,7 @@ var TSOS;
             // then test the text using our regular expression. Returns true if it is valid hex digits
             // RegularExpression.test returns a boolean value if the pattern exists in a searched string.
             if (regExpr.test(inputText) === true) {
-                _StdOut.putText("Valid user input.");
+                //_StdOut.putText("Valid user input.");
             }
             else {
                 _StdOut.putText("Only hex digits and spaces are valid.");

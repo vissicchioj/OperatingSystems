@@ -24,6 +24,30 @@ var TSOS;
             // This is called from index.html's onLoad event via the onDocumentLoad function pointer.
             // Get a global reference to the canvas.  TODO: Should we move this stuff into a Display Device Driver?
             _Canvas = document.getElementById('display');
+            //Memory table initiallize 
+            _MemTable = document.getElementById('memory');
+            // Total memory is 256
+            // Outer for loop adds an additional row
+            for (var i = 0x0000; i < (256 / 8); i++) {
+                var addRow = _MemTable.insertRow(i);
+                // Inner for loop adds an additional cell within the current row
+                for (var j = 0; j <= 8; j++) {
+                    var addCell = addRow.insertCell(j);
+                    if (j == 0) {
+                        // Get the hexidecimal string on each interval of 8
+                        var strHex = (i * 8).toString(16).toUpperCase();
+                        while (strHex.length < 4) {
+                            // Add padding zeroes to look more neat 
+                            strHex = "0" + strHex;
+                        }
+                        addCell.innerHTML = "0x" + strHex;
+                    }
+                    else {
+                        //Every remaining cell in a row is initialized to 00
+                        addCell.innerHTML = "00";
+                    }
+                }
+            }
             // Get a global reference to the drawing context.
             _DrawingContext = _Canvas.getContext("2d");
             // Today's Date

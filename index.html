@@ -32,7 +32,18 @@
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
    <script type="text/javascript" src="http://alanclasses.github.io/TSOS/test/glados-ip0.js"></script>
-   
+
+   <!-- Tables will have alternating colors to differentiate rows -->
+   <style>
+      tr:nth-child(even) {
+         background-color:lightgray;
+      }
+      td{
+         width: 50px;
+         border-left: 1px solid;
+      }
+   </style>
+
 </head>
 
 <body onload="onDocumentLoad()">
@@ -41,7 +52,7 @@
    brOS
 </p>
 
-<div id="divMain" style="width:100%;">
+<div id="divMain" style="width:100%;" class = "scroll">
 
    <div id="divButtonBar" style="margin:4px;">
       <input type="button"
@@ -103,6 +114,17 @@
       </label>
    </div>
 </div>
+
+   <div id = "divMemory">
+      <label>
+         Memory
+      </label>
+      <div id = "divMemTable" style = "height:150px; overflow:auto; background-color:aliceblue; width: 320px">
+         <table name = "memory"
+            id = "memory" 
+         ></table>
+      </div>
+   </div>
 
 <p class="footerText" style="clear:both;">
    <br>

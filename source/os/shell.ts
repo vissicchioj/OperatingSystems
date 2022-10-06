@@ -431,7 +431,8 @@ module TSOS {
             // RegularExpression.test returns a boolean value if the pattern exists in a searched string.
             if (regExpr.test(inputText) === true)
             {
-                _StdOut.putText("Valid user input.");
+                //_StdOut.putText("Valid user input.");
+                
             }
             else
             {

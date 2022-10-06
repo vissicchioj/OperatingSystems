@@ -72,13 +72,13 @@ module TSOS {
                             chr = String.fromCharCode(94);
                             break;
                         case 55:
-                            chr = String.fromCharCode(38);
+                            chr = '&';
                             break;
                         case 56:
                             chr = String.fromCharCode(42);
                             break;
                         case 57:
-                            chr = String.fromCharCode(40);
+                            chr = '(';
                             break;
                         default: 
                     }
