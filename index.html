@@ -35,12 +35,15 @@
 
    <!-- Tables will have alternating colors to differentiate rows -->
    <style>
-      tr:nth-child(even) {
+      tr:nth-child(odd) {
          background-color:lightgray;
       }
       td{
          width: 50px;
          border-left: 1px solid;
+      }
+      tr{
+         text-align: center;
       }
    </style>
 
@@ -122,6 +125,17 @@
       <div id = "divMemTable" style = "height:150px; overflow:auto; background-color:aliceblue; width: 320px">
          <table name = "memory"
             id = "memory" 
+         ></table>
+      </div>
+   </div>
+
+   <div id = "divCpu">
+      <label>
+         CPU
+      </label>
+      <div id = "divCpuTable" style = "height:auto; overflow:auto; background-color:aliceblue; width: 320px">
+         <table name = "cpu"
+            id = "cpu" 
          ></table>
       </div>
    </div>

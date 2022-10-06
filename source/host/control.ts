@@ -59,6 +59,49 @@ module TSOS {
 
             }
 
+            // Cpu table initiallize 
+            _CpuTable = <HTMLTableElement>document.getElementById('cpu');
+            for (var k = 0; k < 2; k++)
+            {
+                var addRow =  _CpuTable.insertRow(k);
+                for (var l = 0; l < 6; l++)
+                {
+                    var addCell = addRow.insertCell(l)
+                    if (k == 0)
+                    {
+                        if (l == 0)
+                        {
+                            addCell.innerHTML = "PC";
+                        }
+                        else if (l == 1)
+                        {
+                            addCell.innerHTML = "IR";
+                        }
+                        else if (l == 2)
+                        {
+                            addCell.innerHTML = "ACC";
+                        }
+                        else if (l == 3)
+                        {
+                            addCell.innerHTML = "X-Reg";
+                        }
+                        else if (l == 4)
+                        {
+                            addCell.innerHTML = "Y-Reg";
+                        }
+                        else if (l == 5)
+                        {
+                            addCell.innerHTML = "Z-Flag";
+                        }
+                    }
+                    else 
+                    {
+                        addCell.innerHTML = "-";
+                    }
+                }
+            }
+
+
             // Get a global reference to the drawing context.
             _DrawingContext = _Canvas.getContext("2d");
 
