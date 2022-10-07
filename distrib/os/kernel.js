@@ -21,6 +21,8 @@ var TSOS;
             // Initialize the console.
             _Console = new TSOS.Console(); // The command line interface / console I/O device.
             _Console.init();
+            // Inititalize the Memory Manager
+            _MM = new TSOS.MemoryManager();
             // Initialize standard input and output to the _Console.
             _StdIn = _Console;
             _StdOut = _Console;
