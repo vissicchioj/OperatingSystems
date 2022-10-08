@@ -18,33 +18,112 @@ module TSOS {
 
     export class Cpu {
     
-            constructor(public PC: number = 0,
-                        public IR: number = 0,
-                        public Acc: number = 0,
-                        public Xreg: number = 0,
-                        public Yreg: number = 0,
-                        public Zflag: number = 0,
+            constructor(public PC: number = 0x00,
+                        public IR: number = 0x00,
+                        public Acc: number = 0x00,
+                        public Xreg: number = 0x00,
+                        public Yreg: number = 0x00,
+                        public Zflag: number = 0x00,
                         public isExecuting: boolean = false) {
     
             }
     
             public init(): void {
-                this.PC = 0;
-                this.IR = 0;
-                this.Acc = 0;
-                this.Xreg = 0;
-                this.Yreg = 0;
-                this.Zflag = 0;
+                this.PC = 0x00;
+                this.IR = 0x00;
+                this.Acc = 0x00;
+                this.Xreg = 0x00;
+                this.Yreg = 0x00;
+                this.Zflag = 0x00;
                 this.isExecuting = false;
             }
-
     
+            // Cycles when isExecuting = true
             public cycle(): void {
                 _Kernel.krnTrace('CPU cycle');
                 // TODO: Accumulate CPU usage and profiling statistics here.
                 // Do the real work here. Be sure to set this.isExecuting appropriately.
                 
+                this.IR = _MA.read(this.PC);
+
+                this.opCodes(this.IR);
+
+                TSOS.Control._SetCpuTable();
         }
+
+        public opCodes(currInstruction: number)
+        {
+            switch(currInstruction)
+            {
+                case 0xA9:
+                    this.LDAConstant();
+                    break;
+                case 0xAD:
+                    
+                    break;
+                case 0x8D:
+                    
+                    break;
+                case 0x6D:
+                    
+                    break;
+                case 0xA2:
+                    
+                    break;
+                case 0xAE:
+                    
+                    break;
+                case 0xA0:
+                    
+                    break;
+                case 0xAC:
+                    
+                    break;
+                case 0xEA:
+                    
+                    break;
+                case 0x00:
+                    this.BRK();
+                    break;
+                case 0xEC:
+                    
+                    break;
+                case 0xD0:
+                    
+                    break;
+                case 0xEE:
+                    
+                    break;
+                case 0xFF:
+                    
+                    break;
+                default:
+                    _StdOut.putText("Error: Invalid Op Code.");
+
+            }
+        }
+
+        // Fetch, Decode, and Execute do not have to be separated which will remove some complexity that I struggled with in Org & Arch
+        // Just need to remember to increment PC at the start of each Op Code (minus BRK) and everytime we access memory
+        // Also this time the MA handles reading and writing, NOT the MM like in Org & Arch
+        public LDAConstant()
+        {
+            this.PC++;
+            // Set Acc to the current location in memory 
+            this.Acc = _MA.read(this.PC);
+            this.PC++;
+        }
+        private BRK() {
+            this.isExecuting = false;
+            _PCB.state = "Finished";
+
+            // Update the PCB table with values
+            TSOS.Control._SetPcbTable();
+            
+            this.init();
+        }
+
+
 
     //     public step(step: number)
     //     {

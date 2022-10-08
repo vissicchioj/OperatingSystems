@@ -4,9 +4,9 @@ module TSOS
     {
         constructor
             (
-            public pid: number = 0,
+            public pid: number = -1,
             public state: String = '',
-            public location: String = '',
+            public location: String = '-',
             public priority: number = 0,
             public pc: number = 0,
             public acc: number = 0,
@@ -19,9 +19,9 @@ module TSOS
         }
 
         public init(): void {
-            this.pid = 0;
+            this.pid = -1;
             this.state = '';
-            this.location = '';
+            this.location = 'Memory';
             this.priority = 0;
             this.pc = 0;
             this.acc = 0;
@@ -29,5 +29,36 @@ module TSOS
             this.yreg = 0;
             this.zflag = 0;
         }
+
+        // Loading a program into memory
+        public load(userProgram: Array<string>)
+        {
+            // Loading again overwrites memory, so reset it first
+            _MM.deallocateMem(); 
+
+            // Memory Manager allocates the User Program into memory
+            _MM.allocateMem(userProgram);
+
+            // change state
+            this.state = "Resident";
+
+            // Update the PCB table with values
+            TSOS.Control._SetPcbTable();
+        }
+
+        // Running a program in memory
+        public run()
+        {
+            // change state
+            this.state = "Running";
+
+            // Update the PCB table with values
+            TSOS.Control._SetPcbTable();
+
+            // Tell the CPU to begin executing
+            _CPU.isExecuting = true;
+        }
+
+
     }
 }

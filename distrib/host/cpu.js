@@ -15,7 +15,7 @@ var TSOS;
     //temporary program counter to remember our current place 
     var tempPC = 0x000;
     class Cpu {
-        constructor(PC = 0, IR = 0, Acc = 0, Xreg = 0, Yreg = 0, Zflag = 0, isExecuting = false) {
+        constructor(PC = 0x00, IR = 0x00, Acc = 0x00, Xreg = 0x00, Yreg = 0x00, Zflag = 0x00, isExecuting = false) {
             this.PC = PC;
             this.IR = IR;
             this.Acc = Acc;
@@ -25,18 +25,74 @@ var TSOS;
             this.isExecuting = isExecuting;
         }
         init() {
-            this.PC = 0;
-            this.IR = 0;
-            this.Acc = 0;
-            this.Xreg = 0;
-            this.Yreg = 0;
-            this.Zflag = 0;
+            this.PC = 0x00;
+            this.IR = 0x00;
+            this.Acc = 0x00;
+            this.Xreg = 0x00;
+            this.Yreg = 0x00;
+            this.Zflag = 0x00;
             this.isExecuting = false;
         }
+        // Cycles when isExecuting = true
         cycle() {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
+            this.IR = _MA.read(this.PC);
+            this.opCodes(this.IR);
+            TSOS.Control._SetCpuTable();
+        }
+        opCodes(currInstruction) {
+            switch (currInstruction) {
+                case 0xA9:
+                    this.LDAConstant();
+                    break;
+                case 0xAD:
+                    break;
+                case 0x8D:
+                    break;
+                case 0x6D:
+                    break;
+                case 0xA2:
+                    break;
+                case 0xAE:
+                    break;
+                case 0xA0:
+                    break;
+                case 0xAC:
+                    break;
+                case 0xEA:
+                    break;
+                case 0x00:
+                    this.BRK();
+                    break;
+                case 0xEC:
+                    break;
+                case 0xD0:
+                    break;
+                case 0xEE:
+                    break;
+                case 0xFF:
+                    break;
+                default:
+                    _StdOut.putText("Error: Invalid Op Code.");
+            }
+        }
+        // Fetch, Decode, and Execute do not have to be separated which will remove some complexity that I struggled with in Org & Arch
+        // Just need to remember to increment PC at the start of each Op Code (minus BRK) and everytime we access memory
+        // Also this time the MA handles reading and writing, NOT the MM like in Org & Arch
+        LDAConstant() {
+            this.PC++;
+            // Set Acc to the current location in memory 
+            this.Acc = _MA.read(this.PC);
+            this.PC++;
+        }
+        BRK() {
+            this.isExecuting = false;
+            _PCB.state = "Finished";
+            // Update the PCB table with values
+            TSOS.Control._SetPcbTable();
+            this.init();
         }
     }
     TSOS.Cpu = Cpu;

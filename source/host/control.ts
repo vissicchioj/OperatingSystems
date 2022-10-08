@@ -22,17 +22,18 @@ module TSOS {
 
     export class Control {
 
-        public static hostInit(): void {
-            // This is called from index.html's onLoad event via the onDocumentLoad function pointer.
+        public static _SetMemTable()
+        {
+            // Set our memory to an array of strings
+            var memArr = _Memory.toString().split(' ');
+            // Increments through memory
+            var memIndex = 0;
 
-            // Get a global reference to the canvas.  TODO: Should we move this stuff into a Display Device Driver?
-            _Canvas = <HTMLCanvasElement>document.getElementById('display');
+            // Empty table
+            _MemTable.innerHTML = "";
 
-            //Memory table initiallize 
-            _MemTable = <HTMLTableElement>document.getElementById('memory');
-            // Total memory is 256
             // Outer for loop adds an additional row
-            for (var i = 0x0000; i < (256/8); i++)
+            for (var i = 0x000; i < (256/8); i++)
             {
                 var addRow = _MemTable.insertRow(i);
                 // Inner for loop adds an additional cell within the current row
@@ -44,6 +45,209 @@ module TSOS {
                         // Get the hexidecimal string on each interval of 8
                         var strHex: string = (i * 8).toString(16).toUpperCase();
                         while (strHex.length < 4)
+                        {
+                            // Add padding zeroes to look more neat 
+                            strHex = "0" + strHex;
+                        }
+                        addCell.innerHTML = "0x" + strHex;
+                    }
+                    else
+                    {
+                        // Set the current cell to the current location in memory
+                        addCell.innerHTML = memArr[memIndex];
+                        // Get the next location in memory to be set in the next loop
+                        memIndex++;
+                    }
+                }
+
+            }
+        }
+
+        public static _SetCpuTable()
+        {
+            // Empty table
+            _CpuTable.innerHTML = '';
+
+            for (var i = 0; i < 2; i++)
+            {
+                var addRow =  _CpuTable.insertRow(i);
+                for (var j = 0; j < 6; j++)
+                {
+                    var addCell = addRow.insertCell(j)
+                    if (i == 0)
+                    {
+                        if (j == 0)
+                        {
+                            addCell.innerHTML = "PC";
+                        }
+                        else if (j == 1)
+                        {
+                            addCell.innerHTML = "IR";
+                        }
+                        else if (j == 2)
+                        {
+                            addCell.innerHTML = "ACC";
+                        }
+                        else if (j == 3)
+                        {
+                            addCell.innerHTML = "X-Reg";
+                        }
+                        else if (j == 4)
+                        {
+                            addCell.innerHTML = "Y-Reg";
+                        }
+                        else if (j == 5)
+                        {
+                            addCell.innerHTML = "Z-Flag";
+                        }
+                    }
+                    else 
+                    {
+                        // Update each value in the display
+                        if (j == 0)
+                        {
+                            addCell.innerHTML = _CPU.PC.toString(16).toUpperCase();
+                        }
+                        else if (j == 1)
+                        {
+                            addCell.innerHTML = _CPU.IR.toString(16).toUpperCase();
+                        }
+                        else if (j == 2)
+                        {
+                            addCell.innerHTML = _CPU.Acc.toString(16).toUpperCase();
+                        }
+                        else if (j == 3)
+                        {
+                            addCell.innerHTML = _CPU.Xreg.toString(16).toUpperCase();
+                        }
+                        else if (j == 4)
+                        {
+                            addCell.innerHTML = _CPU.Yreg.toString(16).toUpperCase();
+                        }
+                        else if (j == 5)
+                        {
+                            addCell.innerHTML = _CPU.Zflag.toString(16).toUpperCase();
+                        }
+                    }
+                }
+            }
+        }
+
+        public static _SetPcbTable()
+        {
+            _PcbTable.innerHTML = '';
+
+            for (var i = 0; i < 2; i++)
+            {
+                var addRow =  _PcbTable.insertRow(i);
+                for (var j = 0; j < 8; j++)
+                {
+                    var addCell = addRow.insertCell(j)
+                    if (i === 0)
+                    {
+                        if (j == 0)
+                        {
+                            addCell.innerHTML = "PID";
+                        }
+                        else if (j == 1)
+                        {
+                            addCell.innerHTML = "State";
+                        }
+                        else if (j == 2)
+                        {
+                            addCell.innerHTML = "Location";
+                        }
+                        else if (j == 3)
+                        {
+                            addCell.innerHTML = "Priority";
+                        }
+                        else if (j == 4)
+                        {
+                            addCell.innerHTML = "PC";
+                        }
+                        else if (j == 5)
+                        {
+                            addCell.innerHTML = "ACC";
+                        }
+                        else if (j == 6)
+                        {
+                            addCell.innerHTML = "X-Reg";
+                        }
+                        else if (j == 7)
+                        {
+                            addCell.innerHTML = "Y-Reg";
+                        }
+                        else if (j == 8)
+                        {
+                            addCell.innerHTML = "Z-Flag";
+                        }
+                    }
+                    else 
+                    {
+                        // Update each value in the display
+                        if (j == 0)
+                        {
+                            addCell.innerHTML = _PCB.pid.toString();
+                        }
+                        else if (j == 1)
+                        {
+                            addCell.innerHTML = _PCB.state.toString();
+                        }
+                        else if (j == 2)
+                        {
+                            addCell.innerHTML = _PCB.location.toString();
+                        }
+                        else if (j == 3)
+                        {
+                            addCell.innerHTML = _PCB.priority.toString();
+                        }
+                        else if (j == 4)
+                        {
+                            addCell.innerHTML = _PCB.pc.toString();
+                        }
+                        else if (j == 5)
+                        {
+                            addCell.innerHTML = _PCB.acc.toString();
+                        }
+                        else if (j == 6)
+                        {
+                            addCell.innerHTML = _PCB.xreg.toString();
+                        }
+                        else if (j == 7)
+                        {
+                            addCell.innerHTML = _PCB.yreg.toString();
+                        }
+                        else if (j == 8)
+                        {
+                            addCell.innerHTML = _PCB.zflag.toString();
+                        }
+                    }
+                }
+            }
+        }
+
+        public static hostInit(): void {
+            // This is called from index.html's onLoad event via the onDocumentLoad function pointer.
+
+            // Get a global reference to the canvas.  TODO: Should we move this stuff into a Display Device Driver?
+            _Canvas = <HTMLCanvasElement>document.getElementById('display');
+
+            //Memory table initiallize 
+            _MemTable = <HTMLTableElement>document.getElementById('memory');
+            // Total memory is 256
+            // Outer for loop adds an additional row
+            for (var i = 0x000; i < (256/8); i++)
+            {
+                var addRow = _MemTable.insertRow(i);
+                // Inner for loop adds an additional cell within the current row
+                for (var j = 0; j <= 8; j++)
+                {
+                    var addCell = addRow.insertCell(j);
+                    if (j == 0)
+                    {
+                        // Get the hexidecimal string on each interval of 8
+                        var strHex: string = (i * 8).toString(16).toUpperCase();
+                        while (strHex.length < 3)
                         {
                             // Add padding zeroes to look more neat 
                             strHex = "0" + strHex;
@@ -243,7 +447,10 @@ module TSOS {
             _Memory.init();
 
             // Create Memory Accessor. Part of hardware
-            _MM = new MemoryAccessor();
+            _MA = new MemoryAccessor();
+
+            _PCB = new ProcessControlBlock();
+            _PCB.init();
 
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
@@ -276,4 +483,6 @@ module TSOS {
             // page from its cache, which is not what we want.
         }
     }
+
+    
 }

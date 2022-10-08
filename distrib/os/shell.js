@@ -63,6 +63,9 @@ var TSOS;
             // load
             sc = new TSOS.ShellCommand(this.shellLoad, "load", " - Validates user code.");
             this.commandList[this.commandList.length] = sc;
+            // run
+            sc = new TSOS.ShellCommand(this.shellRun, "run", " - Runs a program in memory.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -361,10 +364,46 @@ var TSOS;
             // then test the text using our regular expression. Returns true if it is valid hex digits
             // RegularExpression.test returns a boolean value if the pattern exists in a searched string.
             if (regExpr.test(inputText) === true) {
-                //_StdOut.putText("Valid user input.");
+                //_StdOut.putText("Valid.");
+                var hexNums = [];
+                // Creates an array of strings of Length = 2 based on the entire string in User Program Input
+                for (var i = 0; i < inputText.length; i += 2) {
+                    hexNums.push(inputText.substring(i, i + 2));
+                }
+                // As of IP2 the PID will always be 0. Loading again will overwrite PID 0
+                if (_CurrPidNum === -1) {
+                    // Creates a PCB that loads the array of hex codes. 
+                    //The pcb will call the MM to allocate memory and set the state to resident
+                    _PCB.pid = 0;
+                    _PCB.load(hexNums);
+                    _CurrPidNum = _PCB.pid;
+                    _StdOut.putText('Process ID: ' + _CurrPidNum);
+                }
+                else {
+                    _PCB.load(hexNums);
+                    _CurrPidNum = _PCB.pid;
+                    _StdOut.putText('Process ID: ' + _CurrPidNum + ' has been overwritten.');
+                }
+                // Set the memory table with the new values.
+                TSOS.Control._SetMemTable();
             }
             else {
-                _StdOut.putText("Only hex digits and spaces are valid.");
+                _StdOut.putText("Error: Only hex digits and spaces are valid.");
+            }
+        }
+        shellRun(args) {
+            // Check if a pid was provided
+            if (args.length > 0) {
+                if (_PCB.pid === 0) {
+                    // Pid exists, so run it
+                    _PCB.run();
+                }
+                else {
+                    _StdOut.putText("Error: PID does not exist. Try loading a user program first.");
+                }
+            }
+            else {
+                _StdOut.putText("Error: You must provide a PID.");
             }
         }
     }
