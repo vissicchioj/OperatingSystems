@@ -59,10 +59,10 @@ module TSOS {
                     this.LDAConstant();
                     break;
                 case 0xAD:
-                    
+                    this.LDAMemory();
                     break;
                 case 0x8D:
-                    
+                    this.STAMemory();
                     break;
                 case 0x6D:
                     
@@ -113,7 +113,37 @@ module TSOS {
             this.Acc = _MA.read(this.PC);
             this.PC++;
         }
-        private BRK() {
+
+        public LDAMemory()
+        {
+            this.PC++;
+            // Set the lob
+            _MM.lob = _MA.read(this.PC);
+            this.PC++;
+            // Set the hob
+            _MM.hob = _MA.read(this.PC);
+            //combine the bytes for little endian conversion
+            this.Acc = _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+            this.PC++;
+        }
+
+        public STAMemory()
+        {
+            this.PC++;
+            // Set the lob
+            _MM.lob = _MA.read(this.PC);
+            this.PC++;
+            // Set the hob
+            _MM.hob = _MA.read(this.PC);
+            //combine the bytes for little endian conversion
+            _MA.write(_MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
+            this.PC++;
+
+            TSOS.Control._SetMemTable();
+        }
+
+        public BRK() 
+        {
             this.isExecuting = false;
             _PCB.state = "Finished";
 

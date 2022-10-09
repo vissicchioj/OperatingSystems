@@ -36,5 +36,20 @@ module TSOS
             _Memory.reset();
         }
 
+        public lob: number = 0x00;
+        public hob: number = 0x00;
+        public combinedByte: number = 0x000;
+        public byteFlipArray = [];
+
+        //used to combine two bytes together in order to create a two byte number
+        //this is used to implement little endian or to add to the ProgramCounter as seen in branch
+        combineBytes(loByte: number, hoByte: number): number
+        {
+            this.byteFlipArray[0] = hoByte;
+            this.byteFlipArray[1] = loByte;
+            this.combinedByte = ((this.byteFlipArray[0] << 8) | (this.byteFlipArray[1]));
+            return this.combinedByte;
+        }
+
     }
 }

@@ -3,6 +3,10 @@ var TSOS;
     // Allocates and deallocates memory
     class MemoryManager {
         constructor() {
+            this.lob = 0x00;
+            this.hob = 0x00;
+            this.combinedByte = 0x000;
+            this.byteFlipArray = [];
             this.memorySize = 256;
         }
         // Allocate User Input Program to memory
@@ -23,6 +27,14 @@ var TSOS;
         // Resets memory
         deallocateMem() {
             _Memory.reset();
+        }
+        //used to combine two bytes together in order to create a two byte number
+        //this is used to implement little endian or to add to the ProgramCounter as seen in branch
+        combineBytes(loByte, hoByte) {
+            this.byteFlipArray[0] = hoByte;
+            this.byteFlipArray[1] = loByte;
+            this.combinedByte = ((this.byteFlipArray[0] << 8) | (this.byteFlipArray[1]));
+            return this.combinedByte;
         }
     }
     TSOS.MemoryManager = MemoryManager;
