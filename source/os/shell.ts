@@ -108,7 +108,7 @@ module TSOS {
             // load
             sc = new ShellCommand(this.shellLoad,
                 "load",
-                " - Validates user code.");
+                " - Loads the User Program Input.");
             this.commandList[this.commandList.length] = sc;
 
             // run

@@ -61,7 +61,7 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", " - Blue screen of death test.");
             this.commandList[this.commandList.length] = sc;
             // load
-            sc = new TSOS.ShellCommand(this.shellLoad, "load", " - Validates user code.");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", " - Loads the User Program Input.");
             this.commandList[this.commandList.length] = sc;
             // run
             sc = new TSOS.ShellCommand(this.shellRun, "run", " - Runs a program in memory.");

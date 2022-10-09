@@ -37,6 +37,18 @@ module TSOS {
                 this.Zflag = 0x00;
                 this.isExecuting = false;
             }
+
+            public setPcb()
+            {
+                // Keep up PCB values with the PC
+                _PCB.pc = this.PC;
+                _PCB.acc = this.Acc;
+                _PCB.xreg = this.Xreg;
+                _PCB.yreg = this.Yreg;
+                _PCB.zflag = this.Zflag;
+            }
+
+            public tempPC: number;
     
             // Cycles when isExecuting = true
             public cycle(): void {
@@ -48,7 +60,11 @@ module TSOS {
 
                 this.opCodes(this.IR);
 
+                this.setPcb();
+    
                 TSOS.Control._SetCpuTable();
+                TSOS.Control._SetMemTable();
+                TSOS.Control._SetPcbTable();
         }
 
         public opCodes(currInstruction: number)
@@ -65,37 +81,37 @@ module TSOS {
                     this.STAMemory();
                     break;
                 case 0x6D:
-                    
+                    this.ADC();
                     break;
                 case 0xA2:
-                    
+                    this.LDXConstant();
                     break;
                 case 0xAE:
-                    
+                    this.LDXMemory();
                     break;
                 case 0xA0:
-                    
+                    this.LDYConstant();
                     break;
                 case 0xAC:
-                    
+                    this.LDYMemory();
                     break;
                 case 0xEA:
-                    
+                    this.NOP();
                     break;
                 case 0x00:
                     this.BRK();
                     break;
                 case 0xEC:
-                    
+                    this.CPX();
                     break;
                 case 0xD0:
-                    
+                    this.BNE();
                     break;
                 case 0xEE:
-                    
+                    this.INC();
                     break;
                 case 0xFF:
-                    
+                    this.SYS();
                     break;
                 default:
                     _StdOut.putText("Error: Invalid Op Code.");
@@ -111,6 +127,9 @@ module TSOS {
             this.PC++;
             // Set Acc to the current location in memory 
             this.Acc = _MA.read(this.PC);
+
+            this.setPcb();
+
             this.PC++;
         }
 
@@ -119,11 +138,17 @@ module TSOS {
             this.PC++;
             // Set the lob
             _MM.lob = _MA.read(this.PC);
+
+            this.setPcb();
+
             this.PC++;
             // Set the hob
             _MM.hob = _MA.read(this.PC);
-            //combine the bytes for little endian conversion
+            //Set accumulator to loaction in memory using little endian conversion
             this.Acc = _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+
+            this.setPcb();
+
             this.PC++;
         }
 
@@ -132,307 +157,242 @@ module TSOS {
             this.PC++;
             // Set the lob
             _MM.lob = _MA.read(this.PC);
+
+            this.setPcb();
+
             this.PC++;
             // Set the hob
             _MM.hob = _MA.read(this.PC);
             //combine the bytes for little endian conversion
             _MA.write(_MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
+
+            this.setPcb();
+
             this.PC++;
 
-            TSOS.Control._SetMemTable();
+        }
+
+        public ADC()
+        {
+            this.PC++;
+            // Set the lob
+            _MM.lob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            this.PC++;
+            // Set the hob
+            _MM.hob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            //Set accumulator to loaction in memory using little endian conversion
+            this.Acc = this.Acc + _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+            this.PC++;
+        }
+
+        public LDXConstant()
+        {
+            this.PC++;
+            this.Xreg = _MA.read(this.PC);
+
+            this.setPcb();
+
+            this.PC++;
+        }
+
+        public LDXMemory()
+        {
+            this.PC++;
+            // Set the lob
+            _MM.lob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            this.PC++;
+            // Set the hob
+            _MM.hob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            //Set Xreg to loaction in memory using little endian conversion
+            this.Xreg = _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+            this.PC++;
+        }
+
+        public LDYConstant()
+        {
+            this.PC++;
+            this.Yreg = _MA.read(this.PC);
+
+            this.setPcb();
+
+            this.PC++;
+        }
+
+        public LDYMemory()
+        {
+            this.PC++;
+            // Set the lob
+            _MM.lob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            this.PC++;
+            // Set the hob
+            _MM.hob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            //Set Yreg to loaction in memory using little endian conversion
+            this.Yreg = _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+            this.PC++;
+        }
+
+        public NOP()
+        {
+            this.PC++;
+        }
+
+        public CPX()
+        {
+            this.PC++;
+            // Set the lob
+            _MM.lob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            this.PC++;
+            // Set the hob
+            _MM.hob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            //sets zFlag to 0 if the combination of the lob and hob does not equal the xReg
+            if (_MA.read(_MM.combineBytes(_MM.lob, _MM.hob)) !== this.Xreg)
+            {
+                this.Zflag = 0x00;
+            }
+            //sets zFlag to 1 if the combination of the lob and hob does equal the xReg
+            else
+            {
+                this.Zflag = 0x01;
+            }
+            this.PC++;
+        }
+
+        public BNE()
+        {
+            this.PC++;
+
+            this.setPcb();
+
+            //if zFlag is not set
+            if (this.Zflag == 0x00)
+            {
+                // //if the number represents a positive number
+                // if (_MA.read(this.PC) < 0x80)
+                // {
+                //     this.PC = this.PC + _MM.combineBytes(_MA.read(this.PC),0x00);
+                //     this.setPcb();
+                // }
+                // //if the number represents a negative number
+                // else
+                // {
+                    this.PC = this.PC + _MM.combineBytes(_MA.read(this.PC),0x00);
+                    this.setPcb();
+                    //then remove the 1 in the front so that we are moving backwards
+                    //and not moving extremely far forwards
+                    if (this.PC > 0xFF)
+                    {
+                        this.PC = this.PC - 0x100
+                        this.setPcb();
+                    }
+                    
+                //}
+                this.PC++;
+            }
+            //branch fails because the zFlag is 1
+            else
+            {
+                this.PC++;
+            }
+        }
+
+        public INC()
+        {
+            this.PC++;
+            // Set the lob
+            _MM.lob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            this.PC++;
+            // Set the hob
+            _MM.hob = _MA.read(this.PC);
+
+            this.setPcb();
+
+            //Set accumulator to loaction in memory using little endian conversion
+            this.Acc = _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+
+            this.setPcb();
+
+            this.Acc++;
+            // Set address in memory using little endian conversion to the accumulator
+            _MA.write(_MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
+            this.PC++;
+        }
+
+        public SYS()
+        {
+            //this.PC++;
+            //System Call 1
+            if (this.Xreg == 0x01)
+            {
+                //print out the value in the yReg
+                _StdOut.putText(this.Yreg + " ");
+            }
+
+            //System Call 2
+            if (this.Xreg == 0x02)
+            {
+                var asciiStr: string = '';
+                // tempPC will remember where the PC was before the Sys call
+                tempPC = this.PC;
+
+                this.PC = this.Yreg;
+
+                this.setPcb();
+
+                while (_MA.read(this.PC) !== 0x00)
+                {
+                    // Get all of the ascii characters in the current location in memory until it reaches 0x00
+                    asciiStr = asciiStr +  String.fromCharCode(_MA.read(this.PC));;
+                    this.PC++;
+
+                    this.setPcb();
+
+                }
+                // Print out the string
+                _StdOut.putText(asciiStr);
+
+                // Go back to where we were before the Sys call
+                this.PC = tempPC;
+            }
+
+            this.PC++;
         }
 
         public BRK() 
         {
+            // PROGRAM COMPLETE
             this.isExecuting = false;
             _PCB.state = "Finished";
-
-            // Update the PCB table with values
-            TSOS.Control._SetPcbTable();
             
             this.init();
+
+            _StdOut.advanceLine();
         }
-
-
-
-    //     public step(step: number)
-    //     {
-    //     //step represents what instruction cycle step we are currently on for this clock cycle
-    //     switch(step)
-    //     {
-    //         case 0:
-    //         this.fetch(this.PC);
-    //         break;
-
-    //         case 1:
-    //         this.decode(this.PC);
-    //         break;
-
-    //         case 2:
-    //         this.decode2(this.PC);
-    //         break;
-
-    //         case 3:
-    //         this.execute();
-    //         break;
-
-    //         case 4:
-    //         this.execute2();
-    //         break;
-
-    //         case 5:
-    //         this.writeBack();
-    //         break;
-    //     }
-    //     }
-
-    //     fetch (hexNum: number)
-    //     {
-    //     this.isExecuting = true;
-    //     //set the IR to the current MDR
-    //     this.IR = this.mmu.readImmediate(hexNum);
-
-    //     //increment program counter because we went to memory
-    //     this.PC++;
-
-    //     //console.log("fetch");
-    //     //always go to decode next
-    //     stepNum = 1;
-    //     }
-
-    // decode (hexNum: number)
-    // {
-    //     //load accumulator with a constant
-    //     if (this.IR  == 0xA9)
-    //     {
-    //         //set accumulator to the MDR
-    //         this.Acc = this.mmu.readImmediate(hexNum);
-    //         this.PC++;
-    //         stepNum = 0;
-    //     }
-
-    //     //These instructions all use decode2 because it makes use of lob and hob
-    //     // loading accumulator from memory || store accumulator in memory ||
-    //     // store the x register from memory || store the y register from memory || add contents from memory to accumulator ||
-    //     // Compare a byte in memory to the x reg, sets z flag if equal || increment a byte from memory
-    //     if (this.IR == 0xAD || this.IR == 0x8D || this.IR == 0xAE || this.IR == 0xAC || this.IR == 0x6D || this.IR == 0xEC || this.IR == 0xEE)
-    //     {
-    //         //we need to set the lob the MDR
-    //         this.mmu.lob = this.mmu.readImmediate(hexNum);
-    //         this.PC++;
-    //         //we will need decode2 to make use of the hob
-    //         stepNum = 2;
-    //     }
-
-    //     //load x register with a constant
-    //     if (this.IR == 0xA2)
-    //     {
-    //         //set x register to the MDR
-    //         this.Xreg = this.mmu.readImmediate(hexNum);
-    //         this.PC++;
-    //         stepNum = 0;
-    //     }
-
-    //     //no operation
-    //     if (this.IR == 0xEA)
-    //     {
-    //         //does nothing and brings us back to fetch
-    //         stepNum = 0;
-    //     }
-
-    //     //break
-    //     if (this.IR == 0x00)
-    //     {
-    //         //kills the program
-    //         //process.kill(process.pid, 'SIGINT');
-    //         //stepNum = 0;
-    //         this.isExecuting = false;
-    //     }
-
-    //     //branch
-    //     if (this.IR == 0xD0)
-    //     {
-    //         //if zFlag is not set
-    //         if (this.Zflag == 0x00)
-    //         {
-    //             //if the number represents a positive number
-    //             if (this.mmu.readImmediate(hexNum) < 0x80)
-    //             {
-    //                 //add the MDR to the programCounter
-    //                 this.PC = this.PC + this.mmu.combineBytes(this.mmu.readImmediate(hexNum), 0x00);
-    //             }
-    //             //if the number represents a negative number
-    //             else
-    //             {
-    //                 //we need to make sure that there are two Fs in front since we are adding a one byte number
-    //                 //to a two byte number and the MDR is a negative representation
-    //                 this.PC = this.PC + this.mmu.combineBytes(this.mmu.readImmediate(hexNum), 0xFF);
-    //                 //then find a way to remove the 1 in the front so that we are moving backwards
-    //                 //and not moving extremely far forwards
-    //                 if (this.PC > 0xFF)
-    //                 {
-    //                     this.PC = this.PC - 0x100
-    //                 }
-                    
-    //             }
-    //             this.PC++;
-    //             stepNum = 0;
-    //         }
-    //         //branch fails because the zFlag is 1
-    //         else
-    //         {
-    //             this.PC++;
-    //             stepNum = 0;
-    //         }
-    //     }
-
-    //     //System Calls
-    //     if (this.IR == 0xFF)
-    //     {
-    //         //System Call 1
-    //         if (this.Xreg == 0x01)
-    //         {
-    //             //print out the value in the yReg
-    //             _StdOut.putText(this.Yreg + " ");
-    //             stepNum = 0;
-    //         }
-    //         //System Call 2
-    //         if (this.Xreg == 0x02)
-    //         {
-
-    //         }
-    //         //System Call 3
-    //         if (this.Xreg == 0x03)
-    //         {
-    //             //we need to set the lob to the MDR and use decode2
-    //             this.mmu.lob = this.mmu.readImmediate(hexNum);
-    //             this.PC++;
-    //             stepNum = 2;
-    //         }
-    //         //stepNum = 6
-    //     }
-
-
-    //     //console.log("decode");
-    //     /*
-    //     //if we need decode2
-    //     stepNum = 2;
-    //     //or go to execute
-    //     stepNum = 3;
-    //     */
-    // }
-
-    // decode2 (hexNum: number)
-    // {
-    //     if (this.IR == 0xAD || this.IR == 0x8D || this.IR == 0xAE || this.IR == 0xAC || 
-    //         this.IR == 0x6D || this.IR == 0xEC || this.IR == 0xEE || this.IR == 0xFF)
-    //     {
-    //         //we need to set the hob to the MDR
-    //         this.mmu.hob = this.mmu.readImmediate(hexNum);
-    //         this.PC++;
-    //         stepNum = 3;
-    //     }
-    //     //console.log("decode2");
-    // }
-
-    // execute ()
-    // {
-    //     if (this.IR == 0xAD)
-    //     {
-    //         //set the accumulator to the combination of the data in the MAR lob and hob
-    //         this.Acc = this.mmu.readImmediate(this.mmu.combineBytes(this.mmu.lob, this.mmu.hob));
-    //         stepNum = 0;
-    //     }
-    //     if (this.IR == 0x8D)
-    //     {
-    //         //overwrite data in the MAR to the data in the MAR accumulator
-    //         this.mmu.writeImmediate(this.mmu.combineBytes(this.mmu.lob, this.mmu.hob), this.Acc);
-    //         stepNum = 0;
-    //     }
-    //     if (this.IR == 0xAE)
-    //     {
-    //         //set the xReg to the combination of the data in the MAR lob and hob
-    //         this.Xreg = this.mmu.readImmediate(this.mmu.combineBytes(this.mmu.lob, this.mmu.hob));
-    //         stepNum = 0;
-    //     }
-    //     if (this.IR == 0xAC)
-    //     {
-    //         //set the yReg to the combination of the data in the MAR lob and hob
-    //         this.Yreg = this.mmu.readImmediate(this.mmu.combineBytes(this.mmu.lob, this.mmu.hob));
-    //         stepNum = 0;
-    //     }
-    //     if (this.IR == 0x6D)
-    //     {
-    //         //add the data in the MAR combination of the lob and hob to the accumulator
-    //         this.Acc = this.Acc + this.mmu.readImmediate(this.mmu.combineBytes(this.mmu.lob, this.mmu.hob));
-    //         stepNum = 0;
-    //     }
-    //     if (this.IR == 0xEC)
-    //     {
-    //         //sets zFlag to 0 if the combination of the lob and hob does not equal the xReg
-    //         if (this.mmu.readImmediate(this.mmu.combineBytes(this.mmu.lob, this.mmu.hob)) != this.Xreg)
-    //         {
-    //             this.Zflag = 0x00;
-    //         }
-    //         //sets zFlag to 1 if the combination of the lob and hob does equal the xReg
-    //         else
-    //         {
-    //             this.Zflag = 0x01;
-    //         }
-    //         stepNum = 0;
-    //     }
-    //     if (this.IR == 0xEE)
-    //     {
-    //         //set the accumulator to the data in the MAR combination of the lob and hob
-    //         this.Acc = this.mmu.readImmediate(this.mmu.combineBytes(this.mmu.lob, this.mmu.hob));
-    //         //we need execute2
-    //         stepNum = 4;
-    //     }
-    //     if (this.IR == 0xFF)
-    //     {
-    //         //set the tempPC to the current programCounter to remember where we were
-    //         tempPC = this.PC;
-    //         //set program counter to the combination of the lob and hob
-    //         this.PC = this.mmu.combineBytes(this.mmu.lob, this.mmu.hob);
-    //         //keep printing out ascii chars until we reach 0x00
-    //         while (this.mmu.readImmediate(this.PC) != 0x00)
-    //         {
-    //             //make use of our ascii class to print out the byte from our MDR in character form
-    //             _StdOut.putText(String.fromCharCode(this.mmu.readImmediate(this.PC)));
-    //             this.PC++;
-    //         }
-    //         //set the programCounter to the tempPC to go back to where we were
-    //         this.PC = tempPC;
-    //         stepNum = 0;
-    //     }
-
-    //     //console.log("execute");
-    //     /*
-    //     //if we need execute2
-    //     stepNum = 4
-    //     */
-    // }
-
-    // execute2 ()
-    // {
-    //     if (this.IR == 0xEE)
-    //     {
-    //         //increment the accumulator
-    //         this.Acc++;
-    //         stepNum = 5;
-    //     }
-    // }
-
-    // writeBack ()
-    // {
-    //     if (this.IR == 0xEE)
-    //     {
-    //         //overwrite the data in the MAR combination of the lob and hob with the accumulator
-    //         this.mmu.writeImmediate(this.mmu.combineBytes(this.mmu.lob, this.mmu.hob), this.Acc);
-    //         stepNum = 0;
-    //     }
-    // }
-
-
     }
 }
