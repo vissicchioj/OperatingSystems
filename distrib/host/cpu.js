@@ -34,7 +34,7 @@ var TSOS;
             this.isExecuting = false;
         }
         setPcb() {
-            // Keep up PCB values with the PC
+            // Keep up PCB values with the PC values
             _PCB.pc = this.PC;
             _PCB.acc = this.Acc;
             _PCB.xreg = this.Xreg;
@@ -52,6 +52,13 @@ var TSOS;
             TSOS.Control._SetCpuTable();
             TSOS.Control._SetMemTable();
             TSOS.Control._SetPcbTable();
+            // Will stop executing after each cycle, but when Step is pressed again it will execute the next cycle
+            TSOS.Control._Step = false;
+            if (TSOS.Control._SingleStep === true) {
+                if (TSOS.Control._Step === false) {
+                    this.isExecuting = false;
+                }
+            }
         }
         opCodes(currInstruction) {
             switch (currInstruction) {
@@ -215,15 +222,6 @@ var TSOS;
             this.setPcb();
             //if zFlag is not set
             if (this.Zflag == 0x00) {
-                // //if the number represents a positive number
-                // if (_MA.read(this.PC) < 0x80)
-                // {
-                //     this.PC = this.PC + _MM.combineBytes(_MA.read(this.PC),0x00);
-                //     this.setPcb();
-                // }
-                // //if the number represents a negative number
-                // else
-                // {
                 this.PC = this.PC + _MM.combineBytes(_MA.read(this.PC), 0x00);
                 this.setPcb();
                 //then remove the 1 in the front so that we are moving backwards
@@ -232,7 +230,6 @@ var TSOS;
                     this.PC = this.PC - 0x100;
                     this.setPcb();
                 }
-                //}
                 this.PC++;
             }
             //branch fails because the zFlag is 1

@@ -41,7 +41,12 @@ var TSOS;
             // Update the PCB table with values
             TSOS.Control._SetPcbTable();
             // Tell the CPU to begin executing
-            _CPU.isExecuting = true;
+            if (TSOS.Control._SingleStep === true) {
+                // Waiting on Step button clicks
+            }
+            else {
+                _CPU.isExecuting = true;
+            }
         }
     }
     TSOS.ProcessControlBlock = ProcessControlBlock;

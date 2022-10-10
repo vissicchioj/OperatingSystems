@@ -325,6 +325,7 @@ var TSOS;
             btn.disabled = true;
             // New Status
             document.getElementById('status').innerHTML = "ONLINE";
+            document.getElementById("stepMode").innerHTML = "Off";
             // .. enable the Halt and Reset buttons ...
             document.getElementById("btnHaltOS").disabled = false;
             document.getElementById("btnReset").disabled = false;
@@ -366,7 +367,33 @@ var TSOS;
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
+        static hostBtnSingleStep_click(btn) {
+            if (this._SingleStep === false) {
+                document.getElementById("stepMode").innerHTML = "On";
+                document.getElementById("btnStep").disabled = false;
+                this._SingleStep = true;
+            }
+            else {
+                document.getElementById("stepMode").innerHTML = "Off";
+                document.getElementById("btnStep").disabled = true;
+                this._SingleStep = false;
+            }
+        }
+        static hostBtnStep_click(btn) {
+            // Made sure you can't step while the program isn't running, otherwise step would work the same way as run 0
+            if (_PCB.state === "Running") {
+                if (this._SingleStep === true) {
+                    if (this._Step === false) {
+                        this._Step = true;
+                        _CPU.isExecuting = true;
+                        this._Step = false;
+                    }
+                }
+            }
+        }
     }
+    Control._SingleStep = false;
+    Control._Step = false;
     TSOS.Control = Control;
 })(TSOS || (TSOS = {}));
 //# sourceMappingURL=control.js.map
