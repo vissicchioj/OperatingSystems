@@ -75,6 +75,7 @@ module TSOS {
                         this.isExecuting = false
                     }
                 }
+
         }
 
         public opCodes(currInstruction: number)

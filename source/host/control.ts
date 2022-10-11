@@ -498,6 +498,10 @@ module TSOS {
                 document.getElementById("stepMode").innerHTML = "Off";
                 (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
                 this._SingleStep = false;
+                if (_PCB.state === "Running")
+                {
+                    _CPU.isExecuting = true;
+                }
             }
         }
         public static hostBtnStep_click(btn): void {
