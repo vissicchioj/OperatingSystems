@@ -321,7 +321,9 @@ module TSOS {
                         _StdOut.putText("BSOD tests Blue Screen of Death.");
                         break;
                     case "load":
-                        _StdOut.putText("Currently checks if user input is valid hex.")
+                        _StdOut.putText("Loads user input program into memory.")
+                    case "run":
+                        _StdOut.putText("Executes the program in memory.")
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
