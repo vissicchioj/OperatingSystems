@@ -33,7 +33,7 @@ module TSOS {
             _MemTable.innerHTML = "";
 
             // Outer for loop adds an additional row
-            for (var i = 0x000; i < (256/8); i++)
+            for (var i = 0x000; i < (768/8); i++)
             {
                 var addRow = _MemTable.insertRow(i);
                 // Inner for loop adds an additional cell within the current row
@@ -234,9 +234,9 @@ module TSOS {
 
             //Memory table initiallize 
             _MemTable = <HTMLTableElement>document.getElementById('memory');
-            // Total memory is 256
+            // Total memory is 256 // 768
             // Outer for loop adds an additional row
-            for (var i = 0x000; i < (256/8); i++)
+            for (var i = 0x000; i < (768/8); i++)
             {
                 var addRow = _MemTable.insertRow(i);
                 // Inner for loop adds an additional cell within the current row
@@ -444,7 +444,8 @@ module TSOS {
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
 
             // Create and initialize the Memory. (Size of 256 as of IP2). Part of hardware
-            _Memory = new Memory(256);
+            //_Memory = new Memory(256);
+            _Memory = new Memory(768);
             _Memory.init();
 
             // Create Memory Accessor. Part of hardware

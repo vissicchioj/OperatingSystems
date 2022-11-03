@@ -13,6 +13,8 @@ module TSOS
             public xreg: number = 0,
             public yreg: number = 0,
             public zflag: number = 0,
+            public baseReg: number = 0,
+            public limitReg: number = 0,
             ) 
         {
 
@@ -28,6 +30,8 @@ module TSOS
             this.xreg = 0;
             this.yreg = 0;
             this.zflag = 0;
+            this.baseReg = 0;
+            this.limitReg = this.baseReg + 256;
         }
 
         // Loading a program into memory

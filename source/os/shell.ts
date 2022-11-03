@@ -117,6 +117,42 @@ module TSOS {
                 " - Runs a program in memory.");
             this.commandList[this.commandList.length] = sc;
 
+            // clearmem
+            sc = new ShellCommand(this.shellClearMem,
+                "clearmem",
+                " - Clear all memory partitions.");
+            this.commandList[this.commandList.length] = sc;
+
+            // runall
+            sc = new ShellCommand(this.shellRunAll,
+                "runall",
+                " - Runs all programs at once.");
+            this.commandList[this.commandList.length] = sc;
+
+            // ps
+            sc = new ShellCommand(this.shellPs,
+                "ps",
+                " - Display PID and state of all processes.");
+            this.commandList[this.commandList.length] = sc;
+
+            // kill
+            sc = new ShellCommand(this.shellKill,
+                "kill",
+                "<pid> - Kill one process based on specfied PID.");
+            this.commandList[this.commandList.length] = sc;
+
+            // killall
+            sc = new ShellCommand(this.shellKillAll,
+                "killall",
+                " - Kill all processes.");
+            this.commandList[this.commandList.length] = sc;
+
+            // quantum
+            sc = new ShellCommand(this.shellQuantum,
+                "quantum",
+                "<int> - Sets the Round Robin quantum.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -450,13 +486,11 @@ module TSOS {
                 {
                     hexNums.push(inputText.substring(i, i + 2));
                 }
-
-                // As of IP2 the PID will always be 0. Loading again will overwrite PID 0
                 if (_CurrPidNum === -1)
                 {
                     // Creates a PCB that loads the array of hex codes. 
                     //The pcb will call the MM to allocate memory and set the state to resident
-                    _PCB.pid = 0;
+                    _PCB.pid = _PCB.pid + 1;
                     _PCB.load(hexNums);
                     _CurrPidNum = _PCB.pid;
                     _StdOut.putText('Process ID: ' + _CurrPidNum);
@@ -481,7 +515,7 @@ module TSOS {
         {
             // Check if a pid was provided
             if (args.length > 0) {
-                if (_PCB.pid === 0)
+                if (_PCB.pid >= 0)
                 {
                     // Pid exists, so run it
                     _PCB.run();
@@ -495,6 +529,36 @@ module TSOS {
             {
                 _StdOut.putText("Error: You must provide a PID.");
             } 
+        }
+
+        public shellRunAll(args: string[])
+        {
+
+        }
+
+        public shellClearMem(args: string[])
+        {
+            
+        }
+
+        public shellPs(args: string[])
+        {
+            
+        }
+
+        public shellKill(args: string[])
+        {
+            
+        }
+
+        public shellKillAll(args: string[])
+        {
+            
+        }
+
+        public shellQuantum(args: string[])
+        {
+            
         }
     }
 }

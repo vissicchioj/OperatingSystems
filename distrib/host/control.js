@@ -28,7 +28,7 @@ var TSOS;
             // Empty table
             _MemTable.innerHTML = "";
             // Outer for loop adds an additional row
-            for (var i = 0x000; i < (256 / 8); i++) {
+            for (var i = 0x000; i < (768 / 8); i++) {
                 var addRow = _MemTable.insertRow(i);
                 // Inner for loop adds an additional cell within the current row
                 for (var j = 0; j <= 8; j++) {
@@ -176,9 +176,9 @@ var TSOS;
             _Canvas = document.getElementById('display');
             //Memory table initiallize 
             _MemTable = document.getElementById('memory');
-            // Total memory is 256
+            // Total memory is 256 // 768
             // Outer for loop adds an additional row
-            for (var i = 0x000; i < (256 / 8); i++) {
+            for (var i = 0x000; i < (768 / 8); i++) {
                 var addRow = _MemTable.insertRow(i);
                 // Inner for loop adds an additional cell within the current row
                 for (var j = 0; j <= 8; j++) {
@@ -335,7 +335,8 @@ var TSOS;
             _CPU = new TSOS.Cpu(); // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init(); //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
             // Create and initialize the Memory. (Size of 256 as of IP2). Part of hardware
-            _Memory = new TSOS.Memory(256);
+            //_Memory = new Memory(256);
+            _Memory = new TSOS.Memory(768);
             _Memory.init();
             // Create Memory Accessor. Part of hardware
             _MA = new TSOS.MemoryAccessor();

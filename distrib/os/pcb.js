@@ -1,7 +1,7 @@
 var TSOS;
 (function (TSOS) {
     class ProcessControlBlock {
-        constructor(pid = -1, state = '', location = '-', priority = 0, pc = 0, acc = 0, xreg = 0, yreg = 0, zflag = 0) {
+        constructor(pid = -1, state = '', location = '-', priority = 0, pc = 0, acc = 0, xreg = 0, yreg = 0, zflag = 0, baseReg = 0, limitReg = 0) {
             this.pid = pid;
             this.state = state;
             this.location = location;
@@ -11,6 +11,8 @@ var TSOS;
             this.xreg = xreg;
             this.yreg = yreg;
             this.zflag = zflag;
+            this.baseReg = baseReg;
+            this.limitReg = limitReg;
         }
         init() {
             this.pid = -1;
@@ -22,6 +24,8 @@ var TSOS;
             this.xreg = 0;
             this.yreg = 0;
             this.zflag = 0;
+            this.baseReg = 0;
+            this.limitReg = this.baseReg + 256;
         }
         // Loading a program into memory
         load(userProgram) {
