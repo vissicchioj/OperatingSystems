@@ -27,31 +27,6 @@ var TSOS;
             this.baseReg = 0;
             this.limitReg = this.baseReg + 256;
         }
-        // Loading a program into memory
-        load(userProgram) {
-            // Loading again overwrites memory, so reset it first
-            _MM.deallocateMem();
-            // Memory Manager allocates the User Program into memory
-            _MM.allocateMem(userProgram);
-            // change state
-            this.state = "Resident";
-            // Update the PCB table with values
-            TSOS.Control._SetPcbTable();
-        }
-        // Running a program in memory
-        run() {
-            // change state
-            this.state = "Running";
-            // Update the PCB table with values
-            TSOS.Control._SetPcbTable();
-            // Tell the CPU to begin executing
-            if (TSOS.Control._SingleStep === true) {
-                // Waiting on Step button clicks
-            }
-            else {
-                _CPU.isExecuting = true;
-            }
-        }
     }
     TSOS.ProcessControlBlock = ProcessControlBlock;
 })(TSOS || (TSOS = {}));

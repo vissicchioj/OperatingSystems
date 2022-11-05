@@ -104,9 +104,9 @@ var TSOS;
         }
         static _SetPcbTable() {
             _PcbTable.innerHTML = '';
-            for (var i = 0; i < 2; i++) {
+            for (var i = 0; i < 4; i++) {
                 var addRow = _PcbTable.insertRow(i);
-                for (var j = 0; j < 8; j++) {
+                for (var j = 0; j < 11; j++) {
                     var addCell = addRow.insertCell(j);
                     if (i === 0) {
                         if (j == 0) {
@@ -135,6 +135,12 @@ var TSOS;
                         }
                         else if (j == 8) {
                             addCell.innerHTML = "Z-Flag";
+                        }
+                        else if (j == 9) {
+                            addCell.innerHTML = "Base-Reg";
+                        }
+                        else if (j == 10) {
+                            addCell.innerHTML = "Limit-Reg";
                         }
                     }
                     else {
@@ -165,6 +171,12 @@ var TSOS;
                         }
                         else if (j == 8) {
                             addCell.innerHTML = _PCB.zflag.toString();
+                        }
+                        else if (j == 9) {
+                            addCell.innerHTML = _PCB.baseReg.toString();
+                        }
+                        else if (j == 10) {
+                            addCell.innerHTML = _PCB.limitReg.toString();
                         }
                     }
                 }
@@ -231,9 +243,9 @@ var TSOS;
             }
             // PCB table initialize
             _PcbTable = document.getElementById('pcb');
-            for (var i = 0; i < 2; i++) {
+            for (var i = 0; i < 4; i++) {
                 var addRow = _PcbTable.insertRow(i);
-                for (var j = 0; j < 8; j++) {
+                for (var j = 0; j < 11; j++) {
                     var addCell = addRow.insertCell(j);
                     if (i == 0) {
                         if (j == 0) {
@@ -262,6 +274,12 @@ var TSOS;
                         }
                         else if (j == 8) {
                             addCell.innerHTML = "Z-Flag";
+                        }
+                        else if (j == 9) {
+                            addCell.innerHTML = "Base-Reg";
+                        }
+                        else if (j == 10) {
+                            addCell.innerHTML = "Limit-Reg";
                         }
                     }
                     else {

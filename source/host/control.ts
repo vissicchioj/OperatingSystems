@@ -137,10 +137,10 @@ module TSOS {
         {
             _PcbTable.innerHTML = '';
 
-            for (var i = 0; i < 2; i++)
+            for (var i = 0; i < 4; i++)
             {
                 var addRow =  _PcbTable.insertRow(i);
-                for (var j = 0; j < 8; j++)
+                for (var j = 0; j < 11; j++)
                 {
                     var addCell = addRow.insertCell(j)
                     if (i === 0)
@@ -181,6 +181,14 @@ module TSOS {
                         {
                             addCell.innerHTML = "Z-Flag";
                         }
+                        else if (j == 9)
+                        {
+                            addCell.innerHTML = "Base-Reg";
+                        }
+                        else if (j == 10)
+                        {
+                            addCell.innerHTML = "Limit-Reg";
+                        }
                     }
                     else 
                     {
@@ -220,6 +228,14 @@ module TSOS {
                         else if (j == 8)
                         {
                             addCell.innerHTML = _PCB.zflag.toString();
+                        }
+                        else if (j == 9)
+                        {
+                            addCell.innerHTML = _PCB.baseReg.toString();
+                        }
+                        else if (j == 10)
+                        {
+                            addCell.innerHTML = _PCB.limitReg.toString();
                         }
                     }
                 }
@@ -307,10 +323,10 @@ module TSOS {
 
             // PCB table initialize
             _PcbTable = <HTMLTableElement>document.getElementById('pcb');
-            for (var i = 0; i < 2; i++)
+            for (var i = 0; i < 4; i++)
             {
                 var addRow =  _PcbTable.insertRow(i);
-                for (var j = 0; j < 8; j++)
+                for (var j = 0; j < 11; j++)
                 {
                     var addCell = addRow.insertCell(j)
                     if (i == 0)
@@ -350,6 +366,14 @@ module TSOS {
                         else if (j == 8)
                         {
                             addCell.innerHTML = "Z-Flag";
+                        }
+                        else if (j == 9)
+                        {
+                            addCell.innerHTML = "Base-Reg";
+                        }
+                        else if (j == 10)
+                        {
+                            addCell.innerHTML = "Limit-Reg";
                         }
                     }
                     else 

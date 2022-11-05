@@ -7,14 +7,20 @@ module TSOS
         constructor(){
         }
 
-        public read(addr: number)
+        /*
+            IP3:
+                read and write will also need to take in base and limit registers as well. The address that we need will
+                be located via adding addr to the base register
+            
+        */
+        public read(baseReg: number, addr: number)
         {
-            return _Memory.getMem(addr);
+            return _Memory.getMem(addr + baseReg);
         }
 
-        public write(addr: number, hex: number)
+        public write(baseReg, addr: number, hex: number)
         {
-            _Memory.setMem(addr, hex);
+            _Memory.setMem(addr + baseReg, hex);
         }
     }
 }

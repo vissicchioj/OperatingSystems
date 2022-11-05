@@ -11,7 +11,7 @@ module TSOS
         }
 
         // Allocate User Input Program to memory
-        public allocateMem(userProgram: Array<string>)
+        public allocateMem(baseReg: number, userProgram: Array<string>)
         {
             for(var i = 0; i < this.memorySize; i++)
             {
@@ -20,12 +20,12 @@ module TSOS
                 // if the value is not a number we make it 00
                 if (isNaN(hex))
                 {
-                    _Memory.setMem(i, 0x00);
+                    _Memory.setMem(i + baseReg, 0x00);
                 }
                 // The memory that the user inputted
                 else
                 {
-                    _Memory.setMem(i, hex);
+                    _Memory.setMem(i + baseReg, hex);
                 }
             }
         }

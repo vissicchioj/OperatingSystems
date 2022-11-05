@@ -34,41 +34,43 @@ module TSOS
             this.limitReg = this.baseReg + 256;
         }
 
-        // Loading a program into memory
-        public load(userProgram: Array<string>)
-        {
-            // Loading again overwrites memory, so reset it first
-            _MM.deallocateMem(); 
+        // PCB should not be loading or running programs instead we'll leave that to the kernel
+        
+        // // Loading a program into memory
+        // public load(userProgram: Array<string>)
+        // {
+        //     // Loading again overwrites memory, so reset it first
+        //     _MM.deallocateMem(); 
 
-            // Memory Manager allocates the User Program into memory
-            _MM.allocateMem(userProgram);
+        //     // Memory Manager allocates the User Program into memory
+        //     _MM.allocateMem(userProgram);
 
-            // change state
-            this.state = "Resident";
+        //     // change state
+        //     this.state = "Resident";
 
-            // Update the PCB table with values
-            TSOS.Control._SetPcbTable();
-        }
+        //     // Update the PCB table with values
+        //     TSOS.Control._SetPcbTable();
+        // }
 
-        // Running a program in memory
-        public run()
-        {
-            // change state
-            this.state = "Running";
+        // // Running a program in memory
+        // public run()
+        // {
+        //     // change state
+        //     this.state = "Running";
 
-            // Update the PCB table with values
-            TSOS.Control._SetPcbTable();
+        //     // Update the PCB table with values
+        //     TSOS.Control._SetPcbTable();
 
-            // Tell the CPU to begin executing
-            if (TSOS.Control._SingleStep === true)
-            {
-                // Waiting on Step button clicks
-            }
-            else
-            {
-                _CPU.isExecuting = true;
-            }
-        }
+        //     // Tell the CPU to begin executing
+        //     if (TSOS.Control._SingleStep === true)
+        //     {
+        //         // Waiting on Step button clicks
+        //     }
+        //     else
+        //     {
+        //         _CPU.isExecuting = true;
+        //     }
+        // }
 
 
     }

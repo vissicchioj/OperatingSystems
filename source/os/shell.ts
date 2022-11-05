@@ -486,21 +486,23 @@ module TSOS {
                 {
                     hexNums.push(inputText.substring(i, i + 2));
                 }
-                if (_CurrPidNum === -1)
-                {
+                // if (_Kernel.pidTracker === -1)
+                // {
                     // Creates a PCB that loads the array of hex codes. 
                     //The pcb will call the MM to allocate memory and set the state to resident
-                    _PCB.pid = _PCB.pid + 1;
-                    _PCB.load(hexNums);
-                    _CurrPidNum = _PCB.pid;
-                    _StdOut.putText('Process ID: ' + _CurrPidNum);
-                }
-                else
-                {
-                    _PCB.load(hexNums);
-                    _CurrPidNum = _PCB.pid;
-                     _StdOut.putText('Process ID: ' + _CurrPidNum + ' has been overwritten.');
-                }
+                    //_PCB.pid = _PCB.pid + 1;
+                    _Kernel.load(hexNums);
+
+                    //_CurrPidNum = _PCB.pid;
+                    _StdOut.putText('Process ID: ' + _Kernel.pidTracker);
+                    _StdOut.putText('base reg:' + _Kernel.residentList[_Kernel.pidTracker].baseReg);
+                //}
+                // else
+                // {
+                //     _Kernel.load(hexNums);
+                //     _CurrPidNum = _PCB.pid;
+                //      _StdOut.putText('Process ID: ' + _CurrPidNum + ' has been overwritten.');
+                // }
 
                 // Set the memory table with the new values.
                 TSOS.Control._SetMemTable();
@@ -515,10 +517,10 @@ module TSOS {
         {
             // Check if a pid was provided
             if (args.length > 0) {
-                if (_PCB.pid >= 0)
+                if (_Kernel.pidTracker >= 0)
                 {
                     // Pid exists, so run it
-                    _PCB.run();
+                    _Kernel.run(parseInt(args[0]));
                 }
                 else
                 {
@@ -538,7 +540,7 @@ module TSOS {
 
         public shellClearMem(args: string[])
         {
-            
+            _Memory.reset();
         }
 
         public shellPs(args: string[])

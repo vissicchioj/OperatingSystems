@@ -4,11 +4,17 @@ var TSOS;
     class MemoryAccessor {
         constructor() {
         }
-        read(addr) {
-            return _Memory.getMem(addr);
+        /*
+            IP3:
+                read and write will also need to take in base and limit registers as well. The address that we need will
+                be located via adding addr to the base register
+            
+        */
+        read(baseReg, addr) {
+            return _Memory.getMem(addr + baseReg);
         }
-        write(addr, hex) {
-            _Memory.setMem(addr, hex);
+        write(baseReg, addr, hex) {
+            _Memory.setMem(addr + baseReg, hex);
         }
     }
     TSOS.MemoryAccessor = MemoryAccessor;

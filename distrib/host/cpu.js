@@ -15,7 +15,7 @@ var TSOS;
     //temporary program counter to remember our current place 
     var tempPC = 0x000;
     class Cpu {
-        constructor(PC = 0x00, IR = 0x00, Acc = 0x00, Xreg = 0x00, Yreg = 0x00, Zflag = 0x00, isExecuting = false) {
+        constructor(PC = 0x00, IR = 0x00, Acc = 0x00, Xreg = 0x00, Yreg = 0x00, Zflag = 0x00, isExecuting = false, pcb = null) {
             this.PC = PC;
             this.IR = IR;
             this.Acc = Acc;
@@ -23,6 +23,7 @@ var TSOS;
             this.Yreg = Yreg;
             this.Zflag = Zflag;
             this.isExecuting = isExecuting;
+            this.pcb = pcb;
         }
         init() {
             this.PC = 0x00;
@@ -33,20 +34,23 @@ var TSOS;
             this.Zflag = 0x00;
             this.isExecuting = false;
         }
+        currPcb(pcb) {
+            this.pcb = pcb;
+        }
         setPcb() {
             // Keep up PCB values with the PC values
-            _PCB.pc = this.PC;
-            _PCB.acc = this.Acc;
-            _PCB.xreg = this.Xreg;
-            _PCB.yreg = this.Yreg;
-            _PCB.zflag = this.Zflag;
+            this.pcb.pc = this.PC;
+            this.pcb.acc = this.Acc;
+            this.pcb.xreg = this.Xreg;
+            this.pcb.yreg = this.Yreg;
+            this.pcb.zflag = this.Zflag;
         }
         // Cycles when isExecuting = true
         cycle() {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
-            this.IR = _MA.read(this.PC);
+            this.IR = _MA.read(this.pcb.baseReg, this.PC);
             this.opCodes(this.IR);
             this.setPcb();
             TSOS.Control._SetCpuTable();
@@ -114,85 +118,85 @@ var TSOS;
         LDAConstant() {
             this.PC++;
             // Set Acc to the current location in memory 
-            this.Acc = _MA.read(this.PC);
+            this.Acc = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
         }
         LDAMemory() {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
             //Set accumulator to loaction in memory using little endian conversion
-            this.Acc = _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+            this.Acc = _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
             this.setPcb();
             this.PC++;
         }
         STAMemory() {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
             //combine the bytes for little endian conversion
-            _MA.write(_MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
+            _MA.write(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
             this.setPcb();
             this.PC++;
         }
         ADC() {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             //Set accumulator to loaction in memory using little endian conversion
-            this.Acc = this.Acc + _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+            this.Acc = this.Acc + _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
             this.PC++;
         }
         LDXConstant() {
             this.PC++;
-            this.Xreg = _MA.read(this.PC);
+            this.Xreg = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
         }
         LDXMemory() {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             //Set Xreg to loaction in memory using little endian conversion
-            this.Xreg = _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+            this.Xreg = _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
             this.PC++;
         }
         LDYConstant() {
             this.PC++;
-            this.Yreg = _MA.read(this.PC);
+            this.Yreg = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
         }
         LDYMemory() {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             //Set Yreg to loaction in memory using little endian conversion
-            this.Yreg = _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+            this.Yreg = _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
             this.PC++;
         }
         NOP() {
@@ -201,14 +205,14 @@ var TSOS;
         CPX() {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             //sets zFlag to 0 if the combination of the lob and hob does not equal the xReg
-            if (_MA.read(_MM.combineBytes(_MM.lob, _MM.hob)) !== this.Xreg) {
+            if (_MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob)) !== this.Xreg) {
                 this.Zflag = 0x00;
             }
             //sets zFlag to 1 if the combination of the lob and hob does equal the xReg
@@ -222,7 +226,7 @@ var TSOS;
             this.setPcb();
             //if zFlag is not set
             if (this.Zflag == 0x00) {
-                this.PC = this.PC + _MM.combineBytes(_MA.read(this.PC), 0x00);
+                this.PC = this.PC + _MM.combineBytes(_MA.read(this.pcb.baseReg, this.PC), 0x00);
                 this.setPcb();
                 //then remove the 1 in the front so that we are moving backwards
                 //and not moving extremely far forwards
@@ -240,18 +244,18 @@ var TSOS;
         INC() {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
             this.setPcb();
             //Set accumulator to loaction in memory using little endian conversion
-            this.Acc = _MA.read(_MM.combineBytes(_MM.lob, _MM.hob));
+            this.Acc = _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
             this.setPcb();
             this.Acc++;
             // Set address in memory using little endian conversion to the accumulator
-            _MA.write(_MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
+            _MA.write(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
             this.PC++;
         }
         SYS() {
@@ -268,9 +272,9 @@ var TSOS;
                 tempPC = this.PC;
                 this.PC = this.Yreg;
                 this.setPcb();
-                while (_MA.read(this.PC) !== 0x00) {
+                while (_MA.read(this.pcb.baseReg, this.PC) !== 0x00) {
                     // Get all of the ascii characters in the current location in memory until it reaches 0x00
-                    asciiStr = asciiStr + String.fromCharCode(_MA.read(this.PC));
+                    asciiStr = asciiStr + String.fromCharCode(_MA.read(this.pcb.baseReg, this.PC));
                     ;
                     this.PC++;
                     this.setPcb();
@@ -285,7 +289,7 @@ var TSOS;
         BRK() {
             // PROGRAM COMPLETE
             this.isExecuting = false;
-            _PCB.state = "Finished";
+            this.pcb.state = "Finished";
             this.init();
             _StdOut.advanceLine();
         }

@@ -37,7 +37,7 @@ var _MA: TSOS.MemoryAccessor;
 var _MM: TSOS.MemoryManager;
 var _PCB: TSOS.ProcessControlBlock;
 
-var _CurrPidNum: number = -1;
+//var _CurrPidNum: number = -1;
 
 var _OSclock: number = 0;  // Page 23.
 

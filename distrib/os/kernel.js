@@ -9,6 +9,13 @@
 var TSOS;
 (function (TSOS) {
     class Kernel {
+        constructor() {
+            // Resident list will take in loaded processes 
+            this.residentList = [];
+            // Ready queue will take in running processes
+            this.readyQueue = new TSOS.Queue();
+            this.pidTracker = -1;
+        }
         //
         // OS Startup and Shutdown Routines
         //
@@ -153,6 +160,54 @@ var TSOS;
             TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
             // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
             this.krnShutdown();
+        }
+        // Loading a program into memory
+        load(userProgram) {
+            // Create a new PCB and add it to the resident list
+            var newPCB = new TSOS.ProcessControlBlock();
+            this.pidTracker++;
+            newPCB.pid = this.pidTracker;
+            if (newPCB.pid === 1) {
+                newPCB.baseReg = 256;
+            }
+            if (newPCB.pid === 2) {
+                newPCB.baseReg = 512;
+            }
+            // Only 3 PCBs at a time!
+            // if (this.residentList.length < 3)
+            // {
+            //this.residentList[newPCB.pid] = newPCB;
+            // Loading again overwrites memory, so reset it first
+            //_MM.deallocateMem(); 
+            // Memory Manager allocates the User Program into memory
+            _MM.allocateMem(newPCB.baseReg, userProgram);
+            // change state
+            newPCB.state = "Resident";
+            this.residentList[newPCB.pid] = newPCB;
+            // Update the PCB table with values
+            TSOS.Control._SetPcbTable();
+            // }
+            // else
+            // {
+            // }
+        }
+        // Running a program in memory
+        run(pid) {
+            // Run one program specified by the pid
+            var pcb = this.residentList[pid];
+            // change state
+            pcb.state = "Running";
+            // Update the PCB table with values
+            TSOS.Control._SetPcbTable();
+            this.readyQueue.enqueue(pcb);
+            _CPU.currPcb(this.readyQueue.dequeue());
+            // Tell the CPU to begin executing
+            if (TSOS.Control._SingleStep === true) {
+                // Waiting on Step button clicks
+            }
+            else {
+                _CPU.isExecuting = true;
+            }
         }
     }
     TSOS.Kernel = Kernel;
