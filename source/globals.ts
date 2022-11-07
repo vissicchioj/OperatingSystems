@@ -23,6 +23,9 @@ const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (inte
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ: number = 1;
 
+const CONTEXTSWITCH_IRQ: number = 0;
+
+
 
 //
 // Global Variables
@@ -36,6 +39,8 @@ var _MA: TSOS.MemoryAccessor;
 // Software
 var _MM: TSOS.MemoryManager;
 var _PCB: TSOS.ProcessControlBlock;
+var _CpuSched: TSOS.CpuScheduler;
+var _CpuDispatch: TSOS.CpuDispatcher;
 
 //var _CurrPidNum: number = -1;
 
