@@ -211,14 +211,9 @@ var TSOS;
                 var pcb = this.residentList[i];
                 pcb.state = "Ready";
                 this.readyQueue.enqueue(pcb);
+                // Checking the ready queue
+                _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
                 // Will get dequeued via context switch
-            }
-            // Tell the CPU to begin executing
-            if (TSOS.Control._SingleStep === true) {
-                // Waiting on Step button clicks
-            }
-            else {
-                _CPU.isExecuting = true;
             }
         }
     }

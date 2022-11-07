@@ -20,11 +20,19 @@ module TSOS
             // Needs to call the kernel interrupt for cpu dispatcher context switch
             if (_Kernel.readyQueue.getSize() > 0)
             {
-                // The amount of clock cycles reached the quantum so call context switch via interrupt
-                if (this.cycleCounter >= this.quantum)
+                // Need to check if CPU's pcb exists or not first or else the context switch will never get called
+                if (_CPU.pcb === null)
                 {
-                    this.cycleCounter = 0;
                     _Kernel.krnInterruptHandler(CONTEXTSWITCH_IRQ, null);
+                }
+                else
+                {
+                    // The amount of clock cycles reached the quantum so call context switch via interrupt
+                    if (this.cycleCounter >= this.quantum)
+                    {
+                        this.cycleCounter = 0;
+                        _Kernel.krnInterruptHandler(CONTEXTSWITCH_IRQ, null);
+                    }
                 }
             }
         }

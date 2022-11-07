@@ -54,6 +54,15 @@ module TSOS {
                 this.pcb.zflag = this.Zflag;
             }
 
+            public loadCpuWithPcb()
+            {
+                // Will pickup the process where the CPU left off
+                this.PC = this.pcb.pc;
+                this.Acc = this.pcb.acc;
+                this.Xreg = this.pcb.xreg;
+                this.Yreg = this.pcb.yreg;
+                this.Zflag = this.pcb.zflag;
+            }
 
             public tempPC: number;
     
@@ -363,7 +372,7 @@ module TSOS {
             if (this.Xreg == 0x01)
             {
                 //print out the value in the yReg
-                _StdOut.putText(this.Yreg + " ");
+                _StdOut.putText(this.Yreg + "");
             }
 
             //System Call 2

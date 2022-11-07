@@ -45,6 +45,14 @@ var TSOS;
             this.pcb.yreg = this.Yreg;
             this.pcb.zflag = this.Zflag;
         }
+        loadCpuWithPcb() {
+            // Will pickup the process where the CPU left off
+            this.PC = this.pcb.pc;
+            this.Acc = this.pcb.acc;
+            this.Xreg = this.pcb.xreg;
+            this.Yreg = this.pcb.yreg;
+            this.Zflag = this.pcb.zflag;
+        }
         // Cycles when isExecuting = true
         cycle() {
             _Kernel.krnTrace('CPU cycle');
@@ -265,7 +273,7 @@ var TSOS;
             //System Call 1
             if (this.Xreg == 0x01) {
                 //print out the value in the yReg
-                _StdOut.putText(this.Yreg + " ");
+                _StdOut.putText(this.Yreg + "");
             }
             //System Call 2
             if (this.Xreg == 0x02) {
