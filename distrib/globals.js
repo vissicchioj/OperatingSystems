@@ -18,6 +18,7 @@ const CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 seco
 const TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ = 1;
+const CONTEXTSWITCH_IRQ = 2;
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
@@ -29,6 +30,8 @@ var _MA;
 // Software
 var _MM;
 var _PCB;
+var _CpuSched;
+var _CpuDispatch;
 //var _CurrPidNum: number = -1;
 var _OSclock = 0; // Page 23.
 var _Mode = 0; // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.

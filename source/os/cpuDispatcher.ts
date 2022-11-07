@@ -13,7 +13,10 @@ module TSOS
 
         public contextSwitch()
         {
-            
+            if (_Kernel.readyQueue.getSize() > 0)
+            {
+                
+            }
         }
     }
 }

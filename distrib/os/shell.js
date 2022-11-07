@@ -429,17 +429,56 @@ var TSOS;
             }
         }
         shellRunAll(args) {
+            if (_Kernel.pidTracker >= 0) {
+                _Kernel.runAll();
+            }
+            else {
+            }
         }
         shellClearMem(args) {
-            _Memory.reset();
+            if (_CPU.isExecuting === true) {
+                _StdOut.putText("Error: Cannot clear memory while CPU is executing.");
+            }
+            else {
+                _Memory.reset();
+            }
         }
         shellPs(args) {
+            if (args.length > 0) {
+                //check if it exists first prob
+                _StdOut.putText("PID: " + _Kernel.residentList[parseInt(args[0])].pid + "State: " + _Kernel.residentList[parseInt(args[0])].state);
+            }
         }
         shellKill(args) {
+            if (args.length > 0) {
+                if (_CPU.isExecuting === true) {
+                    _StdOut.putText("Error: Cannot kill processes while CPU is executing.");
+                }
+                else {
+                    //check if it exists first prob
+                    _Kernel.residentList[parseInt(args[0])] = null;
+                }
+            }
         }
         shellKillAll(args) {
+            if (_CPU.isExecuting === true) {
+                _StdOut.putText("Error: Cannot kill processes while CPU is executing.");
+            }
+            else {
+                for (var i = 0; i < _Kernel.residentList.length; i++) {
+                    _Kernel.residentList[i] = null;
+                }
+            }
         }
         shellQuantum(args) {
+            if (args.length > 0) {
+                if (parseInt(args[0]) > 0) {
+                    _CpuSched.quantum = parseInt(args[0]);
+                }
+                else {
+                    _StdOut.putText("Error: Quantum must be an integer larger than 0.");
+                }
+            }
         }
     }
     TSOS.Shell = Shell;

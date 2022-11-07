@@ -28,6 +28,9 @@ module TSOS {
             // Inititalize the Memory Manager
             _MM = new MemoryManager();
 
+            _CpuSched = new CpuScheduler();
+            _CpuDispatch = new CpuDispatcher();
+
             // Initialize standard input and output to the _Console.
             _StdIn  = _Console;
             _StdOut = _Console;
@@ -77,6 +80,8 @@ module TSOS {
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
                that it has to look for interrupts and process them if it finds any.                          
             */
+
+            _CpuSched.roundRobin();
 
             // Check for an interrupt, if there are any. Page 560
             if (_KernelInterruptQueue.getSize() > 0) {
@@ -193,22 +198,15 @@ module TSOS {
             var newPCB = new ProcessControlBlock();
             this.pidTracker++;
             newPCB.pid = this.pidTracker;
-            if (newPCB.pid === 1)
+            // Modulo Math to figure out which pcb gets what base register
+            if (newPCB.pid % 3 === 1)
             {
                 newPCB.baseReg = 256;
             }
-            if (newPCB.pid === 2)
+            else if (newPCB.pid % 3 === 2)
             {
                 newPCB.baseReg = 512;
             }
-
-            // Only 3 PCBs at a time!
-            // if (this.residentList.length < 3)
-            // {
-            //this.residentList[newPCB.pid] = newPCB;
-
-            // Loading again overwrites memory, so reset it first
-            //_MM.deallocateMem(); 
 
             // Memory Manager allocates the User Program into memory
             _MM.allocateMem(newPCB.baseReg, userProgram);
@@ -220,11 +218,7 @@ module TSOS {
 
             // Update the PCB table with values
             TSOS.Control._SetPcbTable();
-            // }
-            // else
-            // {
 
-            // }
         }
 
         // Running a program in memory
@@ -242,6 +236,29 @@ module TSOS {
             this.readyQueue.enqueue(pcb);
 
             _CPU.currPcb(this.readyQueue.dequeue());
+
+            // Tell the CPU to begin executing
+            if (TSOS.Control._SingleStep === true)
+            {
+                // Waiting on Step button clicks
+            }
+            else
+            {
+                _CPU.isExecuting = true;
+            }
+        }
+
+        public runAll()
+        {
+            for (var i = 0; i < this.residentList.length; i++)
+            {
+                var pcb = this.residentList[i];
+
+                pcb.state = "Ready";
+                this.readyQueue.enqueue(pcb);
+
+                // Will get dequeued via context switch
+            }
 
             // Tell the CPU to begin executing
             if (TSOS.Control._SingleStep === true)

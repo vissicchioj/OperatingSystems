@@ -83,6 +83,8 @@ module TSOS {
                     }
                 }
 
+                // Increment our counter because one cycle has been completed
+                _CpuSched.cycleCounter = _CpuSched.cycleCounter + 1;
         }
 
         public opCodes(currInstruction: number)
@@ -397,12 +399,17 @@ module TSOS {
         public BRK() 
         {
             // PROGRAM COMPLETE
-            this.isExecuting = false;
-            this.pcb.state = "Finished";
-            
-            this.init();
+            // When our ready queue is empty, every program is complete
+            if (_Kernel.readyQueue.getSize() === 0)
+            {
+                //console.log('Ready Queue Size:' + _Kernel.readyQueue.getSize());
+                this.init();
+                this.isExecuting = false;
+                _StdOut.advanceLine();
+            }
 
-            _StdOut.advanceLine();
+            this.pcb.state = "Finished";
+
         }
     }
 }

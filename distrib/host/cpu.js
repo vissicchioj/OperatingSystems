@@ -63,6 +63,8 @@ var TSOS;
                     this.isExecuting = false;
                 }
             }
+            // Increment our counter because one cycle has been completed
+            _CpuSched.cycleCounter = _CpuSched.cycleCounter + 1;
         }
         opCodes(currInstruction) {
             switch (currInstruction) {
@@ -288,10 +290,14 @@ var TSOS;
         }
         BRK() {
             // PROGRAM COMPLETE
-            this.isExecuting = false;
+            // When our ready queue is empty, every program is complete
+            if (_Kernel.readyQueue.getSize() === 0) {
+                //console.log('Ready Queue Size:' + _Kernel.readyQueue.getSize());
+                this.init();
+                this.isExecuting = false;
+                _StdOut.advanceLine();
+            }
             this.pcb.state = "Finished";
-            this.init();
-            _StdOut.advanceLine();
         }
     }
     TSOS.Cpu = Cpu;

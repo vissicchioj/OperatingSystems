@@ -7,9 +7,9 @@ module TSOS
         constructor
         (
             // default quantum is 6
-            public quantum = 6,
+            public quantum: number = 6,
             // after (quantum num) cycles the context switch occurs
-            public cycleCounter = 0
+            public cycleCounter: number = 0,
         )
         {
 
@@ -18,6 +18,15 @@ module TSOS
         public roundRobin()
         {
             // Needs to call the kernel interrupt for cpu dispatcher context switch
+            if (_Kernel.readyQueue.getSize() > 0)
+            {
+                // The amount of clock cycles reached the quantum so call context switch via interrupt
+                if (this.cycleCounter >= this.quantum)
+                {
+                    this.cycleCounter = 0;
+                    _Kernel.krnInterruptHandler(CONTEXTSWITCH_IRQ, null);
+                }
+            }
         }
     }
 }

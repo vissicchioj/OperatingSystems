@@ -30,6 +30,8 @@ var TSOS;
             _Console.init();
             // Inititalize the Memory Manager
             _MM = new TSOS.MemoryManager();
+            _CpuSched = new TSOS.CpuScheduler();
+            _CpuDispatch = new TSOS.CpuDispatcher();
             // Initialize standard input and output to the _Console.
             _StdIn = _Console;
             _StdOut = _Console;
@@ -71,6 +73,7 @@ var TSOS;
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
                that it has to look for interrupts and process them if it finds any.
             */
+            _CpuSched.roundRobin();
             // Check for an interrupt, if there are any. Page 560
             if (_KernelInterruptQueue.getSize() > 0) {
                 // Process the first interrupt on the interrupt queue.
@@ -113,6 +116,9 @@ var TSOS;
                 case KEYBOARD_IRQ:
                     _krnKeyboardDriver.isr(params); // Kernel mode device driver
                     _StdIn.handleInput();
+                    break;
+                case CONTEXTSWITCH_IRQ:
+                    _CpuDispatch.contextSwitch();
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
@@ -167,18 +173,13 @@ var TSOS;
             var newPCB = new TSOS.ProcessControlBlock();
             this.pidTracker++;
             newPCB.pid = this.pidTracker;
-            if (newPCB.pid === 1) {
+            // Modulo Math to figure out which pcb gets what base register
+            if (newPCB.pid % 3 === 1) {
                 newPCB.baseReg = 256;
             }
-            if (newPCB.pid === 2) {
+            else if (newPCB.pid % 3 === 2) {
                 newPCB.baseReg = 512;
             }
-            // Only 3 PCBs at a time!
-            // if (this.residentList.length < 3)
-            // {
-            //this.residentList[newPCB.pid] = newPCB;
-            // Loading again overwrites memory, so reset it first
-            //_MM.deallocateMem(); 
             // Memory Manager allocates the User Program into memory
             _MM.allocateMem(newPCB.baseReg, userProgram);
             // change state
@@ -186,10 +187,6 @@ var TSOS;
             this.residentList[newPCB.pid] = newPCB;
             // Update the PCB table with values
             TSOS.Control._SetPcbTable();
-            // }
-            // else
-            // {
-            // }
         }
         // Running a program in memory
         run(pid) {
@@ -201,6 +198,21 @@ var TSOS;
             TSOS.Control._SetPcbTable();
             this.readyQueue.enqueue(pcb);
             _CPU.currPcb(this.readyQueue.dequeue());
+            // Tell the CPU to begin executing
+            if (TSOS.Control._SingleStep === true) {
+                // Waiting on Step button clicks
+            }
+            else {
+                _CPU.isExecuting = true;
+            }
+        }
+        runAll() {
+            for (var i = 0; i < this.residentList.length; i++) {
+                var pcb = this.residentList[i];
+                pcb.state = "Ready";
+                this.readyQueue.enqueue(pcb);
+                // Will get dequeued via context switch
+            }
             // Tell the CPU to begin executing
             if (TSOS.Control._SingleStep === true) {
                 // Waiting on Step button clicks
