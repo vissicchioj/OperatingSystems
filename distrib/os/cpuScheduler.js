@@ -15,7 +15,8 @@ var TSOS;
             // Needs to call the kernel interrupt for cpu dispatcher context switch
             if (_Kernel.readyQueue.getSize() > 0) {
                 // Need to check if CPU's pcb exists or not first or else the context switch will never get called
-                if (_CPU.pcb === null) {
+                // Also context switch if the CPU's pcb is complete
+                if (_CPU.pcb === null || _CPU.pcb.state === "Finished") {
                     _Kernel.krnInterruptHandler(CONTEXTSWITCH_IRQ, null);
                 }
                 else {
