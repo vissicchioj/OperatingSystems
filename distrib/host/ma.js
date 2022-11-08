@@ -10,11 +10,27 @@ var TSOS;
                 be located via adding addr to the base register
             
         */
-        read(baseReg, addr) {
-            return _Memory.getMem(addr + baseReg);
+        read(baseReg, limitReg, addr) {
+            if (addr + baseReg >= limitReg) {
+                _CPU.isExecuting = false;
+                _StdOut.putText("Error: Memory out of bounds! Killing all processes...");
+                _OsShell.shellKillAll(null);
+                _StdOut.advanceLine();
+            }
+            else {
+                return _Memory.getMem(addr + baseReg);
+            }
         }
-        write(baseReg, addr, hex) {
-            _Memory.setMem(addr + baseReg, hex);
+        write(baseReg, limitReg, addr, hex) {
+            if (addr + baseReg >= limitReg) {
+                _CPU.isExecuting = false;
+                _StdOut.putText("Error: Memory out of bounds! Killing all programs...");
+                _OsShell.shellKillAll(null);
+                _StdOut.advanceLine();
+            }
+            else {
+                _Memory.setMem(addr + baseReg, hex);
+            }
         }
     }
     TSOS.MemoryAccessor = MemoryAccessor;

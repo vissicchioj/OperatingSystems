@@ -72,7 +72,7 @@ module TSOS {
                 // TODO: Accumulate CPU usage and profiling statistics here.
                 // Do the real work here. Be sure to set this.isExecuting appropriately.
 
-                this.IR = _MA.read(this.pcb.baseReg, this.PC);
+                this.IR = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
                 this.opCodes(this.IR);
 
@@ -155,7 +155,7 @@ module TSOS {
         {
             this.PC++;
             // Set Acc to the current location in memory 
-            this.Acc = _MA.read(this.pcb.baseReg, this.PC);
+            this.Acc = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
@@ -166,15 +166,15 @@ module TSOS {
         {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
             //Set accumulator to loaction in memory using little endian conversion
-            this.Acc = _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
+            this.Acc = _MA.read(this.pcb.baseReg, this.pcb.limitReg, _MM.combineBytes(_MM.lob, _MM.hob));
 
             this.setPcb();
 
@@ -185,15 +185,15 @@ module TSOS {
         {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
             //combine the bytes for little endian conversion
-            _MA.write(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
+            _MA.write(this.pcb.baseReg, this.pcb.limitReg, _MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
 
             this.setPcb();
 
@@ -205,25 +205,25 @@ module TSOS {
         {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             //Set accumulator to loaction in memory using little endian conversion
-            this.Acc = this.Acc + _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
+            this.Acc = this.Acc + _MA.read(this.pcb.baseReg, this.pcb.limitReg, _MM.combineBytes(_MM.lob, _MM.hob));
             this.PC++;
         }
 
         public LDXConstant()
         {
             this.PC++;
-            this.Xreg = _MA.read(this.pcb.baseReg, this.PC);
+            this.Xreg = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
@@ -234,25 +234,25 @@ module TSOS {
         {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             //Set Xreg to loaction in memory using little endian conversion
-            this.Xreg = _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
+            this.Xreg = _MA.read(this.pcb.baseReg, this.pcb.limitReg, _MM.combineBytes(_MM.lob, _MM.hob));
             this.PC++;
         }
 
         public LDYConstant()
         {
             this.PC++;
-            this.Yreg = _MA.read(this.pcb.baseReg, this.PC);
+            this.Yreg = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
@@ -263,18 +263,18 @@ module TSOS {
         {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             //Set Yreg to loaction in memory using little endian conversion
-            this.Yreg = _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
+            this.Yreg = _MA.read(this.pcb.baseReg, this.pcb.limitReg, _MM.combineBytes(_MM.lob, _MM.hob));
             this.PC++;
         }
 
@@ -287,18 +287,18 @@ module TSOS {
         {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             //sets zFlag to 0 if the combination of the lob and hob does not equal the xReg
-            if (_MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob)) !== this.Xreg)
+            if (_MA.read(this.pcb.baseReg, this.pcb.limitReg, _MM.combineBytes(_MM.lob, _MM.hob)) !== this.Xreg)
             {
                 this.Zflag = 0x00;
             }
@@ -319,7 +319,7 @@ module TSOS {
             //if zFlag is not set
             if (this.Zflag == 0x00)
             {
-                this.PC = this.PC + _MM.combineBytes(_MA.read(this.pcb.baseReg, this.PC),0x00);
+                this.PC = this.PC + _MM.combineBytes(_MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC),0x00);
 
                 this.setPcb();
                 
@@ -344,24 +344,24 @@ module TSOS {
         {
             this.PC++;
             // Set the lob
-            _MM.lob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.lob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             this.PC++;
             // Set the hob
-            _MM.hob = _MA.read(this.pcb.baseReg, this.PC);
+            _MM.hob = _MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC);
 
             this.setPcb();
 
             //Set accumulator to loaction in memory using little endian conversion
-            this.Acc = _MA.read(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob));
+            this.Acc = _MA.read(this.pcb.baseReg, this.pcb.limitReg, _MM.combineBytes(_MM.lob, _MM.hob));
 
             this.setPcb();
 
             this.Acc++;
             // Set address in memory using little endian conversion to the accumulator
-            _MA.write(this.pcb.baseReg, _MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
+            _MA.write(this.pcb.baseReg, this.pcb.limitReg, _MM.combineBytes(_MM.lob, _MM.hob), this.Acc);
             this.PC++;
         }
 
@@ -386,10 +386,10 @@ module TSOS {
 
                 this.setPcb();
 
-                while (_MA.read(this.pcb.baseReg, this.PC) !== 0x00)
+                while (_MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC) !== 0x00)
                 {
                     // Get all of the ascii characters in the current location in memory until it reaches 0x00
-                    asciiStr = asciiStr +  String.fromCharCode(_MA.read(this.pcb.baseReg, this.PC));;
+                    asciiStr = asciiStr +  String.fromCharCode(_MA.read(this.pcb.baseReg, this.pcb.limitReg, this.PC));;
                     this.PC++;
 
                     this.setPcb();
@@ -408,6 +408,9 @@ module TSOS {
         public BRK() 
         {
             // PROGRAM COMPLETE
+
+            this.pcb.state = "Finished";
+
             // When our ready queue is empty, every program is complete
             if (_Kernel.readyQueue.getSize() === 0)
             {
@@ -416,8 +419,6 @@ module TSOS {
                 this.isExecuting = false;
                 _StdOut.advanceLine();
             }
-
-            this.pcb.state = "Finished";
 
         }
     }

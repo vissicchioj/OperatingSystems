@@ -13,14 +13,34 @@ module TSOS
                 be located via adding addr to the base register
             
         */
-        public read(baseReg: number, addr: number)
+        public read(baseReg: number, limitReg: number, addr: number)
         {
-            return _Memory.getMem(addr + baseReg);
+            if (addr + baseReg >= limitReg)
+            {
+                _CPU.isExecuting = false;
+                _StdOut.putText("Error: Memory out of bounds! Killing all processes...");
+                _OsShell.shellKillAll(null);
+                _StdOut.advanceLine();
+            }
+            else
+            {
+                return _Memory.getMem(addr + baseReg);
+            }
         }
 
-        public write(baseReg, addr: number, hex: number)
+        public write(baseReg, limitReg: number, addr: number, hex: number)
         {
-            _Memory.setMem(addr + baseReg, hex);
+            if (addr + baseReg >= limitReg)
+            {
+                _CPU.isExecuting = false;
+                _StdOut.putText("Error: Memory out of bounds! Killing all programs...");
+                _OsShell.shellKillAll(null);
+                _StdOut.advanceLine();
+            }
+            else
+            {
+                _Memory.setMem(addr + baseReg, hex);
+            }
         }
     }
 }

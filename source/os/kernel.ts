@@ -230,6 +230,8 @@ module TSOS {
             // Run one program specified by the pid
             var pcb = this.residentList[pid];
 
+            if (pcb.state !== "Finished")
+            {
             // change state
             pcb.state = "Running";
 
@@ -249,6 +251,7 @@ module TSOS {
             {
                 _CPU.isExecuting = true;
             }
+            }
         }
 
         public runAll()
@@ -256,11 +259,17 @@ module TSOS {
             for (var i = 0; i < this.residentList.length; i++)
             {
                 var pcb = this.residentList[i];
-
-                pcb.state = "Ready";
-                this.readyQueue.enqueue(pcb);
-                // Checking the ready queue
-                _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
+                if (pcb.state !== "Finished")
+                {
+                    pcb.state = "Ready";
+                    this.readyQueue.enqueue(pcb);
+                    // Checking the ready queue
+                    _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
+                }
+                // pcb.state = "Ready";
+                // this.readyQueue.enqueue(pcb);
+                // // Checking the ready queue
+                // _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
 
                 // Will get dequeued via context switch
             }

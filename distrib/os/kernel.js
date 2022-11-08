@@ -195,27 +195,35 @@ var TSOS;
         run(pid) {
             // Run one program specified by the pid
             var pcb = this.residentList[pid];
-            // change state
-            pcb.state = "Running";
-            // Update the PCB table with values
-            TSOS.Control._SetPcbTable();
-            this.readyQueue.enqueue(pcb);
-            _CPU.currPcb(this.readyQueue.dequeue());
-            // Tell the CPU to begin executing
-            if (TSOS.Control._SingleStep === true) {
-                // Waiting on Step button clicks
-            }
-            else {
-                _CPU.isExecuting = true;
+            if (pcb.state !== "Finished") {
+                // change state
+                pcb.state = "Running";
+                // Update the PCB table with values
+                TSOS.Control._SetPcbTable();
+                this.readyQueue.enqueue(pcb);
+                _CPU.currPcb(this.readyQueue.dequeue());
+                // Tell the CPU to begin executing
+                if (TSOS.Control._SingleStep === true) {
+                    // Waiting on Step button clicks
+                }
+                else {
+                    _CPU.isExecuting = true;
+                }
             }
         }
         runAll() {
             for (var i = 0; i < this.residentList.length; i++) {
                 var pcb = this.residentList[i];
-                pcb.state = "Ready";
-                this.readyQueue.enqueue(pcb);
-                // Checking the ready queue
-                _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
+                if (pcb.state !== "Finished") {
+                    pcb.state = "Ready";
+                    this.readyQueue.enqueue(pcb);
+                    // Checking the ready queue
+                    _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
+                }
+                // pcb.state = "Ready";
+                // this.readyQueue.enqueue(pcb);
+                // // Checking the ready queue
+                // _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
                 // Will get dequeued via context switch
             }
         }

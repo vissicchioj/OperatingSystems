@@ -568,6 +568,7 @@ module TSOS {
                 {
                 //check if it exists first prob
                 _Kernel.residentList[parseInt(args[0])] = null;
+                TSOS.Control._SetPcbTable();
                 }
             }
         }
@@ -583,6 +584,7 @@ module TSOS {
             for (var i = 0; i < _Kernel.residentList.length; i++)
             {
                 _Kernel.residentList[i] = null;
+                TSOS.Control._SetPcbTable();
             }
             }
         }

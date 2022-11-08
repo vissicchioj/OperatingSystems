@@ -444,6 +444,7 @@ var TSOS;
                 else {
                     //check if it exists first prob
                     _Kernel.residentList[parseInt(args[0])] = null;
+                    TSOS.Control._SetPcbTable();
                 }
             }
         }
@@ -454,6 +455,7 @@ var TSOS;
             else {
                 for (var i = 0; i < _Kernel.residentList.length; i++) {
                     _Kernel.residentList[i] = null;
+                    TSOS.Control._SetPcbTable();
                 }
             }
         }
@@ -461,6 +463,7 @@ var TSOS;
             if (args.length > 0) {
                 if (parseInt(args[0]) > 0) {
                     _CpuSched.quantum = parseInt(args[0]);
+                    TSOS.Control._SetPcbTable();
                 }
                 else {
                     _StdOut.putText("Error: Quantum must be an integer larger than 0.");
