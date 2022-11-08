@@ -143,7 +143,10 @@ module TSOS {
                     this.SYS();
                     break;
                 default:
-                    _StdOut.putText("Error: Invalid Op Code.");
+                    _CPU.isExecuting = false;
+                    _StdOut.putText("Error: Invalid Op Code. Killing all processes...");
+                    _OsShell.shellKillAll(null);
+                    _StdOut.advanceLine();
 
             }
         }
