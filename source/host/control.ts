@@ -140,7 +140,7 @@ module TSOS {
             for (var i = 0; i < 4; i++)
             {
                 var addRow =  _PcbTable.insertRow(i);
-                for (var j = 0; j < 11; j++)
+                for (var j = 0; j < 13; j++)
                 {
                     var addCell = addRow.insertCell(j)
                     if (i === 0)
@@ -188,6 +188,14 @@ module TSOS {
                         else if (j == 10)
                         {
                             addCell.innerHTML = "Limit-Reg";
+                        }
+                        else if (j == 11)
+                        {
+                            addCell.innerHTML = "Segment";
+                        }
+                        else if (j == 12)
+                        {
+                            addCell.innerHTML = "Quantum";
                         }
                     }
                     else 
@@ -238,6 +246,14 @@ module TSOS {
                         else if (j == 10)
                         {
                             addCell.innerHTML = _Kernel.residentList[i - 1].limitReg.toString();
+                        }
+                        else if (j == 11)
+                        {
+                            addCell.innerHTML = (i).toString();
+                        }
+                        else if (j == 12)
+                        {
+                            addCell.innerHTML = _CpuSched.quantum.toString();
                         }
                     }
                     }
@@ -329,7 +345,7 @@ module TSOS {
             for (var i = 0; i < 4; i++)
             {
                 var addRow =  _PcbTable.insertRow(i);
-                for (var j = 0; j < 11; j++)
+                for (var j = 0; j < 13; j++)
                 {
                     var addCell = addRow.insertCell(j)
                     if (i == 0)
@@ -377,6 +393,14 @@ module TSOS {
                         else if (j == 10)
                         {
                             addCell.innerHTML = "Limit-Reg";
+                        }
+                        else if (j == 11)
+                        {
+                            addCell.innerHTML = "Segment";
+                        }
+                        else if (j == 12)
+                        {
+                            addCell.innerHTML = "Quantum";
                         }
                     }
                     else 

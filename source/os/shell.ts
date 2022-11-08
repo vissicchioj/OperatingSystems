@@ -594,6 +594,7 @@ module TSOS {
                 if (parseInt(args[0]) > 0)
                 {
                     _CpuSched.quantum = parseInt(args[0]);
+                    TSOS.Control._SetPcbTable();
                 }
                 else
                 {
