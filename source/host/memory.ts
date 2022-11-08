@@ -9,7 +9,7 @@ module TSOS
 
         constructor(size: number)
         {
-            // Set the size of the array based on Control.ts (256 as of IP2)
+            // Set the size of the array based on Control.ts (768)
             this.memArray = new Array(size);
         }
 

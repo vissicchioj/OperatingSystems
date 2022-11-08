@@ -193,11 +193,7 @@ module TSOS {
 
         public pidTracker: number = -1;
 
-        public countTurnarounds: boolean[] = [false, false, false];
         public boolFinished: boolean = false;
-        // public countTurnaround0: boolean = false;
-        // public countTurnaround1: boolean = false;
-        // public countTurnaround2: boolean = false;
 
         // Loading a program into memory
         public load(userProgram: Array<string>)
@@ -276,12 +272,8 @@ module TSOS {
                     pcb.state = "Ready";
                     this.readyQueue.enqueue(pcb);
                     // Checking the ready queue
-                    _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
+                    //_StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
                 }
-                // pcb.state = "Ready";
-                // this.readyQueue.enqueue(pcb);
-                // // Checking the ready queue
-                // _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
 
                 // Will get dequeued via context switch
             }

@@ -15,7 +15,6 @@ var TSOS;
             // Ready queue will take in running processes
             this.readyQueue = new TSOS.Queue();
             this.pidTracker = -1;
-            this.countTurnarounds = [false, false, false];
             this.boolFinished = false;
         }
         //
@@ -170,9 +169,6 @@ var TSOS;
             // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
             this.krnShutdown();
         }
-        // public countTurnaround0: boolean = false;
-        // public countTurnaround1: boolean = false;
-        // public countTurnaround2: boolean = false;
         // Loading a program into memory
         load(userProgram) {
             // Create a new PCB and add it to the resident list
@@ -228,12 +224,8 @@ var TSOS;
                     pcb.state = "Ready";
                     this.readyQueue.enqueue(pcb);
                     // Checking the ready queue
-                    _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
+                    //_StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
                 }
-                // pcb.state = "Ready";
-                // this.readyQueue.enqueue(pcb);
-                // // Checking the ready queue
-                // _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
                 // Will get dequeued via context switch
             }
         }

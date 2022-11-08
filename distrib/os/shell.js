@@ -428,6 +428,7 @@ var TSOS;
             }
             else {
                 _Memory.reset();
+                TSOS.Control._SetMemTable();
             }
         }
         shellPs(args) {

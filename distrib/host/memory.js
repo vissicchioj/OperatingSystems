@@ -4,7 +4,7 @@ var TSOS;
         constructor(size) {
             // create the private array of memory
             this.memArray = [];
-            // Set the size of the array based on Control.ts (256 as of IP2)
+            // Set the size of the array based on Control.ts (768)
             this.memArray = new Array(size);
         }
         // initialize array as 0x00
