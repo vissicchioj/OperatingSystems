@@ -207,6 +207,7 @@ module TSOS {
             {
                 newPCB.baseReg = 512;
             }
+            newPCB.limitReg = newPCB.baseReg + 256;
 
             // Memory Manager allocates the User Program into memory
             _MM.allocateMem(newPCB.baseReg, userProgram);
@@ -214,8 +215,10 @@ module TSOS {
             // change state
             newPCB.state = "Resident";
 
-            this.residentList[newPCB.pid] = newPCB;
+            // modulo 3 makes it so that only 3 pcbs are being loaded at a time
+            this.residentList[newPCB.pid % 3] = newPCB;
 
+            //_StdOut.putText(this.residentList.length + ' ');
             // Update the PCB table with values
             TSOS.Control._SetPcbTable();
 

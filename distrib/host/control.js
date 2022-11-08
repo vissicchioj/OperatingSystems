@@ -144,39 +144,41 @@ var TSOS;
                         }
                     }
                     else {
-                        // Update each value in the display
-                        if (j == 0) {
-                            addCell.innerHTML = _PCB.pid.toString();
-                        }
-                        else if (j == 1) {
-                            addCell.innerHTML = _PCB.state.toString();
-                        }
-                        else if (j == 2) {
-                            addCell.innerHTML = _PCB.location.toString();
-                        }
-                        else if (j == 3) {
-                            addCell.innerHTML = _PCB.priority.toString();
-                        }
-                        else if (j == 4) {
-                            addCell.innerHTML = _PCB.pc.toString();
-                        }
-                        else if (j == 5) {
-                            addCell.innerHTML = _PCB.acc.toString();
-                        }
-                        else if (j == 6) {
-                            addCell.innerHTML = _PCB.xreg.toString();
-                        }
-                        else if (j == 7) {
-                            addCell.innerHTML = _PCB.yreg.toString();
-                        }
-                        else if (j == 8) {
-                            addCell.innerHTML = _PCB.zflag.toString();
-                        }
-                        else if (j == 9) {
-                            addCell.innerHTML = _PCB.baseReg.toString();
-                        }
-                        else if (j == 10) {
-                            addCell.innerHTML = _PCB.limitReg.toString();
+                        if (_Kernel.residentList[i - 1] != null) {
+                            // Update each value in the display
+                            if (j == 0) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].pid.toString();
+                            }
+                            else if (j == 1) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].state.toString();
+                            }
+                            else if (j == 2) {
+                                addCell.innerHTML = "Memory";
+                            }
+                            else if (j == 3) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].priority.toString();
+                            }
+                            else if (j == 4) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].pc.toString();
+                            }
+                            else if (j == 5) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].acc.toString();
+                            }
+                            else if (j == 6) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].xreg.toString();
+                            }
+                            else if (j == 7) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].yreg.toString();
+                            }
+                            else if (j == 8) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].zflag.toString();
+                            }
+                            else if (j == 9) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].baseReg.toString();
+                            }
+                            else if (j == 10) {
+                                addCell.innerHTML = _Kernel.residentList[i - 1].limitReg.toString();
+                            }
                         }
                     }
                 }
