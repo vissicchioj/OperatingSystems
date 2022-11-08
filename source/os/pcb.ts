@@ -15,6 +15,8 @@ module TSOS
             public zflag: number = 0,
             public baseReg: number = 0,
             public limitReg: number = 0,
+            public turnaround: number = 0,
+            public wait: number = 0
             ) 
         {
 
@@ -32,6 +34,8 @@ module TSOS
             this.zflag = 0;
             this.baseReg = 0;
             this.limitReg = this.baseReg + 256;
+            this.turnaround = 0;
+            this.wait = 0;
         }
 
         // PCB should not be loading or running programs instead we'll leave that to the kernel

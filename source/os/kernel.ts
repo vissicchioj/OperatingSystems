@@ -81,7 +81,9 @@ module TSOS {
                that it has to look for interrupts and process them if it finds any.                          
             */
 
-            _CpuSched.roundRobin();
+            _CpuSched.roundRobin();            
+
+            //this.calcTurnaroundTimeWaitTime();
 
             // Check for an interrupt, if there are any. Page 560
             if (_KernelInterruptQueue.getSize() > 0) {
@@ -191,6 +193,12 @@ module TSOS {
 
         public pidTracker: number = -1;
 
+        public countTurnarounds: boolean[] = [false, false, false];
+        public boolFinished: boolean = false;
+        // public countTurnaround0: boolean = false;
+        // public countTurnaround1: boolean = false;
+        // public countTurnaround2: boolean = false;
+
         // Loading a program into memory
         public load(userProgram: Array<string>)
         {
@@ -222,6 +230,10 @@ module TSOS {
             // Update the PCB table with values
             TSOS.Control._SetPcbTable();
 
+            // for (var i = 0; _Kernel.countTurnarounds.length; i++)
+            //     {
+            //         _Kernel.countTurnarounds[i] = false;
+            //     }
         }
 
         // Running a program in memory
@@ -272,6 +284,36 @@ module TSOS {
                 // _StdOut.putText('Ready Queue Size:' + _Kernel.readyQueue.getSize());
 
                 // Will get dequeued via context switch
+            }
+        }
+
+        public calcTurnaroundTimeWaitTime()
+        {
+            //_StdOut.putText("Calcing");
+            for (var i = 0; i < 3; i++)
+            {
+                if(this.residentList[i] !== null)
+                {
+                    if (_CPU.isExecuting)
+                    {
+                        if (this.residentList[i].state !== "Finished")
+                        {
+                            this.residentList[i].turnaround++;
+                        }
+                    }
+                    if (this.residentList[i].state === "Ready")
+                    {
+                        this.residentList[i].wait++;
+                    }
+                    if (this.residentList[i].state === "Finished" && this.boolFinished === true)
+                    {
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Turnaround Time: " + this.residentList[i].turnaround);
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Wait Time: " + this.residentList[i].wait);
+                        _StdOut.advanceLine();
+                    }
+                }
             }
         }
     }

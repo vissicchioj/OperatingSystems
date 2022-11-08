@@ -73,6 +73,8 @@ var TSOS;
             }
             // Increment our counter because one cycle has been completed
             _CpuSched.cycleCounter = _CpuSched.cycleCounter + 1;
+            _Kernel.calcTurnaroundTimeWaitTime();
+            _Kernel.boolFinished = false;
         }
         opCodes(currInstruction) {
             switch (currInstruction) {
@@ -308,6 +310,7 @@ var TSOS;
                 this.init();
                 this.isExecuting = false;
                 _StdOut.advanceLine();
+                _Kernel.boolFinished = true;
             }
         }
     }
