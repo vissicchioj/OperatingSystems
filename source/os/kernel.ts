@@ -81,7 +81,8 @@ module TSOS {
                that it has to look for interrupts and process them if it finds any.                          
             */
 
-            _CpuSched.roundRobin();            
+            //_CpuSched.roundRobin();            
+            _CpuSched.schedules();
 
             //this.calcTurnaroundTimeWaitTime();
 

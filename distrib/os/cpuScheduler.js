@@ -5,11 +5,27 @@ var TSOS;
         // IP3 only handles Round Robin Scheduling
         constructor(
         // default quantum is 6
-        quantum = 6, 
+        quantum = 6, prevQuantum = quantum, 
         // after (quantum num) cycles the context switch occurs
-        cycleCounter = 0) {
+        cycleCounter = 0, 
+        //default schedule is Round Robin
+        sched = "RR") {
             this.quantum = quantum;
+            this.prevQuantum = prevQuantum;
             this.cycleCounter = cycleCounter;
+            this.sched = sched;
+        }
+        schedules() {
+            switch (this.sched) {
+                case "RR":
+                    this.roundRobin();
+                    break;
+                case "FCFS":
+                    this.firstComeFirstServe();
+                    break;
+                default:
+                    _StdOut.putText("Error: Invalid schedule type.");
+            }
         }
         roundRobin() {
             // Needs to call the kernel interrupt for cpu dispatcher context switch
@@ -26,6 +42,23 @@ var TSOS;
                         _Kernel.krnInterruptHandler(CONTEXTSWITCH_IRQ, null);
                     }
                 }
+            }
+        }
+        firstComeFirstServe() {
+            this.quantum = Number.MAX_VALUE;
+            this.roundRobin();
+        }
+        setSchedule(schedule) {
+            switch (schedule) {
+                case "RR":
+                    this.quantum = this.prevQuantum;
+                    this.sched = schedule;
+                    break;
+                case "FCFS":
+                    this.sched = schedule;
+                    break;
+                default:
+                    _StdOut.putText("Error: Invalid schedule type.");
             }
         }
     }

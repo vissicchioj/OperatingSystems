@@ -8,11 +8,33 @@ module TSOS
         (
             // default quantum is 6
             public quantum: number = 6,
+
+            public prevQuantum: number = quantum,
+
             // after (quantum num) cycles the context switch occurs
             public cycleCounter: number = 0,
+
+            //default schedule is Round Robin
+            public sched: String = "RR",
         )
         {
 
+        }
+
+        public schedules()
+        {
+            switch(this.sched)
+            {
+                case "RR":
+                    this.roundRobin();
+                    break;
+                case "FCFS":
+                    this.firstComeFirstServe();
+                    break;
+                default:
+                    _StdOut.putText("Error: Invalid schedule type.");
+                
+            }
         }
 
         public roundRobin()
@@ -35,6 +57,29 @@ module TSOS
                         _Kernel.krnInterruptHandler(CONTEXTSWITCH_IRQ, null);
                     }
                 }
+            }
+        }
+
+        public firstComeFirstServe()
+        {
+            this.quantum = Number.MAX_VALUE;
+            this.roundRobin();
+        }
+
+        public setSchedule(schedule: String)
+        {
+            switch(schedule)
+            {
+                case "RR":
+                    this.quantum = this.prevQuantum;
+                    this.sched = schedule;
+                    break;
+                case "FCFS":
+                    this.sched = schedule;
+                    break;
+                default:
+                    _StdOut.putText("Error: Invalid schedule type.");
+                
             }
         }
     }

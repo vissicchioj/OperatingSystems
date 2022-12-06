@@ -153,6 +153,18 @@ module TSOS {
                 "<int> - Sets the Round Robin quantum.");
             this.commandList[this.commandList.length] = sc;
 
+            //getSchedule
+            sc = new ShellCommand(this.shellGetSchedule,
+                "getsched",
+                " - Displays current scheduling method.");
+            this.commandList[this.commandList.length] = sc;
+
+            //setSchedule
+            sc = new ShellCommand(this.shellSetSchedule,
+                "setsched",
+                "<sched. method> - Sets the scheduling method.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -561,33 +573,38 @@ module TSOS {
         {
             if (args.length > 0) 
             {
-                if (_CPU.isExecuting === true)
-                {
-                    _StdOut.putText("Error: Cannot kill processes while CPU is executing.");
-                }
-                else
-                {
+                // if (_CPU.isExecuting === true)
+                // {
+                //     _StdOut.putText("Error: Cannot kill processes while CPU is executing.");
+                // }
+                // else
+                // {
                 //check if it exists first prob
                 _Kernel.residentList[parseInt(args[0])] = null;
+                //_Memory.reset();
+                //TSOS.Control._SetMemTable();
                 TSOS.Control._SetPcbTable();
-                }
+               // }
             }
         }
 
         public shellKillAll(args: string[])
         {
-            if (_CPU.isExecuting === true)
-                {
-                    _StdOut.putText("Error: Cannot kill processes while CPU is executing.");
-                }
-            else
-            {
+            // if (_CPU.isExecuting === true)
+            //     {
+            //         _StdOut.putText("Error: Cannot kill processes while CPU is executing.");
+            //     }
+            // else
+            // {
+            _CPU.isExecuting = false;
             for (var i = 0; i < _Kernel.residentList.length; i++)
             {
                 _Kernel.residentList[i] = null;
+                //_Memory.reset();
+                //TSOS.Control._SetMemTable();
                 TSOS.Control._SetPcbTable();
             }
-            }
+            //}
         }
 
         public shellQuantum(args: string[])
@@ -597,12 +614,28 @@ module TSOS {
                 if (parseInt(args[0]) > 0)
                 {
                     _CpuSched.quantum = parseInt(args[0]);
+                    _CpuSched.prevQuantum = _CpuSched.quantum;
                     TSOS.Control._SetPcbTable();
                 }
                 else
                 {
                     _StdOut.putText("Error: Quantum must be an integer larger than 0.")
                 }
+            }
+        }
+
+        public shellGetSchedule(args: string[])
+        {
+
+            _StdOut.putText(_CpuSched.sched);
+
+        }
+
+        public shellSetSchedule(args: string[])
+        {
+            if (args.length > 0) 
+            {
+                _CpuSched.setSchedule(args[0]);
             }
         }
     }
