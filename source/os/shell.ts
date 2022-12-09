@@ -153,6 +153,54 @@ module TSOS {
                 "<int> - Sets the Round Robin quantum.");
             this.commandList[this.commandList.length] = sc;
 
+            //format
+            sc = new ShellCommand(this.shellFormat,
+                "format",
+                " - Initialize all blocks in all sectors in all tracks");
+            this.commandList[this.commandList.length] = sc;
+
+            //create
+            sc = new ShellCommand(this.shellCreate,
+                "create",
+                "<fileName> - Create the file <fileName>");
+            this.commandList[this.commandList.length] = sc;
+
+            //read
+            sc = new ShellCommand(this.shellRead,
+                "read",
+                "<fileName> - Read and display contents of <fileName>.");
+            this.commandList[this.commandList.length] = sc;
+
+            //write
+            sc = new ShellCommand(this.shellWrite,
+                "write",
+                "<fileName> \"data\" - Write the data inside the quotes (excluding the quotes themselves) to <fileName>");
+            this.commandList[this.commandList.length] = sc;
+
+            //delete
+            sc = new ShellCommand(this.shellDelete,
+                "delete",
+                "<fileName> - Remove <fileName> from storage.");
+            this.commandList[this.commandList.length] = sc;
+
+            //copy
+            sc = new ShellCommand(this.shellCopy,
+                "copy",
+                "<existing fileName> <new fileName> - Copies file.");
+            this.commandList[this.commandList.length] = sc;
+
+            //rename
+            sc = new ShellCommand(this.shellRename,
+                "rename",
+                "<curr fileName> <new fileName> - Renames file.");
+            this.commandList[this.commandList.length] = sc;
+
+            //ls
+            sc = new ShellCommand(this.shellLs,
+                "ls",
+                " - Lists the files currently stored on disk.");
+            this.commandList[this.commandList.length] = sc;
+
             //getSchedule
             sc = new ShellCommand(this.shellGetSchedule,
                 "getsched",
@@ -162,7 +210,7 @@ module TSOS {
             //setSchedule
             sc = new ShellCommand(this.shellSetSchedule,
                 "setsched",
-                "<sched. method> - Sets the scheduling method.");
+                "<[RR, FCFS]> - Sets the scheduling method.");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -622,6 +670,62 @@ module TSOS {
                     _StdOut.putText("Error: Quantum must be an integer larger than 0.")
                 }
             }
+        }
+
+        public shellFormat(args: string[])
+        {
+            if (args.length > 0) 
+            {
+            }
+        }
+
+        public shellCreate(args: string[])
+        {
+            if (args.length > 0) 
+            {
+            }
+        }
+
+        public shellRead(args: string[])
+        {
+            if (args.length > 0) 
+            {
+            }
+        }
+
+        public shellWrite(args: string[])
+        {
+            if (args.length > 0) 
+            {
+            }
+        }
+
+        public shellDelete(args: string[])
+        {
+            if (args.length > 0) 
+            {
+            }
+        }
+
+        public shellCopy(args: string[])
+        {
+            //Will need to do some string parsing to handle two arguments
+            if (args.length > 0) 
+            {
+            }
+        }
+
+        public shellRename(args: string[])
+        {
+            //Will need to do some string parsing to handle two arguments
+            if (args.length > 0) 
+            {
+            }
+        }
+
+        public shellLs(args: string[])
+        {
+
         }
 
         public shellGetSchedule(args: string[])

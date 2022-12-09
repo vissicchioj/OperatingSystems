@@ -25,6 +25,8 @@ const KEYBOARD_IRQ: number = 1;
 
 const CONTEXTSWITCH_IRQ: number = 2;
 
+const DISKSYSTEM_IRQ: number = 3;
+
 
 
 //
@@ -78,6 +80,7 @@ var _SarcasticMode: boolean = false;
 
 // Global Device Driver Objects - page 12
 var _krnKeyboardDriver: TSOS.DeviceDriverKeyboard  = null;
+var _krnDiskSystem: TSOS.DeviceDriverDiskSystem  = null;
 
 var _hardwareClockID: number = null;
 
