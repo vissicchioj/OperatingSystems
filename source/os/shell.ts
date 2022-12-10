@@ -674,9 +674,7 @@ module TSOS {
 
         public shellFormat(args: string[])
         {
-            if (args.length > 0) 
-            {
-            }
+           _krnDiskSystem.format();
         }
 
         public shellCreate(args: string[])

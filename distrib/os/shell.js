@@ -512,8 +512,7 @@ var TSOS;
             }
         }
         shellFormat(args) {
-            if (args.length > 0) {
-            }
+            _krnDiskSystem.format();
         }
         shellCreate(args) {
             if (args.length > 0) {

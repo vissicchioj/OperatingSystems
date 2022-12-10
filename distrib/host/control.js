@@ -20,6 +20,60 @@
 var TSOS;
 (function (TSOS) {
     class Control {
+        static _setDiskTable() {
+            // Empty table
+            _DiskTable.innerHTML = '';
+            // Then update based on session storage
+            var b = 0;
+            var s = 0;
+            var t = 0;
+            for (var i = 0; i <= 256; i++) {
+                var addRow = _DiskTable.insertRow(i);
+                for (var j = 0; j < 4; j++) {
+                    var addCell = addRow.insertCell(j);
+                    if (i === 0) {
+                        if (j === 0) {
+                            addCell.innerHTML = "TSB";
+                        }
+                        else if (j === 1) {
+                            addCell.innerHTML = "In Use";
+                        }
+                        else if (j === 2) {
+                            addCell.innerHTML = "Next";
+                        }
+                        else if (j === 3) {
+                            addCell.innerHTML = "Data";
+                        }
+                    }
+                    else {
+                        if (j === 0) {
+                            if (i > 1) {
+                                b++;
+                                if (b === 8) {
+                                    b = 0;
+                                    s++;
+                                    if (s === 8) {
+                                        s = 0;
+                                        t++;
+                                    }
+                                }
+                            }
+                            addCell.innerHTML = t + "," + s + "," + b;
+                        }
+                        else if (j === 1) {
+                            addCell.innerHTML = sessionStorage.getItem(t + "," + s + "," + b).charAt(0);
+                        }
+                        else if (j === 2) {
+                            addCell.innerHTML = sessionStorage.getItem(t + "," + s + "," + b).substr(1, 3);
+                        }
+                        else if (j === 3) {
+                            var strLength = sessionStorage.getItem(t + "," + s + "," + b).length;
+                            addCell.innerHTML = sessionStorage.getItem(t + "," + s + "," + b).substr(4, strLength);
+                        }
+                    }
+                }
+            }
+        }
         static _SetMemTable() {
             // Set our memory to an array of strings
             var memArr = _Memory.toString().split(' ');
@@ -304,6 +358,28 @@ var TSOS;
                     }
                     else {
                         addCell.innerHTML = "-";
+                    }
+                }
+            }
+            //Disk Table initialize
+            _DiskTable = document.getElementById('ds');
+            for (var i = 0; i < 1; i++) {
+                var addRow = _DiskTable.insertRow(i);
+                for (var j = 0; j < 4; j++) {
+                    var addCell = addRow.insertCell(j);
+                    if (i === 0) {
+                        if (j === 0) {
+                            addCell.innerHTML = "TSB";
+                        }
+                        else if (j === 1) {
+                            addCell.innerHTML = "Used";
+                        }
+                        else if (j === 2) {
+                            addCell.innerHTML = "Next";
+                        }
+                        else if (j === 3) {
+                            addCell.innerHTML = "Data";
+                        }
                     }
                 }
             }
