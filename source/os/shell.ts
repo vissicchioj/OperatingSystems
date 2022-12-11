@@ -737,7 +737,6 @@ module TSOS {
 
         public shellCopy(args: string[])
         {
-            //Will need to do some string parsing to handle two arguments
             if (args.length > 0) 
             {
             }
@@ -745,9 +744,20 @@ module TSOS {
 
         public shellRename(args: string[])
         {
-            //Will need to do some string parsing to handle two arguments
             if (args.length > 0) 
             {
+                if (args[0].length > 0 && args[1].length > 0)
+                {
+                    _krnDiskSystem.rename(args[0], args[1]);
+                }
+                else
+                {
+                    _StdOut.putText("Error: Please supply a new fileName.");
+                }
+            }
+            else
+            {
+                _StdOut.putText("Error: Please supply an existing fileName.");
             }
         }
 

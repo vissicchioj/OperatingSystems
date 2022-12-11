@@ -554,13 +554,20 @@ var TSOS;
             }
         }
         shellCopy(args) {
-            //Will need to do some string parsing to handle two arguments
             if (args.length > 0) {
             }
         }
         shellRename(args) {
-            //Will need to do some string parsing to handle two arguments
             if (args.length > 0) {
+                if (args[0].length > 0 && args[1].length > 0) {
+                    _krnDiskSystem.rename(args[0], args[1]);
+                }
+                else {
+                    _StdOut.putText("Error: Please supply a new fileName.");
+                }
+            }
+            else {
+                _StdOut.putText("Error: Please supply an existing fileName.");
             }
         }
         shellLs(args) {

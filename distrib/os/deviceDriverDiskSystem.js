@@ -45,7 +45,7 @@ var TSOS;
             TSOS.Control._setDiskTable();
         }
         create(fileName) {
-            // TODO: Check if fileName exists.
+            // TODO: Check if fileName exists before adding a new one.
             var availableDir = this.findNextAvailableDir();
             var availableData = this.findNextAvailableData();
             // Remove all commas from the tsb string that returns from availableData as it will mess up my display.
@@ -53,11 +53,7 @@ var TSOS;
             var strToHex = this.strToHex(fileName);
             // Create a value string 
             var newVal = "1" + availableDataNext + strToHex; // inUse = 1, Next = tsb string from avaialableData, valData = strToHex
-            // Calculate remainingValData by subtracting space used from 64
-            var remainingValData = 64 - (4 + strToHex.length / 2);
-            for (var i = 0; i < remainingValData; i++) {
-                newVal += "- ";
-            }
+            newVal = this.appendDashes(newVal);
             sessionStorage.setItem(availableDir, newVal);
             // Set the new data location that is next to inUse
             var availableDataVal = "1000";
@@ -71,37 +67,82 @@ var TSOS;
         write(fileName, dataStr) {
             // get the TSB key for the filename mentioned
             var fileNameKey = this.findFileNameKey(fileName);
-            // get the next key by looking at the value within the current key
-            var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
-            nextKey = this.appendCommas(nextKey);
-            var hexDataStr = this.strToHex(dataStr);
-            var newVal = "1***" + hexDataStr;
-            var remainingValData = 64 - (4 + hexDataStr.length / 2);
-            for (var i = 0; i < remainingValData; i++) {
-                newVal += "- ";
+            if (fileNameKey === "") {
+                _StdOut.putText(fileName + " not found.");
             }
-            // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
-            sessionStorage.setItem(nextKey, newVal);
-            _StdOut.putText("Data written to " + fileName);
-            TSOS.Control._setDiskTable();
+            else {
+                // get the next key by looking at the value within the current key
+                var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
+                nextKey = this.appendCommas(nextKey);
+                var hexDataStr = this.strToHex(dataStr);
+                var newVal = "1***" + hexDataStr;
+                newVal = this.appendDashes(newVal);
+                // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
+                sessionStorage.setItem(nextKey, newVal);
+                _StdOut.putText("Data written to " + fileName);
+                TSOS.Control._setDiskTable();
+            }
         }
         read(fileName) {
             var fileNameKey = this.findFileNameKey(fileName);
-            var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
-            nextKey = this.appendCommas(nextKey);
-            // Get the hexString from file by removing all -
-            var hexStr = sessionStorage.getItem(nextKey).replace(/- /g, '').trim();
-            var dataStr = this.hexToStr(hexStr);
-            _StdOut.putText("Contents of " + fileName + ": ");
-            // read out the dataStr to user
-            _StdOut.putText(dataStr);
+            if (fileNameKey === "") {
+                _StdOut.putText(fileName + " not found.");
+            }
+            else {
+                var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
+                nextKey = this.appendCommas(nextKey);
+                // Get the hexString from file by removing all -
+                var hexStr = sessionStorage.getItem(nextKey).replace(/- /g, '').trim();
+                var dataStr = this.hexToStr(hexStr);
+                _StdOut.putText("Contents of " + fileName + ": ");
+                // read out the dataStr to user
+                _StdOut.putText(dataStr);
+            }
         }
         delete(fileName) {
             var fileNameKey = this.findFileNameKey(fileName);
-            var fileNameData = sessionStorage.getItem(fileNameKey);
-            var removeInUse = fileNameData.replace("1", "0");
-            sessionStorage.setItem(fileNameKey, removeInUse);
-            TSOS.Control._setDiskTable();
+            if (fileNameKey === "") {
+                _StdOut.putText(fileName + " not found.");
+            }
+            else {
+                var fileNameData = sessionStorage.getItem(fileNameKey);
+                // Set inUse to 0 so it is available to be replaced but dont remove the data
+                var removeInUse = fileNameData.replace("1", "0");
+                sessionStorage.setItem(fileNameKey, removeInUse);
+                _StdOut.putText("File: " + fileName + " has been deleted.");
+                TSOS.Control._setDiskTable();
+            }
+        }
+        rename(oldFileName, newFileName) {
+            var oldFileNameKey = this.findFileNameKey(oldFileName);
+            if (oldFileNameKey === "") {
+                _StdOut.putText(oldFileName + " not found.");
+            }
+            else {
+                //var count = 0;
+                var fileNameData = sessionStorage.getItem(oldFileNameKey).replace(/- /g, '').trim();
+                var removeFileName = fileNameData.substr(0, 4);
+                var hexNewFileName = this.strToHex(newFileName);
+                var renamedFile = removeFileName + hexNewFileName;
+                renamedFile = this.appendDashes(renamedFile);
+                sessionStorage.setItem(oldFileNameKey, renamedFile);
+                //_StdOut.putText(count + "");
+                _StdOut.putText(oldFileName + " has been renamed to " + newFileName + ".");
+                TSOS.Control._setDiskTable();
+            }
+        }
+        appendDashes(dataStr) {
+            var newStr = dataStr;
+            // Calculate remainingValData by subtracting space used from 64
+            var remainingValData = 64 - (4 + newStr.substr(4, newStr.length).length / 2);
+            //var count = 0;
+            for (var i = 0; i < remainingValData; i++) {
+                newStr += "- ";
+                // Count to check if the amount of dashes are correct
+                //count++;
+            }
+            //_StdOut.putText(count + "");
+            return newStr;
         }
         // Will need to add commas when taking the next key and using it as a current key
         appendCommas(key) {
