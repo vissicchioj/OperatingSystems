@@ -96,6 +96,13 @@ var TSOS;
             // read out the dataStr to user
             _StdOut.putText(dataStr);
         }
+        delete(fileName) {
+            var fileNameKey = this.findFileNameKey(fileName);
+            var fileNameData = sessionStorage.getItem(fileNameKey);
+            var removeInUse = fileNameData.replace("1", "0");
+            sessionStorage.setItem(fileNameKey, removeInUse);
+            TSOS.Control._setDiskTable();
+        }
         // Will need to add commas when taking the next key and using it as a current key
         appendCommas(key) {
             var newStr = key;

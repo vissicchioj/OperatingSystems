@@ -135,6 +135,18 @@ module TSOS {
             _StdOut.putText(dataStr);
         }
 
+        public delete(fileName: string)
+        {
+            var fileNameKey = this.findFileNameKey(fileName);
+            var fileNameData = sessionStorage.getItem(fileNameKey);
+
+            // Set inUse to 0 so it is available to be replaced but dont remove the data
+            var removeInUse = fileNameData.replace("1", "0");
+            sessionStorage.setItem(fileNameKey, removeInUse);
+            _StdOut.putText("File: " + fileName + " has been deleted.");
+            TSOS.Control._setDiskTable();
+        }
+
         // Will need to add commas when taking the next key and using it as a current key
         public appendCommas(key: string): string
         {

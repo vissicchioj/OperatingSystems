@@ -667,7 +667,7 @@ module TSOS {
                 }
                 else
                 {
-                    _StdOut.putText("Error: Quantum must be an integer larger than 0.")
+                    _StdOut.putText("Error: Quantum must be an integer larger than 0.");
                 }
             }
         }
@@ -685,7 +685,7 @@ module TSOS {
             }
             else
             {
-                _StdOut.putText("Error: Please supply a fileName.")
+                _StdOut.putText("Error: Please supply a fileName.");
             }
         }
 
@@ -697,7 +697,7 @@ module TSOS {
             }
             else
             {
-                _StdOut.putText("Error: Please supply a fileName.")
+                _StdOut.putText("Error: Please supply a fileName.");
             }
         }
 
@@ -713,12 +713,12 @@ module TSOS {
                 }
                 else
                 {
-                    _StdOut.putText("Error: Please supply a data string surrounded in quotation marks.")
+                    _StdOut.putText("Error: Please supply a data string surrounded in quotation marks.");
                 }
             }
             else
             {
-                _StdOut.putText("Error: Please supply a fileName.")
+                _StdOut.putText("Error: Please supply a fileName.");
             }
             
         }
@@ -727,6 +727,11 @@ module TSOS {
         {
             if (args.length > 0) 
             {
+                _krnDiskSystem.delete(args[0]);
+            }
+            else
+            {
+                _StdOut.putText("Error: Please supply a fileName.");
             }
         }
 

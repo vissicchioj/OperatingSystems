@@ -547,6 +547,10 @@ var TSOS;
         }
         shellDelete(args) {
             if (args.length > 0) {
+                _krnDiskSystem.delete(args[0]);
+            }
+            else {
+                _StdOut.putText("Error: Please supply a fileName.");
             }
         }
         shellCopy(args) {
