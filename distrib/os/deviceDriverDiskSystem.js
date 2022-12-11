@@ -46,8 +46,8 @@ var TSOS;
         }
         create(fileName) {
             // TODO: Check if fileName exists.
-            var availableDir = this.findNextDir();
-            var availableData = this.findNextData();
+            var availableDir = this.findNextAvailableDir();
+            var availableData = this.findNextAvailableData();
             // Remove all commas from the tsb string that returns from availableData as it will mess up my display.
             var availableDataNext = availableData.replace(/,/g, '');
             var strToHex = this.strToHex(fileName);
@@ -65,9 +65,67 @@ var TSOS;
                 availableDataVal += "- ";
             }
             sessionStorage.setItem(availableData, availableDataVal);
+            _StdOut.putText("New file created: " + fileName);
             TSOS.Control._setDiskTable();
         }
-        findNextDir() {
+        write(fileName, dataStr) {
+            // get the TSB key for the filename mentioned
+            var fileNameKey = this.findFileNameKey(fileName);
+            // get the next key by looking at the value within the current key
+            var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
+            nextKey = this.appendCommas(nextKey);
+            var hexDataStr = this.strToHex(dataStr);
+            var newVal = "1***" + hexDataStr;
+            var remainingValData = 64 - (4 + hexDataStr.length / 2);
+            for (var i = 0; i < remainingValData; i++) {
+                newVal += "- ";
+            }
+            // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
+            sessionStorage.setItem(nextKey, newVal);
+            _StdOut.putText("Data written to " + fileName);
+            TSOS.Control._setDiskTable();
+        }
+        read(fileName) {
+            var fileNameKey = this.findFileNameKey(fileName);
+            var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
+            nextKey = this.appendCommas(nextKey);
+            // Get the hexString from file by removing all -
+            var hexStr = sessionStorage.getItem(nextKey).replace(/- /g, '').trim();
+            var dataStr = this.hexToStr(hexStr);
+            _StdOut.putText("Contents of " + fileName + ": ");
+            // read out the dataStr to user
+            _StdOut.putText(dataStr);
+        }
+        // Will need to add commas when taking the next key and using it as a current key
+        appendCommas(key) {
+            var newStr = key;
+            var charArr = [...newStr];
+            charArr[0] = charArr[0] + ",";
+            charArr[1] = charArr[1] + ",";
+            newStr = charArr.join("");
+            return newStr;
+        }
+        findFileNameKey(fileName) {
+            var key = "";
+            var found = false;
+            for (var s = 0; s < 8; s++) {
+                for (var b = 0; b < 8; b++) {
+                    var itemLength = sessionStorage.getItem("0," + s + "," + b).length;
+                    // use this find the fileName with -
+                    var dataVal = sessionStorage.getItem("0," + s + "," + b).substr(4, itemLength);
+                    // remove all - from the dataVal
+                    var hexFileName = dataVal.replace(/- /g, '').trim();
+                    var getFileName = this.hexToStr(hexFileName);
+                    if (getFileName === fileName && found === false) {
+                        key = "0," + s + "," + b;
+                        found = true;
+                    }
+                }
+            }
+            return key;
+        }
+        findNextAvailableDir() {
+            // Search through Dir until inUse = 0, meaning its available 
             var dirKey = "";
             var found = false;
             for (var s = 0; s < 8; s++) {
@@ -81,7 +139,8 @@ var TSOS;
             }
             return dirKey;
         }
-        findNextData() {
+        findNextAvailableData() {
+            // Search through Data until inUse = 0, meaning its available 
             var dataKey = "";
             var found = false;
             for (var t = 1; t < 4; t++) {

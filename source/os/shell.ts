@@ -693,6 +693,11 @@ module TSOS {
         {
             if (args.length > 0) 
             {
+                _krnDiskSystem.read(args[0]);
+            }
+            else
+            {
+                _StdOut.putText("Error: Please supply a fileName.")
             }
         }
 
@@ -700,7 +705,22 @@ module TSOS {
         {
             if (args.length > 0) 
             {
+                // check for data in quotes
+                if (args[1].charAt(0) === '"' && args[1].charAt(args[1].length -1) === '"')
+                {
+                    var dataStr = args[1].replace(/"/g, '');
+                    _krnDiskSystem.write(args[0], dataStr);
+                }
+                else
+                {
+                    _StdOut.putText("Error: Please supply a data string surrounded in quotation marks.")
+                }
             }
+            else
+            {
+                _StdOut.putText("Error: Please supply a fileName.")
+            }
+            
         }
 
         public shellDelete(args: string[])
