@@ -184,6 +184,40 @@ module TSOS {
             }
         }
 
+        public ls()
+        {
+            var fileNames = [];
+
+            // go through DIR and add eveery fileName inUse to fileNames
+            for (var s = 0; s < 8; s++)
+            {
+                for (var b = 0; b < 8; b++)
+                {
+                    var valData = sessionStorage.getItem("0," + s + "," + b);
+                    var hexFileName = valData.substr(4, valData.length).replace(/- /g, '');
+                    if (hexFileName === '')
+                    {
+
+                    }
+                    else
+                    {
+                        // Check that the data is inUse
+                        if (valData.charAt(0) === "1")
+                        {
+                            var strFileName = this.hexToStr(hexFileName);
+                            fileNames.push(strFileName);
+                        }
+                    }
+                }
+            }
+
+            for (var i = 0; i < fileNames.length; i++)
+            {
+                _StdOut.putText(fileNames[i]);
+                _StdOut.advanceLine();
+            }
+        }
+
         public appendDashes(dataStr: string): string
         {
             var newStr = dataStr;

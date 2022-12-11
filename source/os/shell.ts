@@ -763,7 +763,7 @@ module TSOS {
 
         public shellLs(args: string[])
         {
-
+            _krnDiskSystem.ls();
         }
 
         public shellGetSchedule(args: string[])

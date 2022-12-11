@@ -571,6 +571,7 @@ var TSOS;
             }
         }
         shellLs(args) {
+            _krnDiskSystem.ls();
         }
         shellGetSchedule(args) {
             _StdOut.putText(_CpuSched.sched);
