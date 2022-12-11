@@ -547,10 +547,16 @@ module TSOS {
                     hexNums.push(inputText.substring(i, i + 2));
                 }
 
-                _Kernel.load(hexNums);
+                var isAdded = _Kernel.load(hexNums);
 
-
+                if (isAdded === true)
+                {
                 _StdOut.putText('Process ID: ' + _Kernel.pidTracker);
+                }
+                else
+                {
+                    _StdOut.putText("Not enough space in memory");
+                }
                 //_StdOut.putText('base reg:' + _Kernel.residentList[_Kernel.pidTracker].baseReg);
 
 
@@ -628,7 +634,9 @@ module TSOS {
                 // else
                 // {
                 //check if it exists first prob
-                _Kernel.residentList[parseInt(args[0])] = null;
+                _MM.setAvailableMemSeg(parseInt(args[0]));
+                _Kernel.residentList[parseInt(args[0])].state = "Finished";
+
                 //_Memory.reset();
                 //TSOS.Control._SetMemTable();
                 TSOS.Control._SetPcbTable();
@@ -645,9 +653,11 @@ module TSOS {
             // else
             // {
             _CPU.isExecuting = false;
+            _CPU.PC = 0;
+            _MM.setAllAvailableMemSeg();
             for (var i = 0; i < _Kernel.residentList.length; i++)
             {
-                _Kernel.residentList[i] = null;
+                _Kernel.residentList[i].state = "Finished";
                 //_Memory.reset();
                 //TSOS.Control._SetMemTable();
                 TSOS.Control._SetPcbTable();

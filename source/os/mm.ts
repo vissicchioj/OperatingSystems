@@ -4,12 +4,69 @@ module TSOS
     export class MemoryManager
     {
         private memorySize: number;
+        private memSegment1: boolean = false;
+        private memSegment2: boolean = false;
+        private memSegment3: boolean = false;
         
         constructor()
         {
             this.memorySize = 256;
         }
 
+        public getAvailableMemSeg(): number
+        {
+            var baseReg = 0;
+            if (this.memSegment1 === false)
+            {
+                baseReg = 0;
+                this.memSegment1 = true;
+            }
+            else if (this.memSegment2 === false)
+            {
+                baseReg = 256;
+                this.memSegment2 = true;
+            }
+            else if (this.memSegment3 === false)
+            {
+                baseReg = 512;
+                this.memSegment3 = true;
+            }
+            else if (_krnDiskSystem.isFormatted === true)
+            {
+                baseReg = 768;
+            }
+            else
+            {
+                //set it to a flag to know there isn't space
+                baseReg = -1;
+            }
+            return baseReg;
+        }
+
+        public setAvailableMemSeg(pid: number)
+        {
+            var base = _Kernel.residentList[pid - 1].baseReg;
+            if (base ===  0)
+            {
+                this.memSegment1 = false;
+            }
+            else if (base ===  256)
+            {
+                this.memSegment2 = false;
+            }
+            else if (base ===  512)
+            {
+                this.memSegment3 = false;
+            }
+        }
+
+        public setAllAvailableMemSeg()
+        {
+            this.memSegment1 = false;
+            this.memSegment2 = false;
+            this.memSegment3 = false;
+        }
+        
         // Allocate User Input Program to memory
         public allocateMem(baseReg: number, userProgram: Array<string>)
         {
@@ -51,5 +108,8 @@ module TSOS
             return this.combinedByte;
         }
 
+
+
     }
+
 }

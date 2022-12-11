@@ -203,33 +203,84 @@ module TSOS {
         // Loading a program into memory
         public load(userProgram: Array<string>)
         {
+            var canAdd = false;
+
             // Create a new PCB and add it to the resident list
             var newPCB = new ProcessControlBlock();
-            this.pidTracker++;
+            var base = _MM.getAvailableMemSeg();
+            if (base === 768)
+            {
+                this.pidTracker++;
+                newPCB.pid = this.pidTracker;
+                newPCB.baseReg = base;
+                newPCB.limitReg = newPCB.baseReg;
+                newPCB.location = "Disk";
+                canAdd = true;
+
+            }
+            else if (base === -1)
+            {
+
+            }
+            else
+            {
+                this.pidTracker++;
             newPCB.pid = this.pidTracker;
+                newPCB.baseReg = base;
+                newPCB.limitReg = newPCB.baseReg + 256;
+                newPCB.location = "Memory";
+                // Memory Manager allocates the User Program into memory
+                _MM.allocateMem(newPCB.baseReg, userProgram);
+                canAdd = true;
+            }
             // Modulo Math to figure out which pcb gets what base register
-            if (newPCB.pid % 3 === 1)
-            {
-                newPCB.baseReg = 256;
-            }
-            else if (newPCB.pid % 3 === 2)
-            {
-                newPCB.baseReg = 512;
-            }
-            newPCB.limitReg = newPCB.baseReg + 256;
+            // if (newPCB.pid % 4 === 1)
+            // {
+            //     newPCB.baseReg = 256;
+            //     newPCB.limitReg = newPCB.baseReg + 256;
+            // }
+            // else if (newPCB.pid % 4 === 2)
+            // {
+            //     newPCB.baseReg = 512;
+            //     newPCB.limitReg = newPCB.baseReg + 256;
+            // }
+            // else if (newPCB.pid % 4 === 3)
+            // {
+            //     newPCB.baseReg = 769;
+            //     newPCB.limitReg = newPCB.baseReg
 
-            // Memory Manager allocates the User Program into memory
-            _MM.allocateMem(newPCB.baseReg, userProgram);
+            // }
+            // else
+            // {
+            //     newPCB.limitReg = newPCB.baseReg + 256;
+            // }
+            // newPCB.limitReg = newPCB.baseReg + 256;
 
+            // if (newPCB.baseReg !== 769)
+            // {
+            //     // Memory Manager allocates the User Program into memory
+            //     _MM.allocateMem(newPCB.baseReg, userProgram);
+            // }
+            // else
+            // {
+
+            // }
+
+            if (canAdd === true)
+            {
             // change state
             newPCB.state = "Resident";
 
-            // modulo 3 makes it so that only 3 pcbs are being loaded at a time
-            this.residentList[newPCB.pid % 3] = newPCB;
+            // OUTDATED: modulo 3 makes it so that only 3 pcbs are being loaded at a time
+            this.residentList[newPCB.pid] = newPCB;
+            }
 
-            //_StdOut.putText(this.residentList.length + ' ');
             // Update the PCB table with values
             TSOS.Control._SetPcbTable();
+
+            return canAdd;
+
+            //_StdOut.putText(this.residentList.length + ' ');
 
             // for (var i = 0; _Kernel.countTurnarounds.length; i++)
             //     {
@@ -243,7 +294,7 @@ module TSOS {
             // Run one program specified by the pid
             var pcb = this.residentList[pid];
 
-            if (pcb.state !== "Finished")
+            if (pcb.state === "Resident")
             {
             // change state
             pcb.state = "Running";
@@ -269,10 +320,11 @@ module TSOS {
 
         public runAll()
         {
+            _StdOut.putText("Running all...");
             for (var i = 0; i < this.residentList.length; i++)
             {
                 var pcb = this.residentList[i];
-                if (pcb.state !== "Finished")
+                if (pcb.state === "Resident")
                 {
                     pcb.state = "Ready";
                     this.readyQueue.enqueue(pcb);
@@ -287,7 +339,7 @@ module TSOS {
         public calcTurnaroundTimeWaitTime()
         {
             //_StdOut.putText("Calcing");
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < this.residentList.length; i++)
             {
                 if(this.residentList[i] !== null)
                 {
@@ -302,13 +354,14 @@ module TSOS {
                     {
                         this.residentList[i].wait++;
                     }
-                    if (this.residentList[i].state === "Finished" && this.boolFinished === true)
+                    if (this.residentList[i].state === "Finished" && this.boolFinished === true && this.residentList[i].calc === false)
                     {
                         _StdOut.advanceLine();
                         _StdOut.putText("Turnaround Time: " + this.residentList[i].turnaround);
                         _StdOut.advanceLine();
                         _StdOut.putText("Wait Time: " + this.residentList[i].wait);
                         _StdOut.advanceLine();
+                        this.residentList[i].calc = true;
                     }
                 }
             }

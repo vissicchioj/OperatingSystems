@@ -212,7 +212,7 @@ module TSOS {
         {
             _PcbTable.innerHTML = '';
 
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < _Kernel.residentList.length + 1; i++)
             {
                 var addRow =  _PcbTable.insertRow(i);
                 for (var j = 0; j < 13; j++)
@@ -280,51 +280,67 @@ module TSOS {
                         // Update each value in the display
                         if (j == 0)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].pid.toString();
+                            addCell.innerHTML = _Kernel.residentList[i -1].pid.toString();
                         }
                         else if (j == 1)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].state.toString();
+                            addCell.innerHTML = _Kernel.residentList[i-1].state.toString();
                         }
                         else if (j == 2)
                         {
-                            addCell.innerHTML = "Memory";
+                            addCell.innerHTML = _Kernel.residentList[i-1].location.toString();
                         }
                         else if (j == 3)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].priority.toString();
+                            addCell.innerHTML = _Kernel.residentList[i-1].priority.toString();
                         }
                         else if (j == 4)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].pc.toString();
+                            addCell.innerHTML = _Kernel.residentList[i-1].pc.toString();
                         }
                         else if (j == 5)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].acc.toString();
+                            addCell.innerHTML = _Kernel.residentList[i-1].acc.toString();
                         }
                         else if (j == 6)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].xreg.toString();
+                            addCell.innerHTML = _Kernel.residentList[i-1].xreg.toString();
                         }
                         else if (j == 7)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].yreg.toString();
+                            addCell.innerHTML = _Kernel.residentList[i-1].yreg.toString();
                         }
                         else if (j == 8)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].zflag.toString();
+                            addCell.innerHTML = _Kernel.residentList[i-1].zflag.toString();
                         }
                         else if (j == 9)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].baseReg.toString();
+                            addCell.innerHTML = _Kernel.residentList[i-1].baseReg.toString();
                         }
                         else if (j == 10)
                         {
-                            addCell.innerHTML = _Kernel.residentList[i - 1].limitReg.toString();
+                            addCell.innerHTML = _Kernel.residentList[i-1].limitReg.toString();
                         }
                         else if (j == 11)
                         {
-                            addCell.innerHTML = (i).toString();
+                            if (_Kernel.residentList[i-1].baseReg === 0)
+                            {
+                                addCell.innerHTML = "1";
+                            }
+                            else if (_Kernel.residentList[i-1].baseReg === 256)
+                            {
+                                addCell.innerHTML = "2";
+                            }
+                            else if (_Kernel.residentList[i-1].baseReg === 512)
+                            {
+                                addCell.innerHTML = "3";
+                            }
+                            else
+                            {
+                                addCell.innerHTML = "0";
+                            }
+                            //addCell.innerHTML = (i-1).toString();
                         }
                         else if (j == 12)
                         {

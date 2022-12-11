@@ -206,6 +206,10 @@ var TSOS;
                 _StdOut.advanceLine();
             }
         }
+        rollIn() {
+        }
+        rollOut() {
+        }
         appendDashes(dataStr) {
             var newStr = dataStr;
             // Calculate remainingValData by subtracting space used from 64

@@ -16,7 +16,8 @@ module TSOS
             public baseReg: number = 0,
             public limitReg: number = 0,
             public turnaround: number = 0,
-            public wait: number = 0
+            public wait: number = 0,
+            public calc: boolean = false
             ) 
         {
 
@@ -36,6 +37,7 @@ module TSOS
             this.limitReg = this.baseReg + 256;
             this.turnaround = 0;
             this.wait = 0;
+            this.calc = false;
         }
 
         // PCB should not be loading or running programs instead we'll leave that to the kernel

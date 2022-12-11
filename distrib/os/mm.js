@@ -3,11 +3,54 @@ var TSOS;
     // Allocates and deallocates memory
     class MemoryManager {
         constructor() {
+            this.memSegment1 = false;
+            this.memSegment2 = false;
+            this.memSegment3 = false;
             this.lob = 0x00;
             this.hob = 0x00;
             this.combinedByte = 0x000;
             this.byteFlipArray = [];
             this.memorySize = 256;
+        }
+        getAvailableMemSeg() {
+            var baseReg = 0;
+            if (this.memSegment1 === false) {
+                baseReg = 0;
+                this.memSegment1 = true;
+            }
+            else if (this.memSegment2 === false) {
+                baseReg = 256;
+                this.memSegment2 = true;
+            }
+            else if (this.memSegment3 === false) {
+                baseReg = 512;
+                this.memSegment3 = true;
+            }
+            else if (_krnDiskSystem.isFormatted === true) {
+                baseReg = 768;
+            }
+            else {
+                //set it to a flag to know there isn't space
+                baseReg = -1;
+            }
+            return baseReg;
+        }
+        setAvailableMemSeg(pid) {
+            var base = _Kernel.residentList[pid - 1].baseReg;
+            if (base === 0) {
+                this.memSegment1 = false;
+            }
+            else if (base === 256) {
+                this.memSegment2 = false;
+            }
+            else if (base === 512) {
+                this.memSegment3 = false;
+            }
+        }
+        setAllAvailableMemSeg() {
+            this.memSegment1 = false;
+            this.memSegment2 = false;
+            this.memSegment3 = false;
         }
         // Allocate User Input Program to memory
         allocateMem(baseReg, userProgram) {

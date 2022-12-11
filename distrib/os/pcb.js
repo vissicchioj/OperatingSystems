@@ -1,7 +1,7 @@
 var TSOS;
 (function (TSOS) {
     class ProcessControlBlock {
-        constructor(pid = -1, state = '', location = '-', priority = 0, pc = 0, acc = 0, xreg = 0, yreg = 0, zflag = 0, baseReg = 0, limitReg = 0, turnaround = 0, wait = 0) {
+        constructor(pid = -1, state = '', location = '-', priority = 0, pc = 0, acc = 0, xreg = 0, yreg = 0, zflag = 0, baseReg = 0, limitReg = 0, turnaround = 0, wait = 0, calc = false) {
             this.pid = pid;
             this.state = state;
             this.location = location;
@@ -15,6 +15,7 @@ var TSOS;
             this.limitReg = limitReg;
             this.turnaround = turnaround;
             this.wait = wait;
+            this.calc = calc;
         }
         init() {
             this.pid = -1;
@@ -30,6 +31,7 @@ var TSOS;
             this.limitReg = this.baseReg + 256;
             this.turnaround = 0;
             this.wait = 0;
+            this.calc = false;
         }
     }
     TSOS.ProcessControlBlock = ProcessControlBlock;

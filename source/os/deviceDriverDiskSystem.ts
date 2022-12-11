@@ -294,6 +294,16 @@ module TSOS {
 
         }
 
+        public rollIn()
+        {
+
+        }
+
+        public rollOut()
+        {
+            
+        }
+
         public appendDashes(dataStr: string): string
         {
             var newStr = dataStr;

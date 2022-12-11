@@ -158,7 +158,7 @@ var TSOS;
         }
         static _SetPcbTable() {
             _PcbTable.innerHTML = '';
-            for (var i = 0; i < 4; i++) {
+            for (var i = 0; i < _Kernel.residentList.length + 1; i++) {
                 var addRow = _PcbTable.insertRow(i);
                 for (var j = 0; j < 13; j++) {
                     var addCell = addRow.insertCell(j);
@@ -213,7 +213,7 @@ var TSOS;
                                 addCell.innerHTML = _Kernel.residentList[i - 1].state.toString();
                             }
                             else if (j == 2) {
-                                addCell.innerHTML = "Memory";
+                                addCell.innerHTML = _Kernel.residentList[i - 1].location.toString();
                             }
                             else if (j == 3) {
                                 addCell.innerHTML = _Kernel.residentList[i - 1].priority.toString();
@@ -240,7 +240,19 @@ var TSOS;
                                 addCell.innerHTML = _Kernel.residentList[i - 1].limitReg.toString();
                             }
                             else if (j == 11) {
-                                addCell.innerHTML = (i).toString();
+                                if (_Kernel.residentList[i - 1].baseReg === 0) {
+                                    addCell.innerHTML = "1";
+                                }
+                                else if (_Kernel.residentList[i - 1].baseReg === 256) {
+                                    addCell.innerHTML = "2";
+                                }
+                                else if (_Kernel.residentList[i - 1].baseReg === 512) {
+                                    addCell.innerHTML = "3";
+                                }
+                                else {
+                                    addCell.innerHTML = "0";
+                                }
+                                //addCell.innerHTML = (i-1).toString();
                             }
                             else if (j == 12) {
                                 addCell.innerHTML = _CpuSched.quantum.toString();
