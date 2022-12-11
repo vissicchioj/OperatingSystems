@@ -60,5 +60,52 @@ module TSOS {
             _StdOut.putText("Disk Format Successful!");
             TSOS.Control._setDiskTable();
         }
+
+        public create(fileName: string)
+        {
+            
+        }
+
+        public findNextDir(): string
+        {
+            var dirKey = ""
+            var found = false;
+            for (var s = 0; s < 8; s++)
+            {
+                for (var b = 0; b < 8; b++)
+                {
+                    var inUse = sessionStorage.getItem("0," + s + "," + b).charAt(0);
+                    if (inUse === "0" && found === false)
+                    {
+                        dirKey = "0," + s + "," + b;
+                        found = true;
+                    }
+                }
+            }
+            return dirKey;
+        }
+
+        public findNextData(): string
+        {
+            var dataKey = ""
+            var found = false;
+            for (var t = 1; t < 4; t++)
+            {
+                for (var s = 0; s < 8; s++)
+                {
+                    for (var b = 0; b < 8; b++)
+                    {
+                        var inUse = sessionStorage.getItem(t + "," + s + "," + b).charAt(0);
+                        if (inUse === "0" && found === false)
+                        {
+                            dataKey = t + "," + s + "," + b;
+                            found = true;
+                        }
+                    }
+                }
+            }
+            return dataKey;
+        }
+
     }
 }

@@ -44,6 +44,38 @@ var TSOS;
             _StdOut.putText("Disk Format Successful!");
             TSOS.Control._setDiskTable();
         }
+        create(fileName) {
+        }
+        findNextDir() {
+            var dirKey = "";
+            var found = false;
+            for (var s = 0; s < 8; s++) {
+                for (var b = 0; b < 8; b++) {
+                    var inUse = sessionStorage.getItem("0," + s + "," + b).charAt(0);
+                    if (inUse === "0" && found === false) {
+                        dirKey = "0," + s + "," + b;
+                        found = true;
+                    }
+                }
+            }
+            return dirKey;
+        }
+        findNextData() {
+            var dataKey = "";
+            var found = false;
+            for (var t = 1; t < 4; t++) {
+                for (var s = 0; s < 8; s++) {
+                    for (var b = 0; b < 8; b++) {
+                        var inUse = sessionStorage.getItem(t + "," + s + "," + b).charAt(0);
+                        if (inUse === "0" && found === false) {
+                            dataKey = t + "," + s + "," + b;
+                            found = true;
+                        }
+                    }
+                }
+            }
+            return dataKey;
+        }
     }
     TSOS.DeviceDriverDiskSystem = DeviceDriverDiskSystem;
 })(TSOS || (TSOS = {}));
