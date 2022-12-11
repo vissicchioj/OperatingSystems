@@ -746,6 +746,25 @@ module TSOS {
         {
             if (args.length > 0) 
             {
+                if (args[1].length < 120)
+                {
+                    if (args[0].length > 0 && args[1].length > 0)
+                    {
+                        _krnDiskSystem.copy(args[0], args[1]);
+                    }
+                    else
+                    {
+                        _StdOut.putText("Error: Please supply a new fileName.");
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                _StdOut.putText("Error: Please supply an existing fileName.");
             }
         }
 
@@ -774,6 +793,7 @@ module TSOS {
                 _StdOut.putText("Error: Please supply an existing fileName.");
             }
         }
+
 
         public shellLs(args: string[])
         {

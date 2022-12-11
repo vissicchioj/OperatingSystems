@@ -172,19 +172,23 @@ module TSOS {
 
             // Get the hexString from file by removing all -
             var hexStr = "";
-            hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim();
+            hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(4, 120);
+            var i = 0;
             while (sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(1, 3) !== "***")
             {
-
                 nextKey = sessionStorage.getItem(nextKey).substr(1,3);
                 nextKey = this.appendCommas(nextKey);
-                hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim();
+                hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(i + 4, i+120);
+                i += 120
             }
             var dataStr = this.hexToStr(hexStr);
 
             _StdOut.putText("Contents of " + fileName + ": ");
             // read out the dataStr to user
             _StdOut.putText(dataStr);
+
+            // to use for copy
+            return dataStr;
             }
         }
 
@@ -206,6 +210,25 @@ module TSOS {
             TSOS.Control._setDiskTable();
             }
 
+        }
+
+        public copy(oldFileName: string, newFileName: string)
+        {
+            // Create the newFileName
+            this.create(newFileName);
+            _StdOut.advanceLine();
+
+            // Read the contents of the oldFileName to return what's there
+            var copiedStr = this.read(oldFileName);
+            _StdOut.advanceLine();
+
+            // Write the contents of the oldFileName to the newFileName
+            this.write(newFileName, copiedStr);
+            _StdOut.advanceLine();
+
+            _StdOut.putText(oldFileName + " has been copied to " + newFileName);
+            _StdOut.advanceLine();
+            TSOS.Control._setDiskTable();
         }
 
         public rename(oldFileName: string, newFileName: string)
