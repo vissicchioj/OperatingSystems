@@ -681,7 +681,11 @@ module TSOS {
         {
             if (args.length > 0) 
             {
-                
+                _krnDiskSystem.create(args[0]);
+            }
+            else
+            {
+                _StdOut.putText("Error: Please supply a fileName.")
             }
         }
 

@@ -45,6 +45,27 @@ var TSOS;
             TSOS.Control._setDiskTable();
         }
         create(fileName) {
+            // TODO: Check if fileName exists.
+            var availableDir = this.findNextDir();
+            var availableData = this.findNextData();
+            // Remove all commas from the tsb string that returns from availableData as it will mess up my display.
+            var availableDataNext = availableData.replace(/,/g, '');
+            var strToHex = this.strToHex(fileName);
+            // Create a value string 
+            var newVal = "1" + availableDataNext + strToHex; // inUse = 1, Next = tsb string from avaialableData, valData = strToHex
+            // Calculate remainingValData by subtracting space used from 64
+            var remainingValData = 64 - (4 + strToHex.length / 2);
+            for (var i = 0; i < remainingValData; i++) {
+                newVal += "- ";
+            }
+            sessionStorage.setItem(availableDir, newVal);
+            // Set the new data location that is next to inUse
+            var availableDataVal = "1000";
+            for (var j = 0; j < 60; j++) {
+                availableDataVal += "- ";
+            }
+            sessionStorage.setItem(availableData, availableDataVal);
+            TSOS.Control._setDiskTable();
         }
         findNextDir() {
             var dirKey = "";
@@ -75,6 +96,21 @@ var TSOS;
                 }
             }
             return dataKey;
+        }
+        strToHex(str) {
+            var hexNums = "";
+            for (var i = 0; i < str.length; i++) {
+                hexNums += str.charCodeAt(i).toString(16);
+            }
+            return hexNums;
+        }
+        hexToStr(hex) {
+            var str = "";
+            // every two hex digits is an ascii char
+            for (var i = 0; i < hex.length; i += 2) {
+                str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+            }
+            return str;
         }
     }
     TSOS.DeviceDriverDiskSystem = DeviceDriverDiskSystem;
