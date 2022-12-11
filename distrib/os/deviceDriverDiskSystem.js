@@ -7,8 +7,9 @@ var TSOS;
 (function (TSOS) {
     // Extends DeviceDriver
     class DeviceDriverDiskSystem extends TSOS.DeviceDriver {
-        constructor() {
+        constructor(isFormatted = false) {
             super();
+            this.isFormatted = isFormatted;
             this.driverEntry = this.krnDsddDriverEntry;
         }
         krnDsddDriverEntry() {
@@ -42,6 +43,7 @@ var TSOS;
                 }
             }
             _StdOut.putText("Disk Format Successful!");
+            this.isFormatted = true;
             TSOS.Control._setDiskTable();
         }
         create(fileName) {
@@ -75,10 +77,36 @@ var TSOS;
                 var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
                 nextKey = this.appendCommas(nextKey);
                 var hexDataStr = this.strToHex(dataStr);
-                var newVal = "1***" + hexDataStr;
-                newVal = this.appendDashes(newVal);
-                // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
-                sessionStorage.setItem(nextKey, newVal);
+                if (hexDataStr.length / 2 > 60) {
+                    for (var i = 0; i < hexDataStr.length; i += 120) {
+                        var j = 0;
+                        var availableData = this.findNextAvailableData();
+                        var availableDataNext = availableData.replace(/,/g, '');
+                        var hexStrings = [];
+                        hexStrings.push(hexDataStr.substring(i, i + 120));
+                        if (hexStrings[j].length / 2 < 60) {
+                            var newVal = "1***" + hexStrings[j];
+                            newVal = this.appendDashes(newVal);
+                            sessionStorage.setItem(availableData, newVal);
+                        }
+                        else {
+                            var newVal = "1" + availableDataNext + hexStrings[j];
+                            if (j == 0) {
+                                sessionStorage.setItem(nextKey, newVal);
+                            }
+                            else {
+                                sessionStorage.setItem(availableData, newVal);
+                            }
+                        }
+                        j++;
+                    }
+                }
+                else {
+                    var newVal = "1***" + hexDataStr;
+                    newVal = this.appendDashes(newVal);
+                    // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
+                    sessionStorage.setItem(nextKey, newVal);
+                }
                 _StdOut.putText("Data written to " + fileName);
                 TSOS.Control._setDiskTable();
             }
@@ -92,7 +120,13 @@ var TSOS;
                 var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
                 nextKey = this.appendCommas(nextKey);
                 // Get the hexString from file by removing all -
-                var hexStr = sessionStorage.getItem(nextKey).replace(/- /g, '').trim();
+                var hexStr = "";
+                hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim();
+                while (sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(1, 3) !== "***") {
+                    nextKey = sessionStorage.getItem(nextKey).substr(1, 3);
+                    nextKey = this.appendCommas(nextKey);
+                    hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim();
+                }
                 var dataStr = this.hexToStr(hexStr);
                 _StdOut.putText("Contents of " + fileName + ": ");
                 // read out the dataStr to user

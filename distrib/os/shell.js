@@ -516,7 +516,12 @@ var TSOS;
         }
         shellCreate(args) {
             if (args.length > 0) {
-                _krnDiskSystem.create(args[0]);
+                if (args[0].length < 120) {
+                    _krnDiskSystem.create(args[0]);
+                }
+                else {
+                    _StdOut.putText("Error: fileName too long.");
+                }
             }
             else {
                 _StdOut.putText("Error: Please supply a fileName.");
@@ -559,11 +564,15 @@ var TSOS;
         }
         shellRename(args) {
             if (args.length > 0) {
-                if (args[0].length > 0 && args[1].length > 0) {
-                    _krnDiskSystem.rename(args[0], args[1]);
+                if (args[1].length < 120) {
+                    if (args[0].length > 0 && args[1].length > 0) {
+                        _krnDiskSystem.rename(args[0], args[1]);
+                    }
+                    else {
+                        _StdOut.putText("Error: Please supply a new fileName.");
+                    }
                 }
                 else {
-                    _StdOut.putText("Error: Please supply a new fileName.");
                 }
             }
             else {
