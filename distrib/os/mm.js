@@ -67,24 +67,34 @@ var TSOS;
                 }
             }
         }
-        memoryString(baseReg, limitReg) {
-            var memStr = _Memory.segmentToString(baseReg, limitReg);
-            // for (var i = baseReg; i < limitReg; i++)
-            // {
-            //     var memArr = _Memory.toString().split(' ')
-            //     if (getMem.length === 1)
-            //     {
-            //         getMem = "0" + getMem;
-            //     }
-            //     memStr = memStr + getMem;
-            // }
-            //     _StdOut.advanceLine();
-            //     _StdOut.putText(memStr);
-            return memStr;
+        getMemory(baseReg) {
+            var memStr = "";
+            var userProg = [];
+            for (var i = 0; i < this.memorySize; i++) {
+                var addZero = _Memory.getMem(i + baseReg).toString(16);
+                if (addZero.length < 2) {
+                    addZero = "0" + addZero;
+                }
+                memStr = memStr + addZero;
+                //_StdOut.putText(memStr);
+            }
+            for (var i = 0; i < memStr.length; i += 2) {
+                userProg.push(memStr.substring(i, i + 2));
+            }
+            //_StdOut.putText(userProg.join(""));
+            return userProg;
         }
         // Resets memory
         deallocateMem() {
             _Memory.reset();
+        }
+        // Resets memory segment
+        deallocateSegment(baseReg) {
+            var baseStr = baseReg.toString(16);
+            var base = parseInt(baseStr, 16);
+            for (var i = base; i < base + 0x100; i++) {
+                _Memory.memArray[i] = 0x00;
+            }
         }
         //used to combine two bytes together in order to create a two byte number
         //this is used to implement little endian or to add to the ProgramCounter as seen in branch

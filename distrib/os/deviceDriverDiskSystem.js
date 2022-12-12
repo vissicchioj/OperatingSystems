@@ -118,37 +118,46 @@ var TSOS;
             // get the next key by looking at the value within the current key
             var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
             nextKey = this.appendCommas(nextKey);
-            var hexDataStr = userInput;
-            if (hexDataStr.length > 60) {
-                for (var i = 0; i < hexDataStr.length; i += 60) {
-                    var j = 0;
-                    var availableData = this.findNextAvailableData();
-                    var availableDataNext = availableData.replace(/,/g, '');
-                    var hexStrings = [];
-                    hexStrings.push(hexDataStr.substring(i, i + 60));
-                    if (hexStrings[j].length < 60) {
-                        var newVal = "1***" + hexStrings[j];
-                        newVal = this.appendZeroes(newVal);
-                        sessionStorage.setItem(availableData, newVal);
-                    }
-                    else {
-                        var newVal = "1" + availableDataNext + hexStrings[j];
-                        if (j == 0) {
-                            sessionStorage.setItem(nextKey, newVal);
-                        }
-                        else {
-                            sessionStorage.setItem(availableData, newVal);
-                        }
-                    }
-                    j++;
-                }
-            }
-            else {
-                var newVal = "1***" + hexDataStr;
-                newVal = this.appendZeroes(newVal);
-                // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
-                sessionStorage.setItem(nextKey, newVal);
-            }
+            userInput = "1***" + userInput;
+            sessionStorage.setItem(nextKey, userInput);
+            // var hexDataStr = userInput;
+            // if(hexDataStr.length > 60)
+            // {
+            //     for (var i = 0; i < hexDataStr.length; i += 60)
+            //     {
+            //         var j = 0;
+            //         var availableData = this.findNextAvailableData();
+            //         var availableDataNext = availableData.replace(/,/g, '');
+            //         var hexStrings = [];
+            //         hexStrings.push(hexDataStr.substring(i, i + 60));
+            //         if (hexStrings[j].length < 60)
+            //         {
+            //             var newVal = "1***" + hexStrings[j];
+            //             //newVal = this.appendZeroes(newVal);
+            //             sessionStorage.setItem(availableData, newVal);
+            //         }
+            //         else 
+            //         {
+            //             var newVal = "1" + availableDataNext + hexStrings[j];
+            //             if (j == 0)
+            //             {
+            //                 sessionStorage.setItem(nextKey, newVal);
+            //             }
+            //             else
+            //             {
+            //             sessionStorage.setItem(availableData, newVal);
+            //             }
+            //         }
+            //         j++;
+            //     }
+            // }
+            // else
+            // {
+            // var newVal = "1***" + hexDataStr;
+            // //newVal = this.appendZeroes(newVal);
+            // // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
+            // sessionStorage.setItem(nextKey, newVal);
+            // }
             //_StdOut.putText("Data written to " + fileName);
             TSOS.Control._setDiskTable();
         }
@@ -254,10 +263,29 @@ var TSOS;
             var dataStr = sessionStorage.getItem(key);
             var removeInUse = dataStr.replace("1", "0");
             sessionStorage.setItem(key, removeInUse);
+            var nextKey = sessionStorage.getItem(key).substr(1, 3);
+            nextKey = this.appendCommas(nextKey);
+            var memProg = [];
+            var userProg = sessionStorage.getItem(nextKey);
+            userProg = sessionStorage.getItem(nextKey).substr(4, userProg.length);
+            // var i = 0;
+            // while (sessionStorage.getItem(nextKey).substr(1, 3) !== "***")
+            // {
+            //     nextKey = sessionStorage.getItem(nextKey).substr(1,3);
+            //     nextKey = this.appendCommas(nextKey);
+            //     userProg = userProg + sessionStorage.getItem(nextKey).substr(i + 4, i+60);
+            //     i += 60
+            // }
+            for (var i = 0; i < userProg.length; i += 2) {
+                memProg.push(userProg.substring(i, i + 2));
+            }
             //_Kernel.residentList[pid].location = "Memory";
             //_Kernel.residentList[pid].baseReg = baseReg;
             //_Kernel.residentList[pid].limitReg = limitReg;
-            _MM.allocateMem(_Kernel.residentList[pid].baseReg, _Kernel.residentList[pid].userProg);
+            //_MM.deallocateMem();
+            _MM.deallocateSegment(baseReg);
+            _MM.allocateMem(_Kernel.residentList[pid].baseReg, memProg);
+            TSOS.Control._SetMemTable();
             TSOS.Control._SetPcbTable();
             TSOS.Control._setDiskTable();
         }
@@ -268,11 +296,17 @@ var TSOS;
             var availableDir = this.findNextAvailableDir();
             _Kernel.residentList[pid].diskKey = availableDir;
             this.create("~" + pid);
-            var availableData = this.findNextAvailableData();
+            //var availableData = this.findNextAvailableData();
             //_Kernel.residentList[pid].location = "Disk";
             // _Kernel.residentList[pid].baseReg = 768;
             // _Kernel.residentList[pid].limitReg = 768;
-            this.write6502("~" + pid, userProg);
+            //var userP = _Memory.segmentToString(_Kernel.residentList[pid].baseReg)
+            //this.write6502("~" + pid, userProg);
+            var nextKey = sessionStorage.getItem(availableDir).substr(1, 3);
+            nextKey = this.appendCommas(nextKey);
+            userProg = "1***" + userProg;
+            sessionStorage.setItem(nextKey, userProg);
+            TSOS.Control._SetMemTable();
             TSOS.Control._SetPcbTable();
             TSOS.Control._setDiskTable();
         }

@@ -87,27 +87,43 @@ module TSOS
             }
         }
 
-        public memoryString(baseReg: number, limitReg: number): string
+        public getMemory(baseReg): Array<string>
         {
-            var memStr = _Memory.segmentToString(baseReg, limitReg);
-            // for (var i = baseReg; i < limitReg; i++)
-            // {
-            //     var memArr = _Memory.toString().split(' ')
-            //     if (getMem.length === 1)
-            //     {
-            //         getMem = "0" + getMem;
-            //     }
-            //     memStr = memStr + getMem;
-            // }
-            //     _StdOut.advanceLine();
-            //     _StdOut.putText(memStr);
-            return memStr;
+            var memStr = "";
+            var userProg = [];
+            for(var i = 0; i < this.memorySize; i++)
+            {
+                var addZero = _Memory.getMem(i+baseReg).toString(16);
+                if (addZero.length < 2)
+                {
+                    addZero = "0" + addZero;
+                }
+                memStr = memStr + addZero;
+                //_StdOut.putText(memStr);
+            }
+            for(var i = 0; i < memStr.length; i += 2)
+            {
+                    userProg.push(memStr.substring(i, i + 2));
+            }
+            //_StdOut.putText(userProg.join(""));
+            return userProg;
         }
 
         // Resets memory
         public deallocateMem()
         {
             _Memory.reset();
+        }
+
+        // Resets memory segment
+        public deallocateSegment(baseReg: number)
+        {
+            var baseStr = baseReg.toString(16);
+            var base = parseInt(baseStr, 16);
+            for(var i = base; i < base + 0x100; i++) 
+            {
+                _Memory.memArray[i] = 0x00;
+            }
         }
 
         public lob: number = 0x00;

@@ -10,12 +10,13 @@ var TSOS;
                 // there was no last pcb (Meaning this is the first pcb to be ran in the CPU)
                 if (_CPU.pcb !== null) {
                     // If the pcb is already finished don't add it back to the queue
-                    if (_CPU.pcb.state !== "Finished") {
-                        //put it back on the ready queue for the next context switch
-                        var lastPCB = _CPU.pcb;
-                        lastPCB.state = "Ready";
-                        _Kernel.readyQueue.enqueue(lastPCB);
-                    }
+                    //if (_CPU.pcb.state !== "Finished")
+                    //{
+                    //put it back on the ready queue for the next context switch
+                    var lastPCB = _CPU.pcb;
+                    lastPCB.state = "Ready";
+                    _Kernel.readyQueue.enqueue(lastPCB);
+                    //}
                 }
                 // Get the next pcb that will be context switched in and run it in the CPU
                 var nextPCB = _Kernel.readyQueue.dequeue();
@@ -25,7 +26,10 @@ var TSOS;
                     lastPCB.location = "Disk";
                     nextPCB.baseReg = lastPCB.baseReg;
                     nextPCB.limitReg = lastPCB.limitReg;
-                    _krnDiskSystem.rollOut(lastPCB.pid, lastPCB.userProg);
+                    var userProg = [];
+                    userProg = _MM.getMemory(lastPCB.baseReg);
+                    //userProg = _MA.userProgFromMem(lastPCB.baseReg);
+                    _krnDiskSystem.rollOut(lastPCB.pid, userProg);
                     _krnDiskSystem.rollIn(nextPCB.pid, lastPCB.baseReg, lastPCB.limitReg);
                     lastPCB.baseReg = 768;
                     lastPCB.limitReg = 768;

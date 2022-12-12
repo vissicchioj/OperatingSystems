@@ -43,22 +43,6 @@ var TSOS;
             }
             return str;
         }
-        // Set memory to a hexidecimal string 
-        segmentToString(baseReg, limitReg) {
-            var str = '';
-            var currMemStr = '';
-            for (var i = baseReg; i < limitReg; i++) {
-                // Current Hex Num in memory will turn into a Hex String
-                currMemStr = this.memArray[i].toString(16).toUpperCase();
-                if (currMemStr.length < 2) {
-                    // Add padding zero
-                    currMemStr = '0' + currMemStr;
-                }
-                // Add the hex num to the return string
-                str = str + currMemStr;
-            }
-            return str;
-        }
     }
     TSOS.Memory = Memory;
 })(TSOS || (TSOS = {}));
