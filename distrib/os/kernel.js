@@ -185,6 +185,9 @@ var TSOS;
                 newPCB.baseReg = base;
                 newPCB.limitReg = newPCB.baseReg;
                 newPCB.location = "Disk";
+                newPCB.userProg = userProgram;
+                newPCB.diskKey = _krnDiskSystem.create("~" + newPCB.pid);
+                _krnDiskSystem.write6502("~" + newPCB.pid, userProgram.join(''));
                 canAdd = true;
             }
             else if (base === -1) {
@@ -195,6 +198,7 @@ var TSOS;
                 newPCB.baseReg = base;
                 newPCB.limitReg = newPCB.baseReg + 256;
                 newPCB.location = "Memory";
+                newPCB.userProg = userProgram;
                 // Memory Manager allocates the User Program into memory
                 _MM.allocateMem(newPCB.baseReg, userProgram);
                 canAdd = true;

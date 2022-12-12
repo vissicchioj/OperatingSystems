@@ -88,9 +88,9 @@ module TSOS {
                 availableDataVal += "- "
             }
             sessionStorage.setItem(availableData, availableDataVal);
-            _StdOut.putText("New file created: " + fileName);
+            //_StdOut.putText("New file created: " + fileName);
             TSOS.Control._setDiskTable();
-
+            return availableDir;
         }
 
         public write(fileName: string, dataStr: string)
@@ -155,6 +155,63 @@ module TSOS {
             _StdOut.putText("Data written to " + fileName);
             TSOS.Control._setDiskTable();
             }
+        }
+
+        public write6502(fileName: string, userInput: string)
+        {
+            // get the TSB key for the filename mentioned
+            var fileNameKey = this.findFileNameKey(fileName);
+
+            // get the next key by looking at the value within the current key
+            var nextKey = sessionStorage.getItem(fileNameKey).substr(1,3);
+            nextKey = this.appendCommas(nextKey);
+
+            var hexDataStr = userInput;
+            if(hexDataStr.length > 60)
+            {
+                for (var i = 0; i < hexDataStr.length; i += 60)
+                {
+                    var j = 0;
+                    var availableData = this.findNextAvailableData();
+                    var availableDataNext = availableData.replace(/,/g, '');
+
+                    var hexStrings = [];
+                    hexStrings.push(hexDataStr.substring(i, i + 60));
+                    if (hexStrings[j].length < 60)
+                    {
+                        var newVal = "1***" + hexStrings[j];
+                        newVal = this.appendZeroes(newVal);
+                        sessionStorage.setItem(availableData, newVal);
+                    }
+                    else 
+                    {
+                        var newVal = "1" + availableDataNext + hexStrings[j];
+                        if (j == 0)
+                        {
+                            sessionStorage.setItem(nextKey, newVal);
+                        }
+                        else
+                        {
+                        sessionStorage.setItem(availableData, newVal);
+                        }
+                    }
+                    
+                    j++;
+                }
+            }
+            else
+            {
+            var newVal = "1***" + hexDataStr;
+
+            newVal = this.appendZeroes(newVal);
+
+            // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
+            sessionStorage.setItem(nextKey, newVal);
+            }
+
+            //_StdOut.putText("Data written to " + fileName);
+            TSOS.Control._setDiskTable();
+            
         }
 
         public read(fileName: string)
@@ -294,14 +351,56 @@ module TSOS {
 
         }
 
-        public rollIn()
+        public rollIn(pid: number, baseReg: number, limitReg: number)
         {
+            var key = _Kernel.residentList[pid].diskKey;
+            //_StdOut.putText("" + key);
+            //var hexNums = [];
+            var dataStr = sessionStorage.getItem(key);
+            var removeInUse = dataStr.replace("1", "0");
+            sessionStorage.setItem(key, removeInUse);
+            //_Kernel.residentList[pid].location = "Memory";
+            //_Kernel.residentList[pid].baseReg = baseReg;
+            //_Kernel.residentList[pid].limitReg = limitReg;
 
+            _MM.allocateMem(_Kernel.residentList[pid].baseReg, _Kernel.residentList[pid].userProg)
+
+            TSOS.Control._SetPcbTable();
+            TSOS.Control._setDiskTable();
         }
 
-        public rollOut()
+        public rollOut(pid: number, userProgram: Array<string>)
         {
-            
+            var userProg = userProgram.join('');
+
+            //var memSegStr = _MM.memoryString(_Kernel.residentList[pid].baseReg, _Kernel.residentList[pid].limitReg)
+
+            // PCB being rolledOut will be given a dir in disk
+            var availableDir = this.findNextAvailableDir();
+            _Kernel.residentList[pid].diskKey = availableDir;
+            this.create("~" + pid);
+            var availableData = this.findNextAvailableData();
+            //_Kernel.residentList[pid].location = "Disk";
+            // _Kernel.residentList[pid].baseReg = 768;
+            // _Kernel.residentList[pid].limitReg = 768;
+            this.write6502("~" + pid, userProg);
+
+            TSOS.Control._SetPcbTable();
+            TSOS.Control._setDiskTable();
+        }
+
+        public appendZeroes(dataStr: string): string
+        {
+            // Zeroes will be needed when placing string back in memory
+            var newStr = dataStr;
+
+            // Calculate remainingValData by subtracting space used from 64
+            var remainingValData = 64 - (4 + newStr.substr(4, newStr.length).length);
+            for (var i = 0; i < remainingValData; i++)
+            {
+                newStr += "0"
+            }
+            return newStr;
         }
 
         public appendDashes(dataStr: string): string

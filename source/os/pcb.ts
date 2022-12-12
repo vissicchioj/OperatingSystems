@@ -17,7 +17,9 @@ module TSOS
             public limitReg: number = 0,
             public turnaround: number = 0,
             public wait: number = 0,
-            public calc: boolean = false
+            public calc: boolean = false,
+            public diskKey: string = "",
+            public userProg: Array<string> = []
             ) 
         {
 
@@ -38,6 +40,8 @@ module TSOS
             this.turnaround = 0;
             this.wait = 0;
             this.calc = false;
+            this.diskKey = "";
+            this.userProg;
         }
 
         // PCB should not be loading or running programs instead we'll leave that to the kernel

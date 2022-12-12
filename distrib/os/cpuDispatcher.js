@@ -20,6 +20,18 @@ var TSOS;
                 // Get the next pcb that will be context switched in and run it in the CPU
                 var nextPCB = _Kernel.readyQueue.dequeue();
                 nextPCB.state = "Running";
+                if (nextPCB.location === "Disk") {
+                    nextPCB.location = "Memory";
+                    lastPCB.location = "Disk";
+                    nextPCB.baseReg = lastPCB.baseReg;
+                    nextPCB.limitReg = lastPCB.limitReg;
+                    _krnDiskSystem.rollOut(lastPCB.pid, lastPCB.userProg);
+                    _krnDiskSystem.rollIn(nextPCB.pid, lastPCB.baseReg, lastPCB.limitReg);
+                    lastPCB.baseReg = 768;
+                    lastPCB.limitReg = 768;
+                    //TSOS.Control._SetPcbTable();
+                    //TSOS.Control._setDiskTable();
+                }
                 _CPU.currPcb(nextPCB);
                 // The PCB saves variables that the CPU needs in order to continue where it was last switched off from
                 _CPU.loadCpuWithPcb();
