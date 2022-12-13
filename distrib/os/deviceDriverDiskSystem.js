@@ -299,40 +299,47 @@ var TSOS;
             //this.write6502("~" + pid, userProg);
             var nextKey = sessionStorage.getItem(availableDir).substr(1, 3);
             nextKey = this.appendCommas(nextKey);
-            var j = 0;
-            var hexStrings = [];
-            if (userProg.length > 60) {
-                // var j = 0;
-                // var hexStrings = [];
-                for (var i = 0; i < 300 /*userProg.length*/; i += 60) {
-                    //var j = 0;
-                    var availableData = this.findNextAvailableData();
-                    var availableDataNext = availableData.replace(/,/g, '');
-                    //var hexStrings = [];
-                    hexStrings.push(userProg.substring(i, i + 60));
-                    if (hexStrings[j].length < 60) {
-                        var newVal = "1***" + hexStrings[j];
-                        //newVal = this.appendZeroes(newVal);
-                        sessionStorage.setItem(availableData, newVal);
-                    }
-                    else {
-                        var newVal = "1" + availableDataNext + hexStrings[j];
-                        if (j == 0) {
-                            sessionStorage.setItem(nextKey, newVal);
-                        }
-                        else {
-                            sessionStorage.setItem(availableData, newVal);
-                        }
-                    }
-                    j++;
-                }
-            }
-            else {
-                userProg = "1***" + userProg;
-                sessionStorage.setItem(nextKey, userProg);
-            }
-            // userProg = "1***" + userProg;
-            // sessionStorage.setItem(nextKey, userProg);
+            // var j = 0;
+            // var hexStrings = [];
+            // if(userProg.length > 60)
+            // {
+            //     // var j = 0;
+            //     // var hexStrings = [];
+            //     for (var i = 0; i < 300/*userProg.length*/; i += 60)
+            //     {
+            //         //var j = 0;
+            //         var availableData = this.findNextAvailableData();
+            //         var availableDataNext = availableData.replace(/,/g, '');
+            //         //var hexStrings = [];
+            //         hexStrings.push(userProg.substring(i, i + 60));
+            //         if (hexStrings[j].length < 60)
+            //         {
+            //             var newVal = "1***" + hexStrings[j];
+            //             //newVal = this.appendZeroes(newVal);
+            //             sessionStorage.setItem(availableData, newVal);
+            //         }
+            //         else 
+            //         {
+            //             var newVal = "1" + availableDataNext + hexStrings[j];
+            //             if (j == 0)
+            //             {
+            //                 sessionStorage.setItem(nextKey, newVal);
+            //             }
+            //             else
+            //             {
+            //             sessionStorage.setItem(availableData, newVal);
+            //             }
+            //         }
+            //         j++;
+            //     }
+            // }
+            // else
+            // {
+            //     userProg = "1***" + userProg;
+            //     sessionStorage.setItem(nextKey, userProg);
+            // }
+            userProg = "1***" + userProg;
+            sessionStorage.setItem(nextKey, userProg);
             TSOS.Control._SetMemTable();
             TSOS.Control._SetPcbTable();
             TSOS.Control._setDiskTable();
