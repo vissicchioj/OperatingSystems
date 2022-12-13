@@ -166,52 +166,54 @@ module TSOS {
             var nextKey = sessionStorage.getItem(fileNameKey).substr(1,3);
             nextKey = this.appendCommas(nextKey);
 
-            userInput = "1***" + userInput;
+            //userInput = "1***" + userInput;
 
-            sessionStorage.setItem(nextKey, userInput);
+            //sessionStorage.setItem(nextKey, userInput);
 
-            // var hexDataStr = userInput;
-            // if(hexDataStr.length > 60)
-            // {
-            //     for (var i = 0; i < hexDataStr.length; i += 60)
-            //     {
-            //         var j = 0;
-            //         var availableData = this.findNextAvailableData();
-            //         var availableDataNext = availableData.replace(/,/g, '');
+            var hexDataStr = userInput;
+            if(hexDataStr.length > 60)
+            {
+                var j = 0;
+                var hexStrings = [];
+                for (var i = 0; i < hexDataStr.length; i += 60)
+                {
+                    // var j = 0;
+                    var availableData = this.findNextAvailableData();
+                    var availableDataNext = availableData.replace(/,/g, '');
 
-            //         var hexStrings = [];
-            //         hexStrings.push(hexDataStr.substring(i, i + 60));
-            //         if (hexStrings[j].length < 60)
-            //         {
-            //             var newVal = "1***" + hexStrings[j];
-            //             //newVal = this.appendZeroes(newVal);
-            //             sessionStorage.setItem(availableData, newVal);
-            //         }
-            //         else 
-            //         {
-            //             var newVal = "1" + availableDataNext + hexStrings[j];
-            //             if (j == 0)
-            //             {
-            //                 sessionStorage.setItem(nextKey, newVal);
-            //             }
-            //             else
-            //             {
-            //             sessionStorage.setItem(availableData, newVal);
-            //             }
-            //         }
+                    // var hexStrings = [];
+                    hexStrings.push(hexDataStr.substring(i, i + 60));
+                    if (hexStrings[j].length < 60)
+                    {
+                        var newVal = "1***" + this.appendZeroes(hexStrings[j]);
+                        //newVal = this.appendZeroes(newVal);
+                        sessionStorage.setItem(availableData, newVal);
+                    }
+                    else 
+                    {
+                        var newVal = "1" + availableDataNext + hexStrings[j];
+                        if (j == 0)
+                        {
+                            sessionStorage.setItem(nextKey, newVal);
+                        }
+                        else
+                        {
+                            sessionStorage.setItem(availableData, newVal);
+                        }
+                    }
                     
-            //         j++;
-            //     }
-            // }
-            // else
-            // {
-            // var newVal = "1***" + hexDataStr;
+                    j++;
+                }
+            }
+            else
+            {
+                var newVal = "1***" + this.appendZeroes(hexDataStr);
 
-            // //newVal = this.appendZeroes(newVal);
+            //newVal = this.appendZeroes(newVal);
 
-            // // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
-            // sessionStorage.setItem(nextKey, newVal);
-            // }
+            // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
+            sessionStorage.setItem(nextKey, newVal);
+            }
 
             //_StdOut.putText("Data written to " + fileName);
             TSOS.Control._setDiskTable();
@@ -368,11 +370,16 @@ module TSOS {
             var memProg = [];
             var userProg = sessionStorage.getItem(nextKey);
             userProg = sessionStorage.getItem(nextKey).substr(4, userProg.length);
+            var remove = sessionStorage.getItem(nextKey).replace("1", "0");
+            sessionStorage.setItem(nextKey, remove);
             var i = 0;
             while (sessionStorage.getItem(nextKey).substr(1, 3) !== "***")
             {
                 nextKey = sessionStorage.getItem(nextKey).substr(1,3);
                 nextKey = this.appendCommas(nextKey);
+                remove = sessionStorage.getItem(nextKey).replace("1", "0");
+                //removeInUse = dataStr.replace("1", "0");
+                sessionStorage.setItem(nextKey, remove);
                 userProg = userProg + sessionStorage.getItem(nextKey).substr(i + 4, i+60);
                 i += 60
             }
@@ -409,9 +416,52 @@ module TSOS {
             var nextKey = sessionStorage.getItem(availableDir).substr(1,3);
             nextKey = this.appendCommas(nextKey);
 
-            userProg = "1***" + userProg;
+            var j = 0;
+            var hexStrings = [];
 
-            sessionStorage.setItem(nextKey, userProg);
+            if(userProg.length > 60)
+            {
+                // var j = 0;
+                // var hexStrings = [];
+                for (var i = 0; i < 300/*userProg.length*/; i += 60)
+                {
+                    //var j = 0;
+                    var availableData = this.findNextAvailableData();
+                    var availableDataNext = availableData.replace(/,/g, '');
+
+                    //var hexStrings = [];
+                    hexStrings.push(userProg.substring(i, i + 60));
+                    if (hexStrings[j].length < 60)
+                    {
+                        var newVal = "1***" + hexStrings[j];
+                        //newVal = this.appendZeroes(newVal);
+                        sessionStorage.setItem(availableData, newVal);
+                    }
+                    else 
+                    {
+                        var newVal = "1" + availableDataNext + hexStrings[j];
+                        if (j == 0)
+                        {
+                            sessionStorage.setItem(nextKey, newVal);
+                        }
+                        else
+                        {
+                        sessionStorage.setItem(availableData, newVal);
+                        }
+                    }
+                    
+                    j++;
+                }
+            }
+            else
+            {
+                userProg = "1***" + userProg;
+                sessionStorage.setItem(nextKey, userProg);
+            }
+
+            // userProg = "1***" + userProg;
+
+            // sessionStorage.setItem(nextKey, userProg);
 
             TSOS.Control._SetMemTable();
             TSOS.Control._SetPcbTable();
