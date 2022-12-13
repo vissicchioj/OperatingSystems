@@ -358,8 +358,7 @@ module TSOS {
         public rollIn(pid: number, baseReg: number, limitReg: number)
         {
             var key = _Kernel.residentList[pid].diskKey;
-            //_StdOut.putText("" + key);
-            //var hexNums = [];
+
             var dataStr = sessionStorage.getItem(key);
             var removeInUse = dataStr.replace("1", "0");
             sessionStorage.setItem(key, removeInUse);
@@ -369,22 +368,20 @@ module TSOS {
             var memProg = [];
             var userProg = sessionStorage.getItem(nextKey);
             userProg = sessionStorage.getItem(nextKey).substr(4, userProg.length);
-            // var i = 0;
-            // while (sessionStorage.getItem(nextKey).substr(1, 3) !== "***")
-            // {
-            //     nextKey = sessionStorage.getItem(nextKey).substr(1,3);
-            //     nextKey = this.appendCommas(nextKey);
-            //     userProg = userProg + sessionStorage.getItem(nextKey).substr(i + 4, i+60);
-            //     i += 60
-            // }
+            var i = 0;
+            while (sessionStorage.getItem(nextKey).substr(1, 3) !== "***")
+            {
+                nextKey = sessionStorage.getItem(nextKey).substr(1,3);
+                nextKey = this.appendCommas(nextKey);
+                userProg = userProg + sessionStorage.getItem(nextKey).substr(i + 4, i+60);
+                i += 60
+            }
             for(var i = 0; i < userProg.length; i += 2)
             {
                 memProg.push(userProg.substring(i, i + 2));
             }
-            //_Kernel.residentList[pid].location = "Memory";
-            //_Kernel.residentList[pid].baseReg = baseReg;
-            //_Kernel.residentList[pid].limitReg = limitReg;
             //_MM.deallocateMem();
+            // Only remove the segment in memory before reallocating memory in case of different programs
             _MM.deallocateSegment(baseReg);
             _MM.allocateMem(_Kernel.residentList[pid].baseReg, memProg)
 
