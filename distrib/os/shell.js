@@ -524,11 +524,16 @@ var TSOS;
         }
         shellCreate(args) {
             if (args.length > 0) {
-                if (args[0].length < 120) {
-                    _krnDiskSystem.create(args[0]);
+                if (args[0].charAt(0) !== "~") {
+                    if (args[0].length < 120) {
+                        _krnDiskSystem.create(args[0]);
+                    }
+                    else {
+                        _StdOut.putText("Error: fileName too long.");
+                    }
                 }
                 else {
-                    _StdOut.putText("Error: fileName too long.");
+                    _StdOut.putText("Error: fileNames cannot start with ~");
                 }
             }
             else {
@@ -546,9 +551,33 @@ var TSOS;
         shellWrite(args) {
             if (args.length > 0) {
                 // check for data in quotes
-                if (args[1].charAt(0) === '"' && args[1].charAt(args[1].length - 1) === '"') {
-                    var dataStr = args[1].replace(/"/g, '');
-                    _krnDiskSystem.write(args[0], dataStr);
+                if (args[1].charAt(0) === '"') {
+                    var dataStr = "";
+                    var quoteCount = 0;
+                    var i = 1;
+                    //var currArg = args[2];
+                    while (i < args.length) {
+                        for (var j = 0; j < args[i].length; j++) {
+                            if (args[i].charAt(j) !== '"') {
+                                dataStr = dataStr + args[i].charAt(j);
+                            }
+                            else {
+                                quoteCount++;
+                                if (quoteCount === 2) {
+                                    i = args.length;
+                                    break;
+                                }
+                            }
+                        }
+                        i++;
+                    }
+                    //var dataStr = args[1].replace(/"/g, '');
+                    if (quoteCount === 2) {
+                        _krnDiskSystem.write(args[0], dataStr);
+                    }
+                    else {
+                        _StdOut.putText("Error: Please supply a data string surrounded in quotation marks.");
+                    }
                 }
                 else {
                     _StdOut.putText("Error: Please supply a data string surrounded in quotation marks.");

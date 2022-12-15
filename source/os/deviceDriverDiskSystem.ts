@@ -421,8 +421,8 @@ module TSOS {
 
             // if(userProg.length > 60)
             // {
-            //     // var j = 0;
-            //     // var hexStrings = [];
+            //     var j = 0;
+            //     var hexStrings = [];
             //     for (var i = 0; i < 300/*userProg.length*/; i += 60)
             //     {
             //         //var j = 0;
