@@ -695,7 +695,7 @@ module TSOS {
                 {
                     if (args[0].length < 120)
                     {
-                        _krnDiskSystem.create(args[0]);
+                        _krnDiskSystem.create(args[0], true);
                     }
                     else
                     {

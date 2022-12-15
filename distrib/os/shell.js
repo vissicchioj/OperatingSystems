@@ -526,7 +526,7 @@ var TSOS;
             if (args.length > 0) {
                 if (args[0].charAt(0) !== "~") {
                     if (args[0].length < 120) {
-                        _krnDiskSystem.create(args[0]);
+                        _krnDiskSystem.create(args[0], true);
                     }
                     else {
                         _StdOut.putText("Error: fileName too long.");

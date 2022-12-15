@@ -46,7 +46,7 @@ var TSOS;
             this.isFormatted = true;
             TSOS.Control._setDiskTable();
         }
-        create(fileName) {
+        create(fileName, log) {
             // TODO: Check if fileName exists before adding a new one.
             var availableDir = this.findNextAvailableDir();
             var availableData = this.findNextAvailableData();
@@ -63,7 +63,9 @@ var TSOS;
                 availableDataVal += "- ";
             }
             sessionStorage.setItem(availableData, availableDataVal);
-            //_StdOut.putText("New file created: " + fileName);
+            if (log === true) {
+                _StdOut.putText("New file created: " + fileName);
+            }
             TSOS.Control._setDiskTable();
             return availableDir;
         }
@@ -198,7 +200,7 @@ var TSOS;
         }
         copy(oldFileName, newFileName) {
             // Create the newFileName
-            this.create(newFileName);
+            this.create(newFileName, true);
             _StdOut.advanceLine();
             // Read the contents of the oldFileName to return what's there
             var copiedStr = this.read(oldFileName);
@@ -239,7 +241,7 @@ var TSOS;
                     }
                     else {
                         // Check that the data is inUse
-                        if (valData.charAt(0) === "1") {
+                        if (valData.charAt(0) === "1" && valData.charAt(4) !== '7' && valData.charAt(5) !== 'e') {
                             var strFileName = this.hexToStr(hexFileName);
                             fileNames.push(strFileName);
                         }
@@ -290,7 +292,7 @@ var TSOS;
             // PCB being rolledOut will be given a dir in disk
             var availableDir = this.findNextAvailableDir();
             _Kernel.residentList[pid].diskKey = availableDir;
-            this.create("~" + pid);
+            this.create("~" + pid, false);
             //var availableData = this.findNextAvailableData();
             //_Kernel.residentList[pid].location = "Disk";
             // _Kernel.residentList[pid].baseReg = 768;
