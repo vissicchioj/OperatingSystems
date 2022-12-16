@@ -47,71 +47,87 @@ var TSOS;
             TSOS.Control._setDiskTable();
         }
         create(fileName, log) {
-            // TODO: Check if fileName exists before adding a new one.
-            var availableDir = this.findNextAvailableDir();
-            var availableData = this.findNextAvailableData();
-            // Remove all commas from the tsb string that returns from availableData as it will mess up my display.
-            var availableDataNext = availableData.replace(/,/g, '');
-            var strToHex = this.strToHex(fileName);
-            // Create a value string 
-            var newVal = "1" + availableDataNext + strToHex; // inUse = 1, Next = tsb string from avaialableData, valData = strToHex
-            newVal = this.appendDashes(newVal);
-            sessionStorage.setItem(availableDir, newVal);
-            // Set the new data location that is next to inUse
-            var availableDataVal = "1000";
-            for (var j = 0; j < 60; j++) {
-                availableDataVal += "- ";
-            }
-            sessionStorage.setItem(availableData, availableDataVal);
-            if (log === true) {
-                _StdOut.putText("New file created: " + fileName);
-            }
-            TSOS.Control._setDiskTable();
-            return availableDir;
-        }
-        write(fileName, dataStr) {
-            // get the TSB key for the filename mentioned
-            var fileNameKey = this.findFileNameKey(fileName);
-            if (fileNameKey === "") {
-                _StdOut.putText(fileName + " not found.");
-            }
-            else {
-                // get the next key by looking at the value within the current key
-                var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
-                nextKey = this.appendCommas(nextKey);
-                var hexDataStr = this.strToHex(dataStr);
-                if (hexDataStr.length / 2 > 60) {
-                    for (var i = 0; i < hexDataStr.length; i += 120) {
-                        var j = 0;
-                        var availableData = this.findNextAvailableData();
-                        var availableDataNext = availableData.replace(/,/g, '');
-                        var hexStrings = [];
-                        hexStrings.push(hexDataStr.substring(i, i + 120));
-                        if (hexStrings[j].length / 2 < 60) {
-                            var newVal = "1***" + hexStrings[j];
-                            newVal = this.appendDashes(newVal);
-                            sessionStorage.setItem(availableData, newVal);
-                        }
-                        else {
-                            var newVal = "1" + availableDataNext + hexStrings[j];
-                            if (j == 0) {
-                                sessionStorage.setItem(nextKey, newVal);
-                            }
-                            else {
-                                sessionStorage.setItem(availableData, newVal);
-                            }
-                        }
-                        j++;
+            if (this.isFormatted) {
+                // TODO: Check if fileName exists before adding a new one.
+                var fileNameKey = this.findFileNameKey(fileName);
+                if (fileNameKey === "") {
+                    var availableDir = this.findNextAvailableDir();
+                    var availableData = this.findNextAvailableData();
+                    // Remove all commas from the tsb string that returns from availableData as it will mess up my display.
+                    var availableDataNext = availableData.replace(/,/g, '');
+                    var strToHex = this.strToHex(fileName);
+                    // Create a value string 
+                    var newVal = "1" + availableDataNext + strToHex; // inUse = 1, Next = tsb string from avaialableData, valData = strToHex
+                    newVal = this.appendDashes(newVal);
+                    sessionStorage.setItem(availableDir, newVal);
+                    // Set the new data location that is next to inUse
+                    var availableDataVal = "1000";
+                    for (var j = 0; j < 60; j++) {
+                        availableDataVal += "- ";
                     }
+                    sessionStorage.setItem(availableData, availableDataVal);
+                    if (log === true) {
+                        _StdOut.putText("New file created: " + fileName);
+                    }
+                    TSOS.Control._setDiskTable();
+                    return availableDir;
                 }
                 else {
-                    var newVal = "1***" + hexDataStr;
-                    newVal = this.appendDashes(newVal);
-                    // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
-                    sessionStorage.setItem(nextKey, newVal);
+                    _StdOut.putText("Error: Filename already in use.");
                 }
-                _StdOut.putText("Data written to " + fileName);
-                TSOS.Control._setDiskTable();
+            }
+            else {
+                _StdOut.putText("Error: Must format disk first");
+            }
+        }
+        write(fileName, dataStr) {
+            if (this.isFormatted) {
+                // get the TSB key for the filename mentioned
+                var fileNameKey = this.findFileNameKey(fileName);
+                if (fileNameKey === "") {
+                    _StdOut.putText(fileName + " not found.");
+                }
+                else {
+                    // get the next key by looking at the value within the current key
+                    var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
+                    nextKey = this.appendCommas(nextKey);
+                    var hexDataStr = this.strToHex(dataStr);
+                    if (hexDataStr.length / 2 > 60) {
+                        for (var i = 0; i < hexDataStr.length; i += 120) {
+                            var j = 0;
+                            var availableData = this.findNextAvailableData();
+                            var availableDataNext = availableData.replace(/,/g, '');
+                            var hexStrings = [];
+                            hexStrings.push(hexDataStr.substring(i, i + 120));
+                            if (hexStrings[j].length / 2 < 60) {
+                                var newVal = "1***" + hexStrings[j];
+                                newVal = this.appendDashes(newVal);
+                                sessionStorage.setItem(availableData, newVal);
+                            }
+                            else {
+                                var newVal = "1" + availableDataNext + hexStrings[j];
+                                if (j == 0) {
+                                    sessionStorage.setItem(nextKey, newVal);
+                                }
+                                else {
+                                    sessionStorage.setItem(availableData, newVal);
+                                }
+                            }
+                            j++;
+                        }
+                    }
+                    else {
+                        var newVal = "1***" + hexDataStr;
+                        newVal = this.appendDashes(newVal);
+                        // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
+                        sessionStorage.setItem(nextKey, newVal);
+                    }
+                    _StdOut.putText("Data written to " + fileName);
+                    TSOS.Control._setDiskTable();
+                }
+            }
+            else {
+                _StdOut.putText("Error: Must format disk first");
             }
         }
         write6502(fileName, userInput) {
@@ -123,134 +139,174 @@ var TSOS;
             //userInput = "1***" + userInput;
             //sessionStorage.setItem(nextKey, userInput);
             var hexDataStr = userInput;
-            if (hexDataStr.length > 60) {
-                var j = 0;
-                var hexStrings = [];
-                for (var i = 0; i < hexDataStr.length; i += 60) {
-                    // var j = 0;
-                    var availableData = this.findNextAvailableData();
-                    var availableDataNext = availableData.replace(/,/g, '');
-                    // var hexStrings = [];
-                    hexStrings.push(hexDataStr.substring(i, i + 60));
-                    if (hexStrings[j].length < 60) {
-                        var newVal = "1***" + this.appendZeroes(hexStrings[j]);
-                        //newVal = this.appendZeroes(newVal);
-                        sessionStorage.setItem(availableData, newVal);
-                    }
-                    else {
-                        var newVal = "1" + availableDataNext + hexStrings[j];
-                        if (j == 0) {
-                            sessionStorage.setItem(nextKey, newVal);
-                        }
-                        else {
-                            sessionStorage.setItem(availableData, newVal);
-                        }
-                    }
-                    j++;
-                }
-            }
-            else {
-                var newVal = "1***" + this.appendZeroes(hexDataStr);
-                //newVal = this.appendZeroes(newVal);
-                // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
-                sessionStorage.setItem(nextKey, newVal);
-            }
+            // if(hexDataStr.length > 60)
+            // {
+            //     var j = 0;
+            //     var hexStrings = [];
+            //     for (var i = 0; i < hexDataStr.length; i += 60)
+            //     {
+            //         // var j = 0;
+            //         var availableData = this.findNextAvailableData();
+            //         var availableDataNext = availableData.replace(/,/g, '');
+            //         // var hexStrings = [];
+            //         hexStrings.push(hexDataStr.substring(i, i + 60));
+            //         if (hexStrings[j].length < 60)
+            //         {
+            //             var newVal = "1***" + this.appendZeroes(hexStrings[j]);
+            //             //newVal = this.appendZeroes(newVal);
+            //             sessionStorage.setItem(availableData, newVal);
+            //         }
+            //         else 
+            //         {
+            //             var newVal = "1" + availableDataNext + hexStrings[j];
+            //             if (j == 0)
+            //             {
+            //                 sessionStorage.setItem(nextKey, newVal);
+            //             }
+            //             else
+            //             {
+            //                 sessionStorage.setItem(availableData, newVal);
+            //             }
+            //         }
+            //         j++;
+            //     }
+            // }
+            // else
+            // {
+            //     var newVal = "1***" + this.appendZeroes(hexDataStr);
+            // //newVal = this.appendZeroes(newVal);
+            // // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
+            // sessionStorage.setItem(nextKey, newVal);
+            // }
+            hexDataStr = "1***" + hexDataStr;
+            sessionStorage.setItem(nextKey, hexDataStr);
             //_StdOut.putText("Data written to " + fileName);
             TSOS.Control._setDiskTable();
         }
         read(fileName) {
-            var fileNameKey = this.findFileNameKey(fileName);
-            if (fileNameKey === "") {
-                _StdOut.putText(fileName + " not found.");
+            if (this.isFormatted) {
+                var fileNameKey = this.findFileNameKey(fileName);
+                if (fileNameKey === "") {
+                    _StdOut.putText(fileName + " not found.");
+                }
+                else {
+                    var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
+                    nextKey = this.appendCommas(nextKey);
+                    // Get the hexString from file by removing all -
+                    var hexStr = "";
+                    hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(4, 120);
+                    var i = 0;
+                    while (sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(1, 3) !== "***") {
+                        nextKey = sessionStorage.getItem(nextKey).substr(1, 3);
+                        nextKey = this.appendCommas(nextKey);
+                        hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(i + 4, i + 120);
+                        i += 120;
+                    }
+                    var dataStr = this.hexToStr(hexStr);
+                    _StdOut.putText("Contents of " + fileName + ": ");
+                    // read out the dataStr to user
+                    _StdOut.putText(dataStr);
+                    // to use for copy
+                    return dataStr;
+                }
             }
             else {
-                var nextKey = sessionStorage.getItem(fileNameKey).substr(1, 3);
-                nextKey = this.appendCommas(nextKey);
-                // Get the hexString from file by removing all -
-                var hexStr = "";
-                hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(4, 120);
-                var i = 0;
-                while (sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(1, 3) !== "***") {
-                    nextKey = sessionStorage.getItem(nextKey).substr(1, 3);
-                    nextKey = this.appendCommas(nextKey);
-                    hexStr = hexStr + sessionStorage.getItem(nextKey).replace(/- /g, '').trim().substr(i + 4, i + 120);
-                    i += 120;
-                }
-                var dataStr = this.hexToStr(hexStr);
-                _StdOut.putText("Contents of " + fileName + ": ");
-                // read out the dataStr to user
-                _StdOut.putText(dataStr);
-                // to use for copy
-                return dataStr;
+                _StdOut.putText("Error: Must format disk first");
             }
         }
         delete(fileName) {
-            var fileNameKey = this.findFileNameKey(fileName);
-            if (fileNameKey === "") {
-                _StdOut.putText(fileName + " not found.");
+            if (this.isFormatted) {
+                var fileNameKey = this.findFileNameKey(fileName);
+                if (fileNameKey === "") {
+                    _StdOut.putText(fileName + " not found.");
+                }
+                else {
+                    var fileNameData = sessionStorage.getItem(fileNameKey);
+                    // Set inUse to 0 so it is available to be replaced but dont remove the data
+                    var removeInUse = fileNameData.replace("1", "0");
+                    sessionStorage.setItem(fileNameKey, removeInUse);
+                    _StdOut.putText("File: " + fileName + " has been deleted.");
+                    TSOS.Control._setDiskTable();
+                }
             }
             else {
-                var fileNameData = sessionStorage.getItem(fileNameKey);
-                // Set inUse to 0 so it is available to be replaced but dont remove the data
-                var removeInUse = fileNameData.replace("1", "0");
-                sessionStorage.setItem(fileNameKey, removeInUse);
-                _StdOut.putText("File: " + fileName + " has been deleted.");
-                TSOS.Control._setDiskTable();
+                _StdOut.putText("Error: Must format disk first");
             }
         }
         copy(oldFileName, newFileName) {
-            // Create the newFileName
-            this.create(newFileName, true);
-            _StdOut.advanceLine();
-            // Read the contents of the oldFileName to return what's there
-            var copiedStr = this.read(oldFileName);
-            _StdOut.advanceLine();
-            // Write the contents of the oldFileName to the newFileName
-            this.write(newFileName, copiedStr);
-            _StdOut.advanceLine();
-            _StdOut.putText(oldFileName + " has been copied to " + newFileName);
-            _StdOut.advanceLine();
-            TSOS.Control._setDiskTable();
-        }
-        rename(oldFileName, newFileName) {
-            var oldFileNameKey = this.findFileNameKey(oldFileName);
-            if (oldFileNameKey === "") {
-                _StdOut.putText(oldFileName + " not found.");
+            if (this.isFormatted) {
+                var fileNameKey = this.findFileNameKey(oldFileName);
+                if (fileNameKey === "") {
+                    _StdOut.putText(oldFileName + " not found.");
+                }
+                else {
+                    // Create the newFileName
+                    this.create(newFileName, true);
+                    _StdOut.advanceLine();
+                    // Read the contents of the oldFileName to return what's there
+                    var copiedStr = this.read(oldFileName);
+                    _StdOut.advanceLine();
+                    // Write the contents of the oldFileName to the newFileName
+                    this.write(newFileName, copiedStr);
+                    _StdOut.advanceLine();
+                    _StdOut.putText(oldFileName + " has been copied to " + newFileName);
+                    _StdOut.advanceLine();
+                    TSOS.Control._setDiskTable();
+                }
             }
             else {
-                //var count = 0;
-                var fileNameData = sessionStorage.getItem(oldFileNameKey).replace(/- /g, '').trim();
-                var removeFileName = fileNameData.substr(0, 4);
-                var hexNewFileName = this.strToHex(newFileName);
-                var renamedFile = removeFileName + hexNewFileName;
-                renamedFile = this.appendDashes(renamedFile);
-                sessionStorage.setItem(oldFileNameKey, renamedFile);
-                //_StdOut.putText(count + "");
-                _StdOut.putText(oldFileName + " has been renamed to " + newFileName + ".");
-                TSOS.Control._setDiskTable();
+                _StdOut.putText("Error: Must format disk first");
+            }
+        }
+        rename(oldFileName, newFileName) {
+            if (this.isFormatted) {
+                var oldFileNameKey = this.findFileNameKey(oldFileName);
+                if (oldFileNameKey === "") {
+                    _StdOut.putText(oldFileName + " not found.");
+                }
+                else {
+                    //var count = 0;
+                    var fileNameData = sessionStorage.getItem(oldFileNameKey).replace(/- /g, '').trim();
+                    var removeFileName = fileNameData.substr(0, 4);
+                    var hexNewFileName = this.strToHex(newFileName);
+                    var renamedFile = removeFileName + hexNewFileName;
+                    renamedFile = this.appendDashes(renamedFile);
+                    sessionStorage.setItem(oldFileNameKey, renamedFile);
+                    //_StdOut.putText(count + "");
+                    _StdOut.putText(oldFileName + " has been renamed to " + newFileName + ".");
+                    TSOS.Control._setDiskTable();
+                }
+            }
+            else {
+                _StdOut.putText("Error: Must format disk first");
             }
         }
         ls() {
-            var fileNames = [];
-            // go through DIR and add eveery fileName inUse to fileNames
-            for (var s = 0; s < 8; s++) {
-                for (var b = 0; b < 8; b++) {
-                    var valData = sessionStorage.getItem("0," + s + "," + b);
-                    var hexFileName = valData.substr(4, valData.length).replace(/- /g, '');
-                    if (hexFileName === '') {
-                    }
-                    else {
-                        // Check that the data is inUse
-                        if (valData.charAt(0) === "1" && valData.charAt(4) !== '7' && valData.charAt(5) !== 'e') {
-                            var strFileName = this.hexToStr(hexFileName);
-                            fileNames.push(strFileName);
+            if (this.isFormatted) {
+                var fileNames = [];
+                // go through DIR and add eveery fileName inUse to fileNames
+                for (var s = 0; s < 8; s++) {
+                    for (var b = 0; b < 8; b++) {
+                        var valData = sessionStorage.getItem("0," + s + "," + b);
+                        var hexFileName = valData.substr(4, valData.length).replace(/- /g, '');
+                        if (hexFileName === '') {
+                        }
+                        else {
+                            // Check that the data is inUse
+                            if (valData.charAt(0) === "1" && valData.charAt(4) !== '7' && valData.charAt(5) !== 'e') {
+                                var strFileName = this.hexToStr(hexFileName);
+                                fileNames.push(strFileName);
+                            }
                         }
                     }
                 }
+                for (var i = 0; i < fileNames.length; i++) {
+                    _StdOut.putText(fileNames[i]);
+                    _StdOut.advanceLine();
+                }
             }
-            for (var i = 0; i < fileNames.length; i++) {
-                _StdOut.putText(fileNames[i]);
-                _StdOut.advanceLine();
+            else {
+                _StdOut.putText("Error: Must format disk first");
             }
         }
         rollIn(pid, baseReg, limitReg) {

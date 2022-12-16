@@ -64,8 +64,13 @@ module TSOS {
 
         public create(fileName: string, log: boolean)
         {  
+            if (this.isFormatted)
+            {
             // TODO: Check if fileName exists before adding a new one.
+            var fileNameKey = this.findFileNameKey(fileName);
 
+            if (fileNameKey === "")
+            {
             var availableDir = this.findNextAvailableDir();
             var availableData = this.findNextAvailableData();
 
@@ -97,10 +102,21 @@ module TSOS {
             TSOS.Control._setDiskTable();
             return availableDir;
         }
+        else
+        {
+            _StdOut.putText("Error: Filename already in use.");
+        }
+        }
+        else 
+        {
+            _StdOut.putText("Error: Must format disk first");
+        }
+        }
 
         public write(fileName: string, dataStr: string)
         {
-
+            if (this.isFormatted)
+            {
             // get the TSB key for the filename mentioned
             var fileNameKey = this.findFileNameKey(fileName);
 
@@ -161,6 +177,11 @@ module TSOS {
             TSOS.Control._setDiskTable();
             }
         }
+        else 
+        {
+            _StdOut.putText("Error: Must format disk first");
+        }
+        }
 
         public write6502(fileName: string, userInput: string)
         {
@@ -176,49 +197,52 @@ module TSOS {
             //sessionStorage.setItem(nextKey, userInput);
 
             var hexDataStr = userInput;
-            if(hexDataStr.length > 60)
-            {
-                var j = 0;
-                var hexStrings = [];
-                for (var i = 0; i < hexDataStr.length; i += 60)
-                {
-                    // var j = 0;
-                    var availableData = this.findNextAvailableData();
-                    var availableDataNext = availableData.replace(/,/g, '');
+            // if(hexDataStr.length > 60)
+            // {
+            //     var j = 0;
+            //     var hexStrings = [];
+            //     for (var i = 0; i < hexDataStr.length; i += 60)
+            //     {
+            //         // var j = 0;
+            //         var availableData = this.findNextAvailableData();
+            //         var availableDataNext = availableData.replace(/,/g, '');
 
-                    // var hexStrings = [];
-                    hexStrings.push(hexDataStr.substring(i, i + 60));
-                    if (hexStrings[j].length < 60)
-                    {
-                        var newVal = "1***" + this.appendZeroes(hexStrings[j]);
-                        //newVal = this.appendZeroes(newVal);
-                        sessionStorage.setItem(availableData, newVal);
-                    }
-                    else 
-                    {
-                        var newVal = "1" + availableDataNext + hexStrings[j];
-                        if (j == 0)
-                        {
-                            sessionStorage.setItem(nextKey, newVal);
-                        }
-                        else
-                        {
-                            sessionStorage.setItem(availableData, newVal);
-                        }
-                    }
+            //         // var hexStrings = [];
+            //         hexStrings.push(hexDataStr.substring(i, i + 60));
+            //         if (hexStrings[j].length < 60)
+            //         {
+            //             var newVal = "1***" + this.appendZeroes(hexStrings[j]);
+            //             //newVal = this.appendZeroes(newVal);
+            //             sessionStorage.setItem(availableData, newVal);
+            //         }
+            //         else 
+            //         {
+            //             var newVal = "1" + availableDataNext + hexStrings[j];
+            //             if (j == 0)
+            //             {
+            //                 sessionStorage.setItem(nextKey, newVal);
+            //             }
+            //             else
+            //             {
+            //                 sessionStorage.setItem(availableData, newVal);
+            //             }
+            //         }
                     
-                    j++;
-                }
-            }
-            else
-            {
-                var newVal = "1***" + this.appendZeroes(hexDataStr);
+            //         j++;
+            //     }
+            // }
+            // else
+            // {
+            //     var newVal = "1***" + this.appendZeroes(hexDataStr);
 
-            //newVal = this.appendZeroes(newVal);
+            // //newVal = this.appendZeroes(newVal);
 
-            // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
-            sessionStorage.setItem(nextKey, newVal);
-            }
+            // // With the nextKey and the dataStr turned into hex, our key and value is set in session storage.
+            // sessionStorage.setItem(nextKey, newVal);
+            // }
+            hexDataStr = "1***" + hexDataStr;
+
+            sessionStorage.setItem(nextKey, hexDataStr);
 
             //_StdOut.putText("Data written to " + fileName);
             TSOS.Control._setDiskTable();
@@ -227,7 +251,8 @@ module TSOS {
 
         public read(fileName: string)
         {
-
+            if (this.isFormatted)
+            {
             var fileNameKey = this.findFileNameKey(fileName);
             if (fileNameKey === "")
             {
@@ -259,9 +284,16 @@ module TSOS {
             return dataStr;
             }
         }
+        else 
+        {
+            _StdOut.putText("Error: Must format disk first");
+        }
+        }
 
         public delete(fileName: string)
         {
+            if (this.isFormatted)
+            {
             var fileNameKey = this.findFileNameKey(fileName);
             if (fileNameKey === "")
             {
@@ -277,11 +309,23 @@ module TSOS {
             _StdOut.putText("File: " + fileName + " has been deleted.");
             TSOS.Control._setDiskTable();
             }
-
+        }
+        else 
+        {
+            _StdOut.putText("Error: Must format disk first");
+        }
         }
 
         public copy(oldFileName: string, newFileName: string)
         {
+            if (this.isFormatted)
+            {
+            var fileNameKey = this.findFileNameKey(oldFileName);
+            if (fileNameKey === "")
+            {
+                _StdOut.putText(oldFileName + " not found.");
+            }
+            else{
             // Create the newFileName
             this.create(newFileName, true);
             _StdOut.advanceLine();
@@ -297,11 +341,18 @@ module TSOS {
             _StdOut.putText(oldFileName + " has been copied to " + newFileName);
             _StdOut.advanceLine();
             TSOS.Control._setDiskTable();
+            }
+        }
+        else 
+        {
+            _StdOut.putText("Error: Must format disk first");
+        }
         }
 
         public rename(oldFileName: string, newFileName: string)
         {
-
+            if (this.isFormatted)
+            {
             var oldFileNameKey = this.findFileNameKey(oldFileName);
             if (oldFileNameKey === "")
             {
@@ -323,12 +374,17 @@ module TSOS {
                 _StdOut.putText(oldFileName + " has been renamed to "+ newFileName+ ".");
                 TSOS.Control._setDiskTable();
             }
-
+        }
+        else 
+        {
+            _StdOut.putText("Error: Must format disk first");
+        }
         }
 
         public ls()
         {
-
+            if (this.isFormatted)
+            {
             var fileNames = [];
 
             // go through DIR and add eveery fileName inUse to fileNames
@@ -359,7 +415,11 @@ module TSOS {
                 _StdOut.putText(fileNames[i]);
                 _StdOut.advanceLine();
             }
-
+        }
+        else 
+        {
+            _StdOut.putText("Error: Must format disk first");
+        }
         }
 
         public rollIn(pid: number, baseReg: number, limitReg: number)
